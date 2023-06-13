@@ -2,7 +2,7 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 // import all screens here
-import {RegisterScreen, LoginScreen} from '../screens';
+import {RegisterScreen, LoginScreen, UsersScreen} from '../screens';
 
 const AuthStack = createNativeStackNavigator();
 
@@ -13,7 +13,8 @@ export const AuthNavigator = () => {
         headerShown: false,
         contentStyle: {backgroundColor: 'white'},
       }}>
-      <AuthStack.Screen name="register" component={RegisterScreen} />
+      {/* <AuthStack.Screen name="register" component={RegisterScreen} /> */}
+      <AuthStack.Screen name="register" component={UsersScreen} />
       <AuthStack.Screen name="login" component={LoginScreen} />
     </AuthStack.Navigator>
   );
