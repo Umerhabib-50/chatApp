@@ -5,41 +5,36 @@ import {useSelector} from 'react-redux';
 
 // import navigators main screens
 import {AuthNavigator} from './authNavigator';
-import {DrawerNavigator} from './drawerNavigator';
-import {MainNavigator} from './mainNavigator';
+// import {MainNavigator} from './mainNavigator';
 
 const RootStack = createNativeStackNavigator();
 
-// function HomeScreen() {
-//   return (
-//     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-//       <Text>Home Screen</Text>
-//     </View>
-//   );
-// }
-
 const RootStackContainer = () => {
-  const userInfo = useSelector(state => state?.userLogin);
-  const token = userInfo?.userInfo?.data?.token;
+  // const userInfo = useSelector(state => state?.userLogin);
+  // const token = userInfo?.userInfo?.data?.token;
   // const token = false;
   return (
     <RootStack.Navigator name="root" screenOptions={{headerShown: false}}>
-      {token ? (
-        <>
-          {/* <RootStack.Screen name="drawerStack" component={DrawerNavigator} /> */}
-          <RootStack.Screen name="mainStack" component={MainNavigator} />
-        </>
-      ) : (
-        <>
-          <RootStack.Screen name="authStack" component={AuthNavigator} />
-        </>
-      )}
-      {/* <RootStack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{title: 'Overview'}}
-      /> */}
+      {/* <RootStack.Screen name="mainStack" component={MainNavigator} /> */}
+      <RootStack.Screen name="authStack" component={AuthNavigator} />
     </RootStack.Navigator>
+    // <RootStack.Navigator name="root" screenOptions={{headerShown: false}}>
+    //   {token ? (
+    //     <>
+    //       {/* <RootStack.Screen name="drawerStack" component={DrawerNavigator} /> */}
+    //       <RootStack.Screen name="mainStack" component={MainNavigator} />
+    //     </>
+    //   ) : (
+    //     <>
+    //       <RootStack.Screen name="authStack" component={AuthNavigator} />
+    //     </>
+    //   )}
+    //   {/* <RootStack.Screen
+    //     name="Home"
+    //     component={HomeScreen}
+    //     options={{title: 'Overview'}}
+    //   /> */}
+    // </RootStack.Navigator>
   );
 };
 
