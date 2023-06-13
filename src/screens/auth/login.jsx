@@ -1,22 +1,27 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {useForm} from 'react-hook-form';
 import {CustomButton, CustomInput} from '../../components';
+import {useDispatch, useSelector} from 'react-redux';
+import {userLoginAction} from '../../redux';
 
 export const LoginScreen = () => {
+  const data = useSelector(state => state?.userLogin);
+  console.log('login user data', data);
   const {
     control,
     handleSubmit,
     formState: {errors},
   } = useForm();
 
+  const dispatch = useDispatch();
+
   const onSubmit = data => {
-    console.log(data);
+    dispatch(userLoginAction(data));
   };
 
   return (
-    <View>
-      <Text>loginScreen</Text>
+    <View style={styles.input_main}>
       <CustomInput
         control={control}
         errors={errors}
@@ -37,3 +42,12 @@ export const LoginScreen = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  input_main: {
+    display: 'flex',
+    padding: '3%',
+    justifyContent: 'center',
+    height: '100%',
+  },
+});
