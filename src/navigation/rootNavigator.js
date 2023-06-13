@@ -18,23 +18,6 @@ const RootStackContainer = () => {
       {/* <RootStack.Screen name="mainStack" component={MainNavigator} /> */}
       <RootStack.Screen name="authStack" component={AuthNavigator} />
     </RootStack.Navigator>
-    // <RootStack.Navigator name="root" screenOptions={{headerShown: false}}>
-    //   {token ? (
-    //     <>
-    //       {/* <RootStack.Screen name="drawerStack" component={DrawerNavigator} /> */}
-    //       <RootStack.Screen name="mainStack" component={MainNavigator} />
-    //     </>
-    //   ) : (
-    //     <>
-    //       <RootStack.Screen name="authStack" component={AuthNavigator} />
-    //     </>
-    //   )}
-    //   {/* <RootStack.Screen
-    //     name="Home"
-    //     component={HomeScreen}
-    //     options={{title: 'Overview'}}
-    //   /> */}
-    // </RootStack.Navigator>
   );
 };
 

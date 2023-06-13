@@ -13,7 +13,6 @@ export const CustomInput = ({
   errorMessage,
   placeholder,
 }) => {
-  console.log('errors', errors[name]);
   return (
     <>
       <View>
