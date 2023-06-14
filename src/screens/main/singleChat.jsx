@@ -7,32 +7,61 @@
 //   FlatList,
 //   StyleSheet,
 // } from 'react-native';
+// import io from 'socket.io-client';
 
 // export const SingleChatScreen = () => {
+//   const socket_Link = io('http://192.168.1.59:8000');
 //   const [messages, setMessages] = useState([]);
-//   const [message, setMessage] = useState('');
+//   const [input, setInput] = useState('');
+//   const [socket, setSocket] = useState(socket_Link);
+
+//   useEffect(() => {
+//     if (socket) {
+//       socket.on('recieve', receiveMessage);
+//     }
+//   }, [socket]);
 
 //   const receiveMessage = newMessage => {
-//     setMessages([...messages, newMessage]);
+//     setMessages(prevMessages => [
+//       ...prevMessages,
+//       {message: newMessage, type: 'received'},
+//     ]);
 //   };
 
 //   const sendMessage = () => {
-//     setMessages([...messages, message]);
-//     setMessage('');
+//     if (socket) {
+//       socket.emit('send', input);
+//     }
+//     setMessages(prevMessages => [
+//       ...prevMessages,
+//       {message: input, type: 'sent'},
+//     ]);
+//     setInput('');
 //   };
+
+//   const renderItem = ({item}) => (
+//     <View
+//       style={[
+//         styles.messageContainer,
+//         item.type === 'sent' ? styles.receivedMessage : styles.sentMessage,
+//       ]}>
+//       <Text style={styles.message}>{item.message}</Text>
+//     </View>
+//   );
+
 //   return (
 //     <View style={styles.container}>
 //       <FlatList
 //         data={messages}
-//         renderItem={({item}) => <Text style={styles.message}>{item}</Text>}
+//         renderItem={renderItem}
 //         keyExtractor={(item, index) => index.toString()}
 //         contentContainerStyle={styles.messagesContainer}
 //       />
 //       <View style={styles.inputContainer}>
 //         <TextInput
 //           placeholder="Type a message..."
-//           onChangeText={text => setMessage(text)}
-//           value={message}
+//           onChangeText={text => setInput(text)}
+//           value={input}
 //           style={styles.input}
 //         />
 //         <Button title="Send" onPress={sendMessage} />
@@ -40,23 +69,32 @@
 //     </View>
 //   );
 // };
+
 // const styles = StyleSheet.create({
 //   container: {
 //     flex: 1,
 //     padding: 16,
-//     backgroundColor: 'pink',
+//     backgroundColor: '#F5F5F5',
 //   },
-//   // messagesContainer: {
-//   //   // flexGrow: 1,
-//   //   width: 'auto',
-//   // },
-//   message: {
-//     paddingVertical: 10,
-//     paddingHorizontal: 16,
-//     backgroundColor: 'red',
-//     borderRadius: 8,
+//   messagesContainer: {
+//     flexGrow: 1,
+//   },
+//   messageContainer: {
 //     marginBottom: 8,
-//     width: '60%',
+//   },
+//   sentMessage: {
+//     alignSelf: 'flex-end',
+//     backgroundColor: '#DCF8C6',
+//     borderRadius: 8,
+//   },
+//   receivedMessage: {
+//     alignSelf: 'flex-start',
+//     backgroundColor: '#FFFFFF',
+//     borderRadius: 8,
+//   },
+//   message: {
+//     paddingVertical: 8,
+//     paddingHorizontal: 16,
 //   },
 //   inputContainer: {
 //     flexDirection: 'row',
@@ -74,6 +112,8 @@
 //     borderRadius: 4,
 //   },
 // });
+
+// export default SingleChatScreen;
 import React, {useEffect, useState} from 'react';
 import {
   View,
@@ -85,36 +125,31 @@ import {
 } from 'react-native';
 import io from 'socket.io-client';
 
-export const SingleChatScreen = () => {
-  const socket_Link = io('http://192.168.1.59:8000');
-  const [messages, setMessages] = useState([]);
-  console.log('data from socket', messages);
-  const [input, setInput] = useState('');
-  const [socket, setSocket] = useState(socket_Link);
+const socket = io('http://192.168.1.59:8000'); // Replace with your backend server URL
 
-  // useEffect(() => {
-  //   const newSocket = io('YOUR_BACKEND_SERVER_URL');
-  //   setSocket(newSocket);
-  //   return () => {
-  //     newSocket.disconnect();
-  //   };
-  // }, []);
+export const SingleChatScreen = () => {
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState('');
+  const [room, setRoom] = useState('default'); // Specify the default room
 
   useEffect(() => {
-    if (socket) {
-      socket.on('user-joined', receiveMessage);
-    }
-  }, [socket]);
+    socket.on('connect', () => {
+      console.log('Connected to server');
+      socket.emit('join', room); // Join the default room when connected
+    });
 
-  const receiveMessage = newMessage => {
-    setMessages(prevMessages => [...prevMessages, newMessage]);
-  };
+    socket.on('receive', message => {
+      setMessages(prevMessages => [...prevMessages, message]);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   const sendMessage = () => {
-    if (socket) {
-      socket.emit('chat message', input);
-    }
-    setInput('');
+    socket.emit('send', {room, message});
+    setMessage('');
   };
 
   return (
@@ -128,8 +163,8 @@ export const SingleChatScreen = () => {
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Type a message..."
-          onChangeText={text => setInput(text)}
-          value={input}
+          onChangeText={text => setMessage(text)}
+          value={message}
           style={styles.input}
         />
         <Button title="Send" onPress={sendMessage} />
@@ -137,6 +172,7 @@ export const SingleChatScreen = () => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -10,7 +10,7 @@ export const MainNavigator = () => {
       screenOptions={{
         headerShown: false,
       }}>
-      <MainStack.Screen name="users" component={UsersScreen} />
+      {/* <MainStack.Screen name="users" component={UsersScreen} /> */}
       <MainStack.Screen name="single" component={SingleChatScreen} />
     </MainStack.Navigator>
   );
