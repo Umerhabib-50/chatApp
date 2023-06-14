@@ -1,32 +1,55 @@
-import React from 'react';
-import {View, StyleSheet} from 'react-native';
-import {Text} from 'react-native-paper';
+import React, {useState} from 'react';
+import {View, StyleSheet, TextInput, Button, Text} from 'react-native';
+import io from 'socket.io-client';
+export const UsersScreen = ({navigation}) => {
+  const socket = io('http://192.168.1.59:8000');
+  const [name, setName] = useState('');
+  const sendMessage = () => {
+    if (socket) {
+      socket.emit('new-user-joined', name);
+    }
+    setName('');
+    navigation.navigate('single');
+  };
 
-export const UsersScreen = () => {
   return (
-    <View style={styles.users}>
-      <View style={styles.usersList}>
-        <Text
-          style={{
-            color: 'white',
-            fontSize: 30,
-            marginTop: '4%',
-            marginLeft: '4%',
-          }}>
-          Chat
-        </Text>
+    <View style={styles.join}>
+      <View style={{marginBottom: 10}}>
+        <Text style={{fontSize: 30}}>Join The Room</Text>
+      </View>
+      <View style={styles.inputContainer}>
+        <TextInput
+          placeholder="Enter Your Name..."
+          onChangeText={text => setName(text)}
+          value={name}
+          style={styles.input}
+        />
+        <Button title="Join" onPress={sendMessage} />
       </View>
     </View>
   );
 };
 const styles = StyleSheet.create({
-  users: {
-    backgroundColor: 'white',
+  join: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     height: '100%',
   },
-  usersList: {
-    backgroundColor: '#000302',
-    height: '10%',
-    display: 'flex',
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    padding: 8,
+  },
+  input: {
+    flex: 1,
+    marginRight: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: '#F0F0F0',
+    borderRadius: 4,
   },
 });
