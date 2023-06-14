@@ -8,7 +8,6 @@ import {userRegister} from '../../redux';
 export const RegisterScreen = ({navigation}) => {
   const dispatch = useDispatch();
   const registerData = useSelector(state => state?.userRegister?.userRegister);
-  console.log('data from backEnd ', registerData);
   const {
     control,
     handleSubmit,

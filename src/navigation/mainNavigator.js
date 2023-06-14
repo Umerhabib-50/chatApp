@@ -11,8 +11,7 @@ export const MainNavigator = () => {
         headerShown: false,
       }}>
       <MainStack.Screen name="users" component={UsersScreen} />
-      <MainStack.Screen name="singleUser" component={SingleChatScreen} />
-      {/* <MainStack.Screen name="drawerStack" component={DrawerNavigator} /> */}
+      <MainStack.Screen name="single" component={SingleChatScreen} />
     </MainStack.Navigator>
   );
 };

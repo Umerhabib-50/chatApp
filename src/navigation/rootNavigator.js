@@ -5,18 +5,23 @@ import {useSelector} from 'react-redux';
 
 // import navigators main screens
 import {AuthNavigator} from './authNavigator';
+import {MainNavigator} from './mainNavigator';
 // import {MainNavigator} from './mainNavigator';
 
 const RootStack = createNativeStackNavigator();
 
 const RootStackContainer = () => {
-  // const userInfo = useSelector(state => state?.userLogin);
-  // const token = userInfo?.userInfo?.data?.token;
+  const userInfo = useSelector(state => state?.userLogin);
+  const token = userInfo?.userInfo?.userResult?.token;
+
   // const token = false;
   return (
     <RootStack.Navigator name="root" screenOptions={{headerShown: false}}>
-      {/* <RootStack.Screen name="mainStack" component={MainNavigator} /> */}
-      <RootStack.Screen name="authStack" component={AuthNavigator} />
+      {token ? (
+        <RootStack.Screen name="mainStack" component={MainNavigator} />
+      ) : (
+        <RootStack.Screen name="authStack" component={AuthNavigator} />
+      )}
     </RootStack.Navigator>
   );
 };
