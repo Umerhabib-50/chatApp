@@ -10,21 +10,21 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import io from 'socket.io-client';
-import {HeaderComponent} from '../../components';
+import {CustomModal, HeaderComponent} from '../../components';
 import {useDispatch, useSelector} from 'react-redux';
+
 export const UsersScreen = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   const {rooms} = useSelector(state => state?.addRoom);
 
-  let userArray = [
-    {id: '1', name: 'Room 1'},
-    {id: '1', name: 'Room 2'},
-    {id: '3', name: 'Room 3'},
-  ];
+  // let userArray = [
+  //   {id: '1', name: 'Room 1'},
+  //   {id: '1', name: 'Room 2'},
+  //   {id: '3', name: 'Room 3'},
+  // ];
 
   const [room, setRoom] = useState('');
-  console.log(room);
 
   const renderItem = ({item}) => {
     return (
@@ -50,11 +50,25 @@ export const UsersScreen = ({navigation}) => {
       <View style={styles.join}>
         <View style={styles.card}>
           <FlatList
-            data={userArray}
+            data={rooms}
             renderItem={renderItem}
             keyExtractor={(item, index) => index.toString()}
           />
         </View>
+        <View style={{position: 'absolute', top: '90%'}}>
+          <Button
+            title="Create Room"
+            onPress={() => {
+              setModalVisible(true);
+            }}
+          />
+        </View>
+        <CustomModal
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          room={room}
+          setRoom={setRoom}
+        />
       </View>
     </>
   );
