@@ -10,7 +10,7 @@ import {
 import io from 'socket.io-client';
 import {HeaderComponent} from '../../components';
 
-export const SingleChatScreen = ({navigation, route}) => {
+export const ChatScreen = ({navigation, route}) => {
   const username = route?.params?.name;
   const socket = io('http://192.168.1.59:8000');
   const [messages, setMessages] = useState([]);
@@ -68,7 +68,7 @@ export const SingleChatScreen = ({navigation, route}) => {
     <>
       <HeaderComponent
         userName={'Rehan'}
-        navigation={() => navigation.navigate('users')}
+        navigation={() => navigation.navigate('rooms')}
         imageSource={require('../../assets/backIcon.png')}
       />
       <View style={styles.container}>
