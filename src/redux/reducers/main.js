@@ -14,11 +14,10 @@ export const allUsersReducer = (state = {}, action) => {
   }
 };
 
-export const addRoomReducer = (state = [], action) => {
+export const addRoomReducer = (state = {rooms: []}, action) => {
   switch (action.type) {
     case 'ADD_ROOM':
-      return state.push(action.payload);
-
+      return {rooms: [...state.rooms, {name: action.payload}]};
     default:
       return state;
   }

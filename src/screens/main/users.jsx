@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState} from 'react';
 import {
   View,
@@ -10,25 +9,23 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import io from 'socket.io-client';
+import {useDispatch, useSelector} from 'react-redux';
+import {addRoomAction} from '../../redux';
 
 export const UsersScreen = ({navigation}) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const dispatch = useDispatch();
+  const {rooms} = useSelector(state => state?.addRoom);
+
   let userArray = [
     {id: '1', name: 'Room 1'},
     {id: '1', name: 'Room 2'},
     {id: '3', name: 'Room 3'},
   ];
-  const socket = io('http://192.168.1.59:8000');
-  const [name, setName] = useState('');
-  const [room, setRoom] = useState('default');
-  const sendMessage = () => {
-    if (socket) {
-      socket.emit('new-user-joined', name);
-      socket.emit('join', room);
-    }
-    setName('');
-    // navigation.navigate('single', {name});
-  };
+
+  const [room, setRoom] = useState('');
+  console.log(room);
+
   const renderItem = ({item}) => {
     return (
       <TouchableOpacity onPress={() => navigation.navigate('addRoom')}>
@@ -46,6 +43,7 @@ export const UsersScreen = ({navigation}) => {
       </TouchableOpacity>
     );
   };
+
   return (
     <View style={styles.join}>
       <View
@@ -60,24 +58,43 @@ export const UsersScreen = ({navigation}) => {
         <View>
           <Text style={{fontSize: 30, fontWeight: 'bold'}}>Chat</Text>
         </View>
-        {/* <View>
-            <Text style={{fontSize: 30}}>Join The Room </Text>
-          </View> */}
-        <View style={styles.inputContainer}>
-          {/* <TextInput
-            placeholder="Join Room..."
-            onChangeText={text => setName(text)}
-            value={name}
-            style={styles.input}
-          />
-          <Button title="Join" onPress={sendMessage} /> */}
-        </View>
+
+        <View style={styles.inputContainer}></View>
       </View>
       <View style={styles.card}>
         <FlatList
-          data={userArray}
+          data={rooms}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
+        />
+      </View>
+      <View
+        style={{
+          position: 'absolute',
+          top: '80%',
+          // right: '10%',
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-evenly',
+          alignItems: 'center',
+          width: '100%',
+        }}>
+        <TextInput
+          style={{borderWidth: 1}}
+          placeholder="enter room name"
+          value={room}
+          onChangeText={text => {
+            setRoom(text);
+          }}
+        />
+        <Button
+          title="Create New Room"
+          onPress={() => {
+            if (room) {
+              dispatch(addRoomAction(room));
+            }
+            setRoom('');
+          }}
         />
       </View>
     </View>
@@ -86,6 +103,7 @@ export const UsersScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   join: {
     display: 'flex',
+    flex: 1,
     alignItems: 'center',
     flexDirection: 'column',
   },
