@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   View,
   TextInput,
@@ -11,11 +11,16 @@ import io from 'socket.io-client';
 
 export const SingleChatScreen = ({route}) => {
   const username = route?.params?.name;
-  console.log('params', username);
   const socket = io('http://192.168.1.59:8000');
   const [messages, setMessages] = useState([]);
+  const flatListRef = useRef(null);
   const [message, setMessage] = useState();
   const [room, setRoom] = useState('default');
+  const scrollToBottom = () => {
+    if (flatListRef.current) {
+      flatListRef.current.scrollToEnd({animated: true});
+    }
+  };
   useEffect(() => {
     socket.on('connect', () => {
       console.log('Connected to server');
@@ -31,7 +36,9 @@ export const SingleChatScreen = ({route}) => {
       socket.disconnect();
     };
   }, []);
-
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
   const sendMessage = () => {
     socket.emit('send', {room, message, username});
     setMessage('');
@@ -59,10 +66,13 @@ export const SingleChatScreen = ({route}) => {
   return (
     <View style={styles.container}>
       <FlatList
+        onContentSizeChange={scrollToBottom}
+        ref={flatListRef}
         data={messages}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={styles.messagesContainer}
+        showsVerticalScrollIndicator={false}
       />
       <View style={styles.inputContainer}>
         <TextInput
