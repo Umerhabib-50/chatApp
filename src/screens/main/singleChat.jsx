@@ -8,8 +8,9 @@ import {
   StyleSheet,
 } from 'react-native';
 import io from 'socket.io-client';
+import {HeaderComponent} from '../../components';
 
-export const SingleChatScreen = ({route}) => {
+export const SingleChatScreen = ({navigation, route}) => {
   const username = route?.params?.name;
   const socket = io('http://192.168.1.59:8000');
   const [messages, setMessages] = useState([]);
@@ -64,26 +65,33 @@ export const SingleChatScreen = ({route}) => {
   };
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        onContentSizeChange={scrollToBottom}
-        ref={flatListRef}
-        data={messages}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={styles.messagesContainer}
-        showsVerticalScrollIndicator={false}
+    <>
+      <HeaderComponent
+        userName={'Rehan'}
+        navigation={() => navigation.navigate('users')}
+        imageSource={require('../../assets/backIcon.png')}
       />
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Type a message..."
-          onChangeText={text => setMessage(text)}
-          value={message}
-          style={styles.input}
+      <View style={styles.container}>
+        <FlatList
+          onContentSizeChange={scrollToBottom}
+          ref={flatListRef}
+          data={messages}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+          contentContainerStyle={styles.messagesContainer}
+          showsVerticalScrollIndicator={false}
         />
-        <Button title="Send" onPress={sendMessage} />
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder="Type a message..."
+            onChangeText={text => setMessage(text)}
+            value={message}
+            style={styles.input}
+          />
+          <Button title="Send" onPress={sendMessage} />
+        </View>
       </View>
-    </View>
+    </>
   );
 };
 

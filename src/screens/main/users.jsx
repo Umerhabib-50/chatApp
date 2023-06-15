@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import io from 'socket.io-client';
+import {HeaderComponent} from '../../components';
 export const UsersScreen = ({navigation}) => {
   let userArray = [
     {id: '1', name: 'Room 1'},
@@ -46,40 +47,18 @@ export const UsersScreen = ({navigation}) => {
     );
   };
   return (
-    <View style={styles.join}>
-      <View
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          flexDirection: 'row',
-          alignItems: 'center',
-          alignSelf: 'flex-end',
-          width: '100%',
-        }}>
-        <View>
-          <Text style={{fontSize: 30, fontWeight: 'bold'}}>Chat</Text>
-        </View>
-        {/* <View>
-            <Text style={{fontSize: 30}}>Join The Room </Text>
-          </View> */}
-        <View style={styles.inputContainer}>
-          {/* <TextInput
-            placeholder="Join Room..."
-            onChangeText={text => setName(text)}
-            value={name}
-            style={styles.input}
+    <>
+      <HeaderComponent userName={'Chat'} />
+      <View style={styles.join}>
+        <View style={styles.card}>
+          <FlatList
+            data={userArray}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => index.toString()}
           />
-          <Button title="Join" onPress={sendMessage} /> */}
         </View>
       </View>
-      <View style={styles.card}>
-        <FlatList
-          data={userArray}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => index.toString()}
-        />
-      </View>
-    </View>
+    </>
   );
 };
 const styles = StyleSheet.create({
@@ -108,7 +87,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#FFFFFF',
     width: '100%',
-    marginTop: '3%',
+    // marginTop: '3%',
   },
   text: {
     fontSize: 20,
