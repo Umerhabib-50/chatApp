@@ -9,9 +9,8 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {addRoomAction} from '../../redux';
-
+import io from 'socket.io-client';
+import {HeaderComponent} from '../../components';
 export const UsersScreen = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
@@ -45,59 +44,18 @@ export const UsersScreen = ({navigation}) => {
   };
 
   return (
-    <View style={styles.join}>
-      <View
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          flexDirection: 'row',
-          alignItems: 'center',
-          alignSelf: 'flex-end',
-          width: '100%',
-        }}>
-        <View>
-          <Text style={{fontSize: 30, fontWeight: 'bold'}}>Chat</Text>
+    <>
+      <HeaderComponent userName={'Chat'} />
+      <View style={styles.join}>
+        <View style={styles.card}>
+          <FlatList
+            data={userArray}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => index.toString()}
+          />
         </View>
-
-        <View style={styles.inputContainer}></View>
       </View>
-      <View style={styles.card}>
-        <FlatList
-          data={rooms}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => index.toString()}
-        />
-      </View>
-      <View
-        style={{
-          position: 'absolute',
-          top: '80%',
-          // right: '10%',
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-evenly',
-          alignItems: 'center',
-          width: '100%',
-        }}>
-        <TextInput
-          style={{borderWidth: 1}}
-          placeholder="enter room name"
-          value={room}
-          onChangeText={text => {
-            setRoom(text);
-          }}
-        />
-        <Button
-          title="Create New Room"
-          onPress={() => {
-            if (room) {
-              dispatch(addRoomAction(room));
-            }
-            setRoom('');
-          }}
-        />
-      </View>
-    </View>
+    </>
   );
 };
 const styles = StyleSheet.create({
@@ -127,7 +85,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#FFFFFF',
     width: '100%',
-    marginTop: '3%',
+    // marginTop: '3%',
   },
   text: {
     fontSize: 20,
