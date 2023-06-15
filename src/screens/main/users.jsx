@@ -1,15 +1,14 @@
 import React, {useState} from 'react';
 import {View, StyleSheet, TextInput, Button, Text} from 'react-native';
 import io from 'socket.io-client';
+
 export const UsersScreen = ({navigation}) => {
   const socket = io('http://192.168.1.59:8000');
   const [name, setName] = useState('');
+
   const sendMessage = () => {
-    if (socket) {
-      socket.emit('new-user-joined', name);
-    }
     setName('');
-    navigation.navigate('single');
+    navigation.navigate('single', {name});
   };
 
   return (

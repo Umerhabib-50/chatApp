@@ -1,79 +1,3 @@
-// import React, {useEffect, useState} from 'react';
-// import {
-//   View,
-//   TextInput,
-//   Button,
-//   Text,
-//   FlatList,
-//   StyleSheet,
-// } from 'react-native';
-
-// export const SingleChatScreen = () => {
-//   const [messages, setMessages] = useState([]);
-//   const [message, setMessage] = useState('');
-
-//   const receiveMessage = newMessage => {
-//     setMessages([...messages, newMessage]);
-//   };
-
-//   const sendMessage = () => {
-//     setMessages([...messages, message]);
-//     setMessage('');
-//   };
-//   return (
-//     <View style={styles.container}>
-//       <FlatList
-//         data={messages}
-//         renderItem={({item}) => <Text style={styles.message}>{item}</Text>}
-//         keyExtractor={(item, index) => index.toString()}
-//         contentContainerStyle={styles.messagesContainer}
-//       />
-//       <View style={styles.inputContainer}>
-//         <TextInput
-//           placeholder="Type a message..."
-//           onChangeText={text => setMessage(text)}
-//           value={message}
-//           style={styles.input}
-//         />
-//         <Button title="Send" onPress={sendMessage} />
-//       </View>
-//     </View>
-//   );
-// };
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     padding: 16,
-//     backgroundColor: 'pink',
-//   },
-//   // messagesContainer: {
-//   //   // flexGrow: 1,
-//   //   width: 'auto',
-//   // },
-//   message: {
-//     paddingVertical: 10,
-//     paddingHorizontal: 16,
-//     backgroundColor: 'red',
-//     borderRadius: 8,
-//     marginBottom: 8,
-//     width: '60%',
-//   },
-//   inputContainer: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     backgroundColor: '#FFFFFF',
-//     borderRadius: 8,
-//     padding: 8,
-//   },
-//   input: {
-//     flex: 1,
-//     marginRight: 8,
-//     paddingVertical: 8,
-//     paddingHorizontal: 16,
-//     backgroundColor: '#F0F0F0',
-//     borderRadius: 4,
-//   },
-// });
 import React, {useEffect, useState} from 'react';
 import {
   View,
@@ -85,51 +9,66 @@ import {
 } from 'react-native';
 import io from 'socket.io-client';
 
-export const SingleChatScreen = () => {
-  const socket_Link = io('http://192.168.1.59:8000');
+export const SingleChatScreen = ({route}) => {
+  const username = route?.params?.name;
+  console.log('params', username);
+  const socket = io('http://192.168.1.59:8000');
   const [messages, setMessages] = useState([]);
-  console.log('data from socket', messages);
-  const [input, setInput] = useState('');
-  const [socket, setSocket] = useState(socket_Link);
-
-  // useEffect(() => {
-  //   const newSocket = io('YOUR_BACKEND_SERVER_URL');
-  //   setSocket(newSocket);
-  //   return () => {
-  //     newSocket.disconnect();
-  //   };
-  // }, []);
-
+  const [message, setMessage] = useState();
+  const [room, setRoom] = useState('default');
   useEffect(() => {
-    if (socket) {
-      socket.on('user-joined', receiveMessage);
-    }
-  }, [socket]);
+    socket.on('connect', () => {
+      console.log('Connected to server');
+      socket.emit('join', room);
+    });
 
-  const receiveMessage = newMessage => {
-    setMessages(prevMessages => [...prevMessages, newMessage]);
-  };
+    socket.on('receive', newMessage => {
+      console.log(newMessage);
+      setMessages(prevMessages => [...prevMessages, {message: newMessage}]);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   const sendMessage = () => {
-    if (socket) {
-      socket.emit('chat message', input);
-    }
-    setInput('');
+    socket.emit('send', {room, message, username});
+    setMessage('');
+  };
+
+  const renderItem = ({item}) => {
+    const {message} = item?.message;
+    return (
+      <View
+        style={[
+          styles.messageContainer,
+          username == item?.message?.username
+            ? styles.sentMessage
+            : styles.receivedMessage,
+        ]}>
+        <Text
+          style={{
+            fontWeight: 'bold',
+          }}>{`from ${item?.message?.username}`}</Text>
+        <Text style={styles.message}>{message}</Text>
+      </View>
+    );
   };
 
   return (
     <View style={styles.container}>
       <FlatList
         data={messages}
-        renderItem={({item}) => <Text style={styles.message}>{item}</Text>}
+        renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={styles.messagesContainer}
       />
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Type a message..."
-          onChangeText={text => setInput(text)}
-          value={input}
+          onChangeText={text => setMessage(text)}
+          value={message}
           style={styles.input}
         />
         <Button title="Send" onPress={sendMessage} />
@@ -137,6 +76,7 @@ export const SingleChatScreen = () => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -146,12 +86,24 @@ const styles = StyleSheet.create({
   messagesContainer: {
     flexGrow: 1,
   },
-  message: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
+  messageContainer: {
     marginBottom: 8,
+    alignSelf: 'flex-start',
+    maxWidth: '60%',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  sentMessage: {
+    alignSelf: 'flex-end',
+    backgroundColor: '#DCF8C6',
+    borderRightColor: 'green',
+    borderRightWidth: 3,
+  },
+  receivedMessage: {
+    backgroundColor: '#FFFFFF',
+    borderLeftColor: 'red',
+    borderLeftWidth: 3,
   },
   inputContainer: {
     flexDirection: 'row',
