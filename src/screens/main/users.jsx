@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState} from 'react';
 import {
   View,
@@ -12,23 +11,21 @@ import {
 } from 'react-native';
 import io from 'socket.io-client';
 import {HeaderComponent} from '../../components';
+import {useDispatch, useSelector} from 'react-redux';
 export const UsersScreen = ({navigation}) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const dispatch = useDispatch();
+  const {rooms} = useSelector(state => state?.addRoom);
+
   let userArray = [
     {id: '1', name: 'Room 1'},
     {id: '1', name: 'Room 2'},
     {id: '3', name: 'Room 3'},
   ];
-  const socket = io('http://192.168.1.59:8000');
-  const [name, setName] = useState('');
-  const [room, setRoom] = useState('default');
-  const sendMessage = () => {
-    if (socket) {
-      socket.emit('new-user-joined', name);
-      socket.emit('join', room);
-    }
-    setName('');
-    // navigation.navigate('single', {name});
-  };
+
+  const [room, setRoom] = useState('');
+  console.log(room);
+
   const renderItem = ({item}) => {
     return (
       <TouchableOpacity onPress={() => navigation.navigate('addRoom')}>
@@ -46,6 +43,7 @@ export const UsersScreen = ({navigation}) => {
       </TouchableOpacity>
     );
   };
+
   return (
     <>
       <HeaderComponent userName={'Chat'} />
@@ -64,6 +62,7 @@ export const UsersScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   join: {
     display: 'flex',
+    flex: 1,
     alignItems: 'center',
     flexDirection: 'column',
   },
