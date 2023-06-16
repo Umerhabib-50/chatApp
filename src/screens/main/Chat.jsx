@@ -51,7 +51,6 @@ export const ChatScreen = ({navigation, route}) => {
       const {data} = await axios.get(
         `http://192.168.1.215:5000/room/singleroom/${room}`,
       );
-      console.log('get dat ', data);
       setMessages(data.messages);
     };
 
