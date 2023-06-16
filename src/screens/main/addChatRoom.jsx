@@ -16,6 +16,7 @@ export const AddChatRoomScreen = ({navigation}) => {
   const socket = io('http://192.168.1.59:8000');
   const [name, setName] = useState('');
   const [room, setRoom] = useState('default');
+  const [show, setShow] = useState(true);
   const sendMessage = () => {
     if (socket) {
       socket.emit('new-user-joined', name);
@@ -24,7 +25,8 @@ export const AddChatRoomScreen = ({navigation}) => {
     setName('');
     navigation.navigate('single', {name});
   };
-
+  const exitUser = () => {};
+  const newUser = () => {};
   return (
     <>
       <HeaderComponent
@@ -32,9 +34,10 @@ export const AddChatRoomScreen = ({navigation}) => {
         navigation={() => navigation.goBack()}
         imageSource={require('../../assets/backIcon.png')}
       />
+
       <View style={styles.join}>
         <View>
-          <Text style={{fontSize: 30}}>Join The Room </Text>
+          <Text style={{fontSize: 30}}>Join The Room As </Text>
         </View>
         <View style={styles.inputContainer}>
           <TextInput
@@ -54,10 +57,10 @@ export const AddChatRoomScreen = ({navigation}) => {
             marginTop: '3%',
           }}>
           <View>
-            <Button title="Existing User" />
+            <Button title="Existing User" onPress={exitUser} />
           </View>
           <View>
-            <Button title="New User" />
+            <Button title="New User" onPress={newUser} />
           </View>
         </View>
       </View>

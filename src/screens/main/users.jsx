@@ -18,12 +18,6 @@ export const UsersScreen = ({navigation}) => {
   const dispatch = useDispatch();
   const {rooms} = useSelector(state => state?.addRoom);
 
-  // let userArray = [
-  //   {id: '1', name: 'Room 1'},
-  //   {id: '1', name: 'Room 2'},
-  //   {id: '3', name: 'Room 3'},
-  // ];
-
   const [room, setRoom] = useState('');
 
   const renderItem = ({item}) => {
