@@ -2,14 +2,15 @@ import React, {useState} from 'react';
 import {View, Text, StyleSheet, TextInput, Button} from 'react-native';
 
 export const UserJoinRoomScreen = ({navigation, route}) => {
-  const {userType} = route.params;
+  // const {userType} = route.params;
   const [name, setName] = useState('');
   const sendMessage = () => {
     navigation.navigate('chats');
   };
   return (
     <View style={styles.main}>
-      <Text> Join Room as {userType} user</Text>
+      {/* <Text> Join Room as {userType} user</Text> */}
+      <Text> Join Room </Text>
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Join Room..."

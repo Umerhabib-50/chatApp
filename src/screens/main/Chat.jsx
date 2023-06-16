@@ -37,9 +37,17 @@ export const ChatScreen = ({navigation, route}) => {
       socket.disconnect();
     };
   }, []);
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    return () => {
+      console.log('api caleed');
+    };
+  }, []);
+
   const sendMessage = () => {
     socket.emit('send', {room, message, username});
     setMessage('');

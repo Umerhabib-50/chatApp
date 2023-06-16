@@ -28,7 +28,7 @@ export const RoomsScreen = ({navigation}) => {
   }, [getRoom]);
   const renderItem = ({item}) => {
     return (
-      <TouchableOpacity onPress={() => navigation.navigate('joinroomas')}>
+      <TouchableOpacity onPress={() => navigation.navigate('userjoinroom')}>
         <View style={styles.singleCard}>
           <View>
             <Image
