@@ -2,10 +2,12 @@ import React, {useState} from 'react';
 import {Alert, Modal, StyleSheet, Text, Pressable, View} from 'react-native';
 import {TextInput} from 'react-native-paper';
 import {useDispatch} from 'react-redux';
-import {addRoomAction} from '../../redux';
+import {createRoomAction} from '../../redux';
 
-export const CustomModal = ({modalVisible, setModalVisible, room, setRoom}) => {
+export const CustomModal = ({modalVisible, setModalVisible}) => {
   const dispatch = useDispatch();
+  const [roomName, setRoomName] = useState('');
+
   return (
     <View style={styles.centeredView}>
       <Modal
@@ -33,17 +35,16 @@ export const CustomModal = ({modalVisible, setModalVisible, room, setRoom}) => {
               }}
               placeholder="room"
               onChangeText={text => {
-                setRoom(text);
+                setRoomName(text);
               }}
-              value={room}
+              value={roomName}
             />
 
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => {
-                dispatch(addRoomAction(room));
+                dispatch(createRoomAction(roomName));
                 setModalVisible(!modalVisible);
-                setRoom('');
               }}>
               <Text style={styles.textStyle}>Create Room</Text>
             </Pressable>

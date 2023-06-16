@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -12,14 +12,20 @@ import {
 import io from 'socket.io-client';
 import {CustomModal, HeaderComponent} from '../../components';
 import {useDispatch, useSelector} from 'react-redux';
+import {getRoomAction} from '../../redux';
 
 export const RoomsScreen = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
-  const {rooms} = useSelector(state => state?.addRoom);
+  // const data = useSelector(state => state?.getRoom?.getRoom);
+  const {getRoom} = useSelector(state => state?.getRoom);
+  const [data, setData] = useState(getRoom);
+  // const {rooms} = useSelector(state => state?.addRoom);
 
-  const [room, setRoom] = useState('');
-
+  // const [room, setRoom] = useState('');
+  useEffect(() => {
+    dispatch(getRoomAction());
+  }, [getRoom]);
   const renderItem = ({item}) => {
     return (
       <TouchableOpacity onPress={() => navigation.navigate('joinroomas')}>
@@ -44,7 +50,7 @@ export const RoomsScreen = ({navigation}) => {
       <View style={styles.join}>
         <View style={styles.card}>
           <FlatList
-            data={rooms}
+            data={getRoom}
             renderItem={renderItem}
             keyExtractor={(item, index) => index.toString()}
           />
@@ -60,8 +66,8 @@ export const RoomsScreen = ({navigation}) => {
         <CustomModal
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
-          room={room}
-          setRoom={setRoom}
+          // room={room}
+          // setRoom={setRoom}
         />
       </View>
     </>

@@ -1,4 +1,13 @@
-import {GET_USERS_FAIL, GET_USERS_REQUEST} from '../constants';
+import {
+  CREATE_JOINROOM_FAIL,
+  CREATE_JOINROOM_REQUEST,
+  CREATE_JOINROOM_SUCCESS,
+  GET_ROOMS_FAIL,
+  GET_ROOMS_REQUEST,
+  GET_ROOMS_SUCCESS,
+  GET_USERS_FAIL,
+  GET_USERS_REQUEST,
+} from '../constants';
 
 //..............|| ALL USERS  REDUCER ||.............
 export const allUsersReducer = (state = {}, action) => {
@@ -14,10 +23,34 @@ export const allUsersReducer = (state = {}, action) => {
   }
 };
 
-export const addRoomReducer = (state = {rooms: []}, action) => {
+// export const addRoomReducer = (state = {rooms: []}, action) => {
+//   switch (action.type) {
+//     case 'ADD_ROOM':
+//       return {rooms: [...state.rooms, {name: action.payload}]};
+//     default:
+//       return state;
+//   }
+// };
+export const createRoomReducer = (state = {}, action) => {
   switch (action.type) {
-    case 'ADD_ROOM':
-      return {rooms: [...state.rooms, {name: action.payload}]};
+    case CREATE_JOINROOM_REQUEST:
+      return {loading: true};
+    case CREATE_JOINROOM_SUCCESS:
+      return {loading: false, createRoom: action.payload};
+    case CREATE_JOINROOM_FAIL:
+      return {loading: false, error: action.payload};
+    default:
+      return state;
+  }
+};
+export const getRoomReducer = (state = {}, action) => {
+  switch (action.type) {
+    case GET_ROOMS_REQUEST:
+      return {loading: true};
+    case GET_ROOMS_SUCCESS:
+      return {loading: false, getRoom: action.payload};
+    case GET_ROOMS_FAIL:
+      return {loading: false, error: action.payload};
     default:
       return state;
   }

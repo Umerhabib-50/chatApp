@@ -17,7 +17,7 @@ export const MainNavigator = () => {
       }}>
       <MainStack.Screen name="rooms" component={RoomsScreen} />
       <MainStack.Screen name="joinroomas" component={JoinRoomAsScreen} />
-      <MainStack.Screen name="userjoinroom" component={UserJoinRoomScreen} />
+      {/* <MainStack.Screen name="userjoinroom" component={UserJoinRoomScreen} /> */}
       <MainStack.Screen name="chats" component={ChatScreen} />
     </MainStack.Navigator>
   );
