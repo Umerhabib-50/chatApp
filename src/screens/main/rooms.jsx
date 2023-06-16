@@ -17,15 +17,17 @@ import {getRoomAction} from '../../redux';
 export const RoomsScreen = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
-  // const data = useSelector(state => state?.getRoom?.getRoom);
-  const {getRoom} = useSelector(state => state?.getRoom);
-  const [data, setData] = useState(getRoom);
-  // const {rooms} = useSelector(state => state?.addRoom);
+  const {getRoom, success} = useSelector(state => state?.getRoom);
+  const [data, setData] = useState([]);
 
-  // const [room, setRoom] = useState('');
   useEffect(() => {
     dispatch(getRoomAction());
+  }, []);
+
+  useEffect(() => {
+    setData(getRoom);
   }, [getRoom]);
+
   const renderItem = ({item}) => {
     return (
       <TouchableOpacity onPress={() => navigation.navigate('userjoinroom')}>
@@ -50,7 +52,7 @@ export const RoomsScreen = ({navigation}) => {
       <View style={styles.join}>
         <View style={styles.card}>
           <FlatList
-            data={getRoom}
+            data={data}
             renderItem={renderItem}
             keyExtractor={(item, index) => index.toString()}
           />
@@ -66,8 +68,8 @@ export const RoomsScreen = ({navigation}) => {
         <CustomModal
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
-          // room={room}
-          // setRoom={setRoom}
+          data={data}
+          setData={setData}
         />
       </View>
     </>
