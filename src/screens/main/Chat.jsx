@@ -57,14 +57,14 @@ export const ChatScreen = ({navigation, route}) => {
     getMessages();
   }, []);
 
-  useEffect(() => {
-    return async () => {
-      await axios.post('http://192.168.1.215:5000/room/messages', {
-        room,
-        messages,
-      });
-    };
-  }, [messages]);
+  // useEffect(() => {
+  //   return async () => {
+  //     await axios.post('http://192.168.1.215:5000/room/messages', {
+  //       room,
+  //       messages,
+  //     });
+  //   };
+  // }, [messages]);
 
   const sendMessage = () => {
     socket.emit('send', {room, message, username});
