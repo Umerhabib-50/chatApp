@@ -11,12 +11,12 @@ import io from 'socket.io-client';
 import {HeaderComponent} from '../../components';
 
 export const ChatScreen = ({navigation, route}) => {
-  const username = route?.params?.name;
-  const socket = io('http://192.168.1.59:8000');
+  const {username, roomname} = route?.params;
+  const socket = io('http://192.168.1.215:5000');
   const [messages, setMessages] = useState([]);
   const flatListRef = useRef(null);
   const [message, setMessage] = useState();
-  const [room, setRoom] = useState('default');
+  const [room, setRoom] = useState(roomname);
   const scrollToBottom = () => {
     if (flatListRef.current) {
       flatListRef.current.scrollToEnd({animated: true});
@@ -75,7 +75,7 @@ export const ChatScreen = ({navigation, route}) => {
   return (
     <>
       <HeaderComponent
-        userName={'Rehan'}
+        userName={roomname}
         navigation={() => navigation.navigate('rooms')}
         imageSource={require('../../assets/backIcon.png')}
       />

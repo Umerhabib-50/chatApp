@@ -17,7 +17,7 @@ import {getRoomAction} from '../../redux';
 export const RoomsScreen = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
-  const {getRoom, success} = useSelector(state => state?.getRoom);
+  const {getRoom} = useSelector(state => state?.getRoom);
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -30,7 +30,10 @@ export const RoomsScreen = ({navigation}) => {
 
   const renderItem = ({item}) => {
     return (
-      <TouchableOpacity onPress={() => navigation.navigate('userjoinroom')}>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('userjoinroom', {roomname: item.name})
+        }>
         <View style={styles.singleCard}>
           <View>
             <Image

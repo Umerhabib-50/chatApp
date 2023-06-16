@@ -62,7 +62,6 @@ export const getRoomAction = () => async dispatch => {
       type: GET_ROOMS_REQUEST,
     });
     const {data} = await axios.get(`http://192.168.1.215:5000/room/allroom`);
-    console.log('data from api', data);
     dispatch({
       type: GET_ROOMS_SUCCESS,
       payload: data,

@@ -57,7 +57,7 @@ export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
               style={[styles.button, styles.buttonClose]}
               onPress={() => {
                 // dispatch(createRoomAction(roomName));
-                setModalVisible(!modalVisible);
+                // // setModalVisible(!modalVisible);
                 // dispatch(getRoomAction());
                 createRoom();
               }}>
