@@ -1,6 +1,11 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {AddChatRoomScreen, SingleChatScreen, UsersScreen} from '../screens';
+import {
+  ChatScreen,
+  JoinRoomAsScreen,
+  RoomsScreen,
+  UserJoinRoomScreen,
+} from '../screens';
 
 const MainStack = createNativeStackNavigator();
 
@@ -10,9 +15,10 @@ export const MainNavigator = () => {
       screenOptions={{
         headerShown: false,
       }}>
-      <MainStack.Screen name="users" component={UsersScreen} />
-      <MainStack.Screen name="addRoom" component={AddChatRoomScreen} />
-      <MainStack.Screen name="single" component={SingleChatScreen} />
+      <MainStack.Screen name="rooms" component={RoomsScreen} />
+      <MainStack.Screen name="joinroomas" component={JoinRoomAsScreen} />
+      <MainStack.Screen name="userjoinroom" component={UserJoinRoomScreen} />
+      <MainStack.Screen name="chats" component={ChatScreen} />
     </MainStack.Navigator>
   );
 };

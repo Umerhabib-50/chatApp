@@ -13,7 +13,7 @@ import io from 'socket.io-client';
 import {CustomModal, HeaderComponent} from '../../components';
 import {useDispatch, useSelector} from 'react-redux';
 
-export const UsersScreen = ({navigation}) => {
+export const RoomsScreen = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   const {rooms} = useSelector(state => state?.addRoom);
@@ -22,7 +22,7 @@ export const UsersScreen = ({navigation}) => {
 
   const renderItem = ({item}) => {
     return (
-      <TouchableOpacity onPress={() => navigation.navigate('addRoom')}>
+      <TouchableOpacity onPress={() => navigation.navigate('joinroomas')}>
         <View style={styles.singleCard}>
           <View>
             <Image
@@ -40,7 +40,7 @@ export const UsersScreen = ({navigation}) => {
 
   return (
     <>
-      <HeaderComponent userName={'Chat'} />
+      <HeaderComponent userName={'Rooms'} />
       <View style={styles.join}>
         <View style={styles.card}>
           <FlatList
