@@ -17,7 +17,8 @@ import {getRoomAction} from '../../redux';
 export const RoomsScreen = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
-  const {getRoom} = useSelector(state => state?.getRoom);
+  const {getRoom, error} = useSelector(state => state?.getRoom);
+  console.log('error', error);
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -92,7 +93,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 8,
     padding: 8,
-    // marginTop: '2%',
   },
   input: {
     marginRight: 8,
@@ -105,7 +105,6 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#FFFFFF',
     width: '100%',
-    // marginTop: '3%',
   },
   text: {
     fontSize: 20,
