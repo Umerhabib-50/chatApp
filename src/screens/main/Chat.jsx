@@ -6,21 +6,59 @@ import {
   Text,
   FlatList,
   StyleSheet,
+  Image,
+  Pressable,
 } from 'react-native';
 import io from 'socket.io-client';
 import {HeaderComponent} from '../../components';
 import axios from 'axios';
+import {Swipeable, GestureHandlerRootView} from 'react-native-gesture-handler';
+import {IconButton, MD3Colors} from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+const Separator = () => <View style={styles.itemSeparator} />;
+
+const LeftSwipeActions = () => {
+  return (
+    <View
+      style={{
+        flex: 1,
+        // backgroundColor: '#ccffbd',
+        justifyContent: 'center',
+      }}>
+      <Text style={styles.swipeActionText}></Text>
+    </View>
+  );
+};
+
+const RightSwipeActions = () => {
+  return (
+    <View
+      style={{
+        flex: 1,
+        // backgroundColor: '#ff8303',
+        justifyContent: 'center',
+        alignItems: 'flex-end',
+      }}>
+      <Text style={styles.swipeActionText}></Text>
+    </View>
+  );
+};
 
 export const ChatScreen = ({navigation, route}) => {
   const {username, roomname} = route?.params;
   const socket = io('http://192.168.1.215:5000');
   const [messages, setMessages] = useState([]);
-  console.log('messages', messages);
-  messages;
-
   const flatListRef = useRef(null);
+  // const messageRefs = useRef([]);
+  const swipeableRefs = useRef([]);
   const [message, setMessage] = useState();
   const [room, setRoom] = useState(roomname);
+  const [showreply, setShowReply] = useState(false);
+  const [replyTo, setReplyTo] = useState({
+    message: '',
+    username: '',
+  });
+
   const scrollToBottom = () => {
     if (flatListRef.current) {
       flatListRef.current.scrollToEnd({animated: true});
@@ -28,13 +66,11 @@ export const ChatScreen = ({navigation, route}) => {
   };
   useEffect(() => {
     socket.on('connect', () => {
-      // console.log('Connected to server');
       socket.emit('join', room);
     });
 
     socket.on('receive', newMessage => {
-      // console.log(newMessage);
-      setMessages(prevMessages => [...prevMessages, {message: newMessage}]);
+      setMessages(prevMessages => [...prevMessages, newMessage]);
     });
 
     return () => {
@@ -57,36 +93,53 @@ export const ChatScreen = ({navigation, route}) => {
     getMessages();
   }, []);
 
-  // useEffect(() => {
-  //   return async () => {
-  //     await axios.post('http://192.168.1.215:5000/room/messages', {
-  //       room,
-  //       messages,
-  //     });
-  //   };
-  // }, [messages]);
-
   const sendMessage = () => {
-    socket.emit('send', {room, message, username});
+    const repliedTo = showreply ? replyTo : undefined;
+    socket.emit('send', {room, message, username, repliedTo});
     setMessage('');
+    setShowReply(false);
   };
 
-  const renderItem = ({item}) => {
-    const {message} = item?.message;
+  const closeSwipeable = index => {
+    if (swipeableRefs.current[index]) {
+      swipeableRefs.current[index].close();
+    }
+  };
+
+  const renderItem = ({item, index}) => {
     return (
-      <View
-        style={[
-          styles.messageContainer,
-          username == item?.message?.username
-            ? styles.sentMessage
-            : styles.receivedMessage,
-        ]}>
-        <Text
-          style={{
-            fontWeight: 'bold',
-          }}>{`from ${item?.message?.username}`}</Text>
-        <Text style={styles.message}>{message}</Text>
-      </View>
+      <GestureHandlerRootView>
+        <Swipeable
+          ref={ref => (swipeableRefs.current[index] = ref)}
+          renderLeftActions={LeftSwipeActions}
+          renderRightActions={RightSwipeActions}
+          onSwipeableOpen={() => {
+            setShowReply(true);
+            setReplyTo(item);
+            closeSwipeable(index);
+          }}>
+          <View
+            style={[
+              styles.messageContainer,
+              username == item?.username
+                ? styles.sentMessage
+                : styles.receivedMessage,
+            ]}>
+            {item?.repliedTo && (
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  padding: 5,
+                }}>
+                <Text>{item.repliedTo.username}</Text>
+                <Text>{item.repliedTo.message}</Text>
+              </View>
+            )}
+            <Text style={styles.messageAuthor}>{`from ${item?.username}`}</Text>
+            <Text style={styles.messageText}>{item?.message}</Text>
+          </View>
+        </Swipeable>
+      </GestureHandlerRootView>
     );
   };
 
@@ -106,7 +159,40 @@ export const ChatScreen = ({navigation, route}) => {
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={styles.messagesContainer}
           showsVerticalScrollIndicator={false}
+          ItemSeparatorComponent={() => <Separator />}
         />
+        {showreply && (
+          <View
+            style={{
+              padding: 10,
+              width: '100%',
+              backgroundColor: 'lightgray',
+              marginVertical: 5,
+              position: 'relative',
+            }}>
+            {/* <View style={{position: 'absolute', top: 5, right: 10}}> */}
+            <Pressable
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'flex-end',
+              }}
+              onPress={() => {
+                setShowReply(false);
+              }}>
+              <Image
+                style={{height: 25, width: 25}}
+                source={require('../../assets/cross.png')}
+              />
+            </Pressable>
+            {/* </View> */}
+            <View style={{position: 'absolute', left: 10, top: 5}}>
+              <Text style={{margin: 1}}>{replyTo.username}</Text>
+              <Text style={{margin: 1}}>{replyTo.message}</Text>
+            </View>
+          </View>
+        )}
+
         <View style={styles.inputContainer}>
           <TextInput
             placeholder="Type a message..."

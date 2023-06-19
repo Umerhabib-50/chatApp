@@ -50,7 +50,7 @@ export const RoomsScreen = ({navigation}) => {
           <View>
             <Image
               source={require('../../assets/pic3.png')}
-              style={{width: 45, height: 45, borderRadius: 50}}
+              style={{width: 30, height: 30}}
             />
           </View>
           <View>
@@ -110,52 +110,43 @@ export const RoomsScreen = ({navigation}) => {
             modalVisible={modalVisible}
             setModalVisible={setModalVisible}
             data={data}
-            setData={setData}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => index.toString()}
           />
         </View>
+        <View style={{position: 'absolute', top: '90%'}}>
+          <Button
+            title="Create Room"
+            onPress={() => {
+              setModalVisible(true);
+            }}
+          />
+        </View>
+        <CustomModal
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          data={data}
+          setData={setData}
+        />
       </View>
     </>
   );
 };
 const styles = StyleSheet.create({
-  chatScreen: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    flexDirection: 'column',
-    height: '100%',
-  },
-  header: {
-    height: '15%',
-    backgroundColor: '#006257',
-    display: 'flex',
-    justifyContent: 'space-evenly',
-  },
   join: {
-    height: '85%',
     display: 'flex',
     flex: 1,
     alignItems: 'center',
     flexDirection: 'column',
-    backgroundColor: '#FFFFFF',
-  },
-  bottomBar: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    paddingHorizontal: 20,
-    marginTop: '1%',
-  },
-  bottomText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 18,
   },
   inputContainer: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#FFFFFF',
     borderRadius: 8,
     padding: 8,
+    // marginTop: '2%',
   },
   input: {
     marginRight: 8,
@@ -166,18 +157,19 @@ const styles = StyleSheet.create({
   },
 
   card: {
-    // backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFFFFF',
     width: '100%',
+    // marginTop: '3%',
   },
   text: {
-    fontSize: 19,
-    marginLeft: 8,
-    color: '#000000',
+    fontSize: 20,
+    marginLeft: 17,
+    fontWeight: 'bold',
   },
   singleCard: {
     display: 'flex',
     flexDirection: 'row',
-    padding: 10,
+    padding: 15,
     alignItems: 'center',
     // marginLeft: 9,
     // borderBottomWidth: 1,
