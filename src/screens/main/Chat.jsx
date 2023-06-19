@@ -107,6 +107,7 @@ export const ChatScreen = ({navigation, route}) => {
   };
 
   const renderItem = ({item, index}) => {
+    console.log('item date', item);
     return (
       <GestureHandlerRootView>
         <Swipeable
@@ -125,18 +126,29 @@ export const ChatScreen = ({navigation, route}) => {
                 ? styles.sentMessage
                 : styles.receivedMessage,
             ]}>
+            {username == item?.username ? (
+              ''
+            ) : (
+              <Text style={{fontWeight: 'bold'}}>{item?.username}</Text>
+            )}
             {item?.repliedTo && (
               <View
-                style={{
-                  backgroundColor: 'lightgray',
-                  padding: 5,
-                }}>
-                <Text>{item.repliedTo.username}</Text>
+                style={[
+                  styles.reply,
+                  username == item?.username
+                    ? styles.sentReply
+                    : styles.receivedReply,
+                ]}>
+                <Text style={{fontWeight: 'bold'}}>
+                  {item.repliedTo.username}
+                </Text>
                 <Text>{item.repliedTo.message}</Text>
               </View>
             )}
-            <Text style={styles.messageAuthor}>{item?.username}</Text>
-            <Text style={styles.messageText}>{item?.message}</Text>
+            <Text>{item?.message}</Text>
+            <Text style={{textAlign: 'right'}}>
+              {item?.createdAt?.substr(0, 10)}
+            </Text>
           </View>
         </Swipeable>
       </GestureHandlerRootView>
@@ -219,20 +231,17 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     alignSelf: 'flex-start',
     maxWidth: '60%',
+    minWidth: '40%',
     borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
   },
   sentMessage: {
     alignSelf: 'flex-end',
     backgroundColor: '#DCF8C6',
-    borderRightColor: 'green',
-    borderRightWidth: 3,
   },
   receivedMessage: {
     backgroundColor: '#FFFFFF',
-    borderLeftColor: 'red',
-    borderLeftWidth: 3,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -248,5 +257,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     backgroundColor: '#F0F0F0',
     borderRadius: 4,
+  },
+  reply: {
+    paddingHorizontal: 7,
+    paddingVertical: 5,
+    borderRadius: 5,
+    marginVertical: 5,
+  },
+  sentReply: {
+    borderRightColor: 'green',
+    borderRightWidth: 3,
+    backgroundColor: '#c7f7ab',
+  },
+  receivedReply: {
+    borderLeftColor: 'red',
+    borderLeftWidth: 3,
+    backgroundColor: '#f2f2f2',
   },
 });
