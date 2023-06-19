@@ -1,14 +1,12 @@
 import React, {useState} from 'react';
 import {Alert, Modal, StyleSheet, Text, Pressable, View} from 'react-native';
 import {TextInput} from 'react-native-paper';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {createRoomAction, getRoomAction} from '../../redux';
 import axios from 'axios';
-
 export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
   // const dispatch = useDispatch();
   const [roomName, setRoomName] = useState('');
-
   const createRoom = async () => {
     const {data} = await axios.post(
       `http://192.168.1.215:5000/room/createroom`,
@@ -35,9 +33,9 @@ export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
           onPress={() => {
             setModalVisible(!modalVisible);
           }}>
-          {/* <View style={styles.centeredView}> */}
+          {/* <View style={styles.centeredView}>  */}
           <Pressable style={styles.modalView} onPress={() => {}}>
-            {/* <View style={styles.modalView}> */}
+            {/* <View style={styles.modalView}>  */}
             <Text style={styles.modalText}>Type Room Name</Text>
 
             <TextInput
@@ -65,8 +63,8 @@ export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
               }}>
               <Text style={styles.textStyle}>Create Room</Text>
             </Pressable>
-            {/* </View> */}
-            {/* </View> */}
+            {/* </View> 
+            </View>  */}
           </Pressable>
         </Pressable>
       </Modal>

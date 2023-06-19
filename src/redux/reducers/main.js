@@ -34,11 +34,11 @@ export const allUsersReducer = (state = {}, action) => {
 export const createRoomReducer = (state = {}, action) => {
   switch (action.type) {
     case CREATE_JOINROOM_REQUEST:
-      return {loading: true};
+      return {loading: true, success: false};
     case CREATE_JOINROOM_SUCCESS:
-      return {loading: false, createRoom: action.payload};
+      return {loading: false, createRoom: action.payload, success: true};
     case CREATE_JOINROOM_FAIL:
-      return {loading: false, error: action.payload};
+      return {loading: false, error: action.payload, success: false};
     default:
       return state;
   }
