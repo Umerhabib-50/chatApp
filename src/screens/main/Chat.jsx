@@ -128,21 +128,20 @@ export const ChatScreen = ({navigation, route}) => {
             {item?.repliedTo && (
               <View
                 style={{
-                  backgroundColor: 'white',
+                  backgroundColor: 'lightgray',
                   padding: 5,
                 }}>
                 <Text>{item.repliedTo.username}</Text>
                 <Text>{item.repliedTo.message}</Text>
               </View>
             )}
-            <Text style={styles.messageAuthor}>{`from ${item?.username}`}</Text>
+            <Text style={styles.messageAuthor}>{item?.username}</Text>
             <Text style={styles.messageText}>{item?.message}</Text>
           </View>
         </Swipeable>
       </GestureHandlerRootView>
     );
   };
-
   return (
     <>
       <HeaderComponent

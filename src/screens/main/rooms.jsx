@@ -21,7 +21,7 @@ export const RoomsScreen = ({navigation}) => {
   const {getRoom, error} = useSelector(state => state?.getRoom);
   const [data, setData] = useState([]);
   const userName = useSelector(state => state?.userLogin?.userInfo);
-  const name = userName?.user?.username;
+  const username = userName?.user?.username;
   useEffect(() => {
     dispatch(getRoomAction());
   }, []);
@@ -33,9 +33,8 @@ export const RoomsScreen = ({navigation}) => {
   const renderItem = ({item, index}) => {
     return (
       <TouchableOpacity
-        onPress={
-          () => navigation.navigate('chats', {roomname: item.name, name})
-          // navigation.navigate('userjoinroom', {roomname: item.name, name})
+        onPress={() =>
+          navigation.navigate('chats', {roomname: item?.name, username})
         }>
         <View
           style={[
@@ -50,7 +49,7 @@ export const RoomsScreen = ({navigation}) => {
           <View>
             <Image
               source={require('../../assets/pic3.png')}
-              style={{width: 30, height: 30}}
+              style={{width: 45, height: 45, borderRadius: 50}}
             />
           </View>
           <View>
@@ -110,43 +109,52 @@ export const RoomsScreen = ({navigation}) => {
             modalVisible={modalVisible}
             setModalVisible={setModalVisible}
             data={data}
-            renderItem={renderItem}
-            keyExtractor={(item, index) => index.toString()}
+            setData={setData}
           />
         </View>
-        <View style={{position: 'absolute', top: '90%'}}>
-          <Button
-            title="Create Room"
-            onPress={() => {
-              setModalVisible(true);
-            }}
-          />
-        </View>
-        <CustomModal
-          modalVisible={modalVisible}
-          setModalVisible={setModalVisible}
-          data={data}
-          setData={setData}
-        />
       </View>
     </>
   );
 };
 const styles = StyleSheet.create({
+  chatScreen: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    flexDirection: 'column',
+    height: '100%',
+  },
+  header: {
+    height: '15%',
+    backgroundColor: '#006257',
+    display: 'flex',
+    justifyContent: 'space-evenly',
+  },
   join: {
+    height: '85%',
     display: 'flex',
     flex: 1,
     alignItems: 'center',
     flexDirection: 'column',
+    backgroundColor: '#FFFFFF',
+  },
+  bottomBar: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    marginTop: '1%',
+  },
+  bottomText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 18,
   },
   inputContainer: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
     borderRadius: 8,
     padding: 8,
-    // marginTop: '2%',
   },
   input: {
     marginRight: 8,
@@ -157,19 +165,18 @@ const styles = StyleSheet.create({
   },
 
   card: {
-    backgroundColor: '#FFFFFF',
+    // backgroundColor: '#FFFFFF',
     width: '100%',
-    // marginTop: '3%',
   },
   text: {
-    fontSize: 20,
-    marginLeft: 17,
-    fontWeight: 'bold',
+    fontSize: 19,
+    marginLeft: 8,
+    color: '#000000',
   },
   singleCard: {
     display: 'flex',
     flexDirection: 'row',
-    padding: 15,
+    padding: 10,
     alignItems: 'center',
     // marginLeft: 9,
     // borderBottomWidth: 1,
