@@ -57,9 +57,11 @@ export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
               style={[styles.button, styles.buttonClose]}
               onPress={() => {
                 // dispatch(createRoomAction(roomName));
-                // // setModalVisible(!modalVisible);
+
                 // dispatch(getRoomAction());
                 createRoom();
+                setModalVisible(!modalVisible);
+                setRoomName('');
               }}>
               <Text style={styles.textStyle}>Create Room</Text>
             </Pressable>

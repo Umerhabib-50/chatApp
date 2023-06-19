@@ -15,9 +15,6 @@ export const ChatScreen = ({navigation, route}) => {
   const {username, roomname} = route?.params;
   const socket = io('http://192.168.1.215:5000');
   const [messages, setMessages] = useState([]);
-  console.log('messages', messages);
-  messages;
-
   const flatListRef = useRef(null);
   const [message, setMessage] = useState();
   const [room, setRoom] = useState(roomname);
@@ -57,14 +54,14 @@ export const ChatScreen = ({navigation, route}) => {
     getMessages();
   }, []);
 
-  useEffect(() => {
-    return async () => {
-      await axios.post('http://192.168.1.215:5000/room/messages', {
-        room,
-        messages,
-      });
-    };
-  }, [messages]);
+  // useEffect(() => {
+  //   return async () => {
+  //     await axios.post('http://192.168.1.215:5000/room/messages', {
+  //       room,
+  //       messages,
+  //     });
+  //   };
+  // }, [messages]);
 
   const sendMessage = () => {
     socket.emit('send', {room, message, username});
