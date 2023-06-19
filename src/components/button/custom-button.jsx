@@ -8,8 +8,15 @@ export const CustomButton = ({
 }) => {
   return (
     <>
-      <Button style={{backgroundColor: '#87ceeb'}} onPress={onPress}>
-        <Text variant={'titleMedium'}>{title}</Text>
+      <Button
+        style={{
+          backgroundColor: 'white',
+          borderRadius: 4,
+        }}
+        onPress={onPress}>
+        <Text variant={'titleMedium'} style={{color: '#006257'}}>
+          {title}
+        </Text>
       </Button>
     </>
   );

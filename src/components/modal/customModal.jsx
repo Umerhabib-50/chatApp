@@ -4,6 +4,7 @@ import {TextInput} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 import {createRoomAction, getRoomAction} from '../../redux';
 import axios from 'axios';
+import {CustomButton} from '../button/custom-button';
 export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
   // const dispatch = useDispatch();
   const [roomName, setRoomName] = useState('');
@@ -39,10 +40,11 @@ export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
             <Text style={styles.modalText}>Type Room Name</Text>
 
             <TextInput
+              placeholderTextColor="gray"
+              mode="outlined"
               style={{
-                borderWidth: 0.5,
+                borderColor: 'white',
                 width: '80%',
-                backgroundColor: 'white',
               }}
               placeholder="room"
               onChangeText={text => {
@@ -61,7 +63,8 @@ export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
                 setModalVisible(!modalVisible);
                 setRoomName('');
               }}>
-              <Text style={styles.textStyle}>Create Room</Text>
+              <CustomButton title={'Create Room'} />
+              {/* <Text style={styles.textStyle}>Create Room</Text> */}
             </Pressable>
             {/* </View> 
             </View>  */}
@@ -81,7 +84,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     width: '80%',
-    backgroundColor: 'white',
+    backgroundColor: '#006257',
     borderRadius: 20,
     height: '40%',
     display: 'flex',
@@ -89,17 +92,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-    width: '40%',
+    // borderRadius: 20,
+    // padding: 10,
+    // elevation: 2,
+    // width: '40%',
   },
   buttonOpen: {
     backgroundColor: '#F194FF',
   },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
+  // buttonClose: {
+  //   backgroundColor: '#2196F3',
+  // },
   textStyle: {
     color: 'white',
     fontWeight: 'bold',
@@ -107,5 +110,8 @@ const styles = StyleSheet.create({
   },
   modalText: {
     textAlign: 'center',
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 18,
   },
 });

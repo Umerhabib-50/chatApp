@@ -24,7 +24,6 @@ export const userLoginAction = userData => async dispatch => {
       'http://192.168.1.215:5000/user/login',
       userData,
     );
-    console.log('userLoginAction', data);
 
     dispatch({
       type: USER_LOGIN_SUCCESS,
