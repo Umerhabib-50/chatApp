@@ -108,7 +108,7 @@ export const ChatScreen = ({navigation, route}) => {
 
   const renderItem = ({item, index}) => {
     return (
-      <GestureHandlerRootView>
+      <GestureHandlerRootView style={{maxWidth: '100%'}}>
         <Swipeable
           ref={ref => (swipeableRefs.current[index] = ref)}
           renderLeftActions={LeftSwipeActions}
