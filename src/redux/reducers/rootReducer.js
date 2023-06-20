@@ -4,6 +4,7 @@ import {
   addRoomReducer,
   allUsersReducer,
   createRoomReducer,
+  deleteMsgReducer,
   getRoomReducer,
 } from './main';
 
@@ -14,4 +15,5 @@ export default combineReducers({
   // addRoom: addRoomReducer,
   createRoom: createRoomReducer,
   getRoom: getRoomReducer,
+  deleteMsg: deleteMsgReducer,
 });

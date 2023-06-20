@@ -13,28 +13,38 @@ import io from 'socket.io-client';
 import {CustomModal, HeaderComponent} from '../../components';
 import {useDispatch, useSelector} from 'react-redux';
 import {getRoomAction} from '../../redux';
-import {IconButton} from 'react-native-paper';
+import {ActivityIndicator, IconButton} from 'react-native-paper';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 export const RoomsScreen = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   const {getRoom, error} = useSelector(state => state?.getRoom);
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const userName = useSelector(state => state?.userLogin?.userInfo);
   const username = userName?.user?.username;
   useEffect(() => {
+    setLoading(true);
     dispatch(getRoomAction());
+    setLoading(false);
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     setData(getRoom);
+    setLoading(false);
   }, [getRoom]);
 
   const renderItem = ({item, index}) => {
     return (
       <TouchableOpacity
         onPress={() =>
-          navigation.navigate('chats', {roomname: item?.name, username})
+          // navigation.navigate('userjoinroom')
+          navigation.navigate('chats', {
+            roomname: item?.name,
+            username,
+            roomId: item?._id,
+          })
         }>
         <View
           style={[
@@ -84,13 +94,28 @@ export const RoomsScreen = ({navigation}) => {
         </View>
         <View style={styles.join}>
           <View style={styles.card}>
-            <FlatList
-              data={data}
-              renderItem={renderItem}
-              keyExtractor={(item, index) => index.toString()}
-            />
+            {loading ? (
+              <View
+                style={{
+                  height: '92%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <ActivityIndicator
+                  size={'large'}
+                  animating={true}
+                  color={'#006257'}
+                />
+              </View>
+            ) : (
+              <FlatList
+                data={data}
+                renderItem={renderItem}
+                keyExtractor={(item, index) => index.toString()}
+              />
+            )}
           </View>
-          <View style={{position: 'absolute', top: '80%', right: '6%'}}>
+          <View style={{position: 'absolute', top: '86%', right: '3%'}}>
             <IconButton
               icon={() => (
                 <Image

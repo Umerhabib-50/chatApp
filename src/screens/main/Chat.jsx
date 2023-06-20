@@ -8,13 +8,17 @@ import {
   StyleSheet,
   Image,
   Pressable,
+  TouchableOpacity,
+  Alert,
 } from 'react-native';
 import io from 'socket.io-client';
 import {HeaderComponent} from '../../components';
 import axios from 'axios';
 import {Swipeable, GestureHandlerRootView} from 'react-native-gesture-handler';
-import {IconButton, MD3Colors} from 'react-native-paper';
+import {ActivityIndicator, IconButton, MD3Colors} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useDispatch, useSelector} from 'react-redux';
+import {deleteMsgAction} from '../../redux';
 const Separator = () => <View style={styles.itemSeparator} />;
 
 const LeftSwipeActions = () => {
@@ -35,7 +39,6 @@ const RightSwipeActions = () => {
     <View
       style={{
         flex: 1,
-        // backgroundColor: '#ff8303',
         justifyContent: 'center',
         alignItems: 'flex-end',
       }}>
@@ -45,15 +48,16 @@ const RightSwipeActions = () => {
 };
 
 export const ChatScreen = ({navigation, route}) => {
-  const {username, roomname} = route?.params;
+  const {username, roomname, roomId} = route?.params;
   const socket = io('http://192.168.1.215:5000');
   const [messages, setMessages] = useState([]);
   const flatListRef = useRef(null);
-  // const messageRefs = useRef([]);
   const swipeableRefs = useRef([]);
   const [message, setMessage] = useState();
   const [room, setRoom] = useState(roomname);
   const [showreply, setShowReply] = useState(false);
+  const dispatch = useDispatch();
+  const {deleteMsg, loading} = useSelector(state => state?.deleteMsg);
   const [replyTo, setReplyTo] = useState({
     message: '',
     username: '',
@@ -91,23 +95,43 @@ export const ChatScreen = ({navigation, route}) => {
     };
 
     getMessages();
-  }, []);
+  }, [deleteMsg]);
 
+  // const sendMessage = () => {
+  //   const repliedTo = showreply ? replyTo : undefined;
+  //   socket.emit('send', {room, message, username, repliedTo});
+  //   setMessage('');
+  //   setShowReply(false);
+  // };
   const sendMessage = () => {
-    const repliedTo = showreply ? replyTo : undefined;
-    socket.emit('send', {room, message, username, repliedTo});
-    setMessage('');
-    setShowReply(false);
+    if (message && message.trim().length > 0) {
+      const repliedTo = showreply ? replyTo : undefined;
+      socket.emit('send', {room, message, username, repliedTo});
+      setMessage('');
+      setShowReply(false);
+    }
   };
-
   const closeSwipeable = index => {
     if (swipeableRefs.current[index]) {
       swipeableRefs.current[index].close();
     }
   };
-
+  const handleLongPress = id => {
+    Alert.alert('Delete Item', 'Are you sure you want to delete this item?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: () => {
+          dispatch(deleteMsgAction(roomId, id));
+        },
+      },
+    ]);
+  };
   const renderItem = ({item, index}) => {
-    console.log('item date', item);
     return (
       <GestureHandlerRootView>
         <Swipeable
@@ -119,99 +143,148 @@ export const ChatScreen = ({navigation, route}) => {
             setReplyTo(item);
             closeSwipeable(index);
           }}>
-          <View
-            style={[
-              styles.messageContainer,
-              username == item?.username
-                ? styles.sentMessage
-                : styles.receivedMessage,
-            ]}>
-            {username == item?.username ? (
-              ''
-            ) : (
-              <Text style={{fontWeight: 'bold'}}>{item?.username}</Text>
-            )}
-            {item?.repliedTo && (
+          <TouchableOpacity onLongPress={() => handleLongPress(item?._id)}>
+            <>
               <View
                 style={[
-                  styles.reply,
+                  styles.messageContainer,
                   username == item?.username
-                    ? styles.sentReply
-                    : styles.receivedReply,
+                    ? styles.sentMessage
+                    : styles.receivedMessage,
                 ]}>
-                <Text style={{fontWeight: 'bold'}}>
-                  {item.repliedTo.username}
+                {username == item?.username ? (
+                  ''
+                ) : (
+                  <Text style={{fontWeight: 'bold'}}>{item?.username}</Text>
+                )}
+                {item?.repliedTo && (
+                  <View
+                    style={[
+                      styles.reply,
+                      username == item?.username
+                        ? styles.sentReply
+                        : styles.receivedReply,
+                    ]}>
+                    <Text style={{fontWeight: 'bold'}}>
+                      {item.repliedTo.username}
+                    </Text>
+                    <Text>{item.repliedTo.message}</Text>
+                  </View>
+                )}
+                <Text>{item?.message}</Text>
+                <Text style={{textAlign: 'right'}}>
+                  {item?.createdAt?.substr(0, 10)}
                 </Text>
-                <Text>{item.repliedTo.message}</Text>
               </View>
-            )}
-            <Text>{item?.message}</Text>
-            <Text style={{textAlign: 'right'}}>
-              {item?.createdAt?.substr(0, 10)}
-            </Text>
-          </View>
+            </>
+          </TouchableOpacity>
         </Swipeable>
       </GestureHandlerRootView>
     );
   };
   return (
     <>
-      <HeaderComponent
-        userName={roomname}
-        navigation={() => navigation.navigate('rooms')}
-        imageSource={require('../../assets/backIcon.png')}
-      />
-      <View style={styles.container}>
-        <FlatList
-          onContentSizeChange={scrollToBottom}
-          ref={flatListRef}
-          data={messages}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => index.toString()}
-          contentContainerStyle={styles.messagesContainer}
-          showsVerticalScrollIndicator={false}
-          ItemSeparatorComponent={() => <Separator />}
-        />
-        {showreply && (
+      <View style={{display: 'flex', height: '100%'}}>
+        <View style={{height: '8%', backgroundColor: '#006257'}}>
           <View
             style={{
-              padding: 10,
-              width: '100%',
-              backgroundColor: 'lightgray',
-              marginVertical: 5,
-              position: 'relative',
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              // backgroundColor: 'red',
+              height: '100%',
             }}>
-            {/* <View style={{position: 'absolute', top: 5, right: 10}}> */}
-            <Pressable
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-              }}
-              onPress={() => {
-                setShowReply(false);
-              }}>
-              <Image
-                style={{height: 25, width: 25}}
-                source={require('../../assets/cross.png')}
-              />
-            </Pressable>
-            {/* </View> */}
-            <View style={{position: 'absolute', left: 10, top: 5}}>
-              <Text style={{margin: 1}}>{replyTo.username}</Text>
-              <Text style={{margin: 1}}>{replyTo.message}</Text>
+            <View>
+              <TouchableOpacity onPress={() => navigation.navigate('rooms')}>
+                <Image
+                  source={require('../../assets/backIcon.png')}
+                  style={{width: 40, height: 40}}
+                />
+              </TouchableOpacity>
+            </View>
+            <View>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  color: 'white',
+                  fontWeight: 'bold',
+                  fontSize: 25,
+                  marginLeft: '4%',
+                }}>
+                {roomname}
+              </Text>
             </View>
           </View>
-        )}
+        </View>
+        <View style={{backgroundColor: 'red', height: '92%'}}>
+          <View style={styles.container}>
+            {loading ? (
+              <View
+                style={{
+                  height: '92%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <ActivityIndicator
+                  size={'large'}
+                  animating={true}
+                  color={'#006257'}
+                />
+              </View>
+            ) : (
+              <FlatList
+                onContentSizeChange={scrollToBottom}
+                ref={flatListRef}
+                data={messages}
+                renderItem={renderItem}
+                keyExtractor={(item, index) => index.toString()}
+                contentContainerStyle={styles.messagesContainer}
+                showsVerticalScrollIndicator={false}
+                ItemSeparatorComponent={() => <Separator />}
+              />
+            )}
 
-        <View style={styles.inputContainer}>
-          <TextInput
-            placeholder="Type a message..."
-            onChangeText={text => setMessage(text)}
-            value={message}
-            style={styles.input}
-          />
-          <Button title="Send" onPress={sendMessage} />
+            {showreply && (
+              <View
+                style={{
+                  padding: 10,
+                  width: '100%',
+                  backgroundColor: 'lightgray',
+                  marginVertical: 5,
+                  position: 'relative',
+                }}>
+                <Pressable
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'flex-end',
+                  }}
+                  onPress={() => {
+                    setShowReply(false);
+                  }}>
+                  <Image
+                    style={{height: 25, width: 25}}
+                    source={require('../../assets/cross.png')}
+                  />
+                </Pressable>
+                <View style={{position: 'absolute', left: 10, top: 5}}>
+                  <Text style={{margin: 1}}>{replyTo.username}</Text>
+                  <Text style={{margin: 1}}>{replyTo.message}</Text>
+                </View>
+              </View>
+            )}
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.input}
+                onChangeText={text => setMessage(text)}
+                value={message}
+                placeholder="Type a message"
+              />
+              <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
+                <Text style={styles.sendButtonText}>Send</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
       </View>
     </>
@@ -246,17 +319,25 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    padding: 8,
   },
   input: {
     flex: 1,
-    marginRight: 8,
-    paddingVertical: 8,
+    backgroundColor: '#FFF',
+    borderRadius: 24,
     paddingHorizontal: 16,
-    backgroundColor: '#F0F0F0',
-    borderRadius: 4,
+    paddingVertical: 10,
+    marginRight: 12,
+  },
+  sendButton: {
+    backgroundColor: '#0084FF',
+    borderRadius: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  sendButtonText: {
+    fontSize: 16,
+    color: '#FFF',
+    fontWeight: 'bold',
   },
   reply: {
     paddingHorizontal: 7,

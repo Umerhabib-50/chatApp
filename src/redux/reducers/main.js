@@ -2,6 +2,9 @@ import {
   CREATE_JOINROOM_FAIL,
   CREATE_JOINROOM_REQUEST,
   CREATE_JOINROOM_SUCCESS,
+  DELETE_MESSAGE_FAIL,
+  DELETE_MESSAGE_REQUEST,
+  DELETE_MESSAGE_SUCCESS,
   GET_ROOMS_FAIL,
   GET_ROOMS_REQUEST,
   GET_ROOMS_SUCCESS,
@@ -50,6 +53,18 @@ export const getRoomReducer = (state = {}, action) => {
     case GET_ROOMS_SUCCESS:
       return {loading: false, getRoom: action.payload};
     case GET_ROOMS_FAIL:
+      return {loading: false, error: action.payload};
+    default:
+      return state;
+  }
+};
+export const deleteMsgReducer = (state = {}, action) => {
+  switch (action.type) {
+    case DELETE_MESSAGE_REQUEST:
+      return {loading: true};
+    case DELETE_MESSAGE_SUCCESS:
+      return {loading: false, deleteMsg: action.payload};
+    case DELETE_MESSAGE_FAIL:
       return {loading: false, error: action.payload};
     default:
       return state;
