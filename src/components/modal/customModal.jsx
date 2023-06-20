@@ -11,7 +11,9 @@ export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
   const createRoom = async () => {
     const {data} = await axios.post(
       `http://192.168.1.215:5000/room/createroom`,
-      {name: roomName},
+      {
+        name: roomName,
+      },
     );
     console.log('createRoom', data);
     if (data?.room) {

@@ -42,7 +42,9 @@ export const createRoomAction = roomName => async dispatch => {
     });
     const {data} = await axios.post(
       `http://192.168.1.215:5000/room/createroom`,
-      {name: roomName},
+      {
+        name: roomName,
+      },
     );
     dispatch({
       type: CREATE_JOINROOM_SUCCESS,

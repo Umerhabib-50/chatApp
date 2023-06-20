@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {
   View,
   TextInput,
@@ -7,63 +7,196 @@ import {
   FlatList,
   StyleSheet,
   Image,
-  Pressable,
+  TouchableOpacity,
 } from 'react-native';
-import io from 'socket.io-client';
-import {HeaderComponent} from '../../components';
-import axios from 'axios';
 import {Swipeable, GestureHandlerRootView} from 'react-native-gesture-handler';
-import {IconButton, MD3Colors} from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import io from 'socket.io-client';
+import axios from 'axios';
+import {HeaderComponent} from '../../components';
+
 const Separator = () => <View style={styles.itemSeparator} />;
 
-const LeftSwipeActions = () => {
-  return (
-    <View
-      style={{
-        flex: 1,
-        // backgroundColor: '#ccffbd',
-        justifyContent: 'center',
-      }}>
-      <Text style={styles.swipeActionText}></Text>
-    </View>
-  );
-};
+const LeftSwipeActions = () => (
+  <View style={styles.swipeActionContainer}>
+    <Text style={styles.swipeActionText}></Text>
+  </View>
+);
 
-const RightSwipeActions = () => {
-  return (
-    <View
-      style={{
-        flex: 1,
-        // backgroundColor: '#ff8303',
-        justifyContent: 'center',
-        alignItems: 'flex-end',
-      }}>
-      <Text style={styles.swipeActionText}></Text>
-    </View>
-  );
-};
+const RightSwipeActions = () => (
+  <View style={[styles.swipeActionContainer, {alignItems: 'flex-end'}]}>
+    <Text style={styles.swipeActionText}></Text>
+  </View>
+);
+
+const SERVER_URL = 'http://192.168.1.215:5000';
+const axiosInstance = axios.create({baseURL: SERVER_URL});
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#F5F5F5',
+  },
+  messagesContainer: {
+    flexGrow: 1,
+  },
+  messageContainer: {
+    marginBottom: 8,
+    alignSelf: 'flex-start',
+    maxWidth: '60%',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  sentMessage: {
+    alignSelf: 'flex-end',
+    backgroundColor: '#DCF8C6',
+    borderRightColor: 'green',
+    borderRightWidth: 3,
+  },
+  receivedMessage: {
+    backgroundColor: '#FFFFFF',
+    borderLeftColor: 'red',
+    borderLeftWidth: 3,
+  },
+  repliedToContainer: {
+    backgroundColor: 'lightgray',
+    padding: 5,
+  },
+  messageAuthor: {
+    marginVertical: 2,
+    fontWeight: 'bold',
+  },
+  messageText: {
+    marginVertical: 2,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    padding: 8,
+  },
+  input: {
+    flex: 1,
+    marginRight: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: '#F0F0F0',
+    borderRadius: 4,
+  },
+  replyContainer: {
+    padding: 10,
+    width: '100%',
+    backgroundColor: 'lightgray',
+    marginVertical: 5,
+    position: 'relative',
+  },
+  replyTextContainer: {
+    position: 'absolute',
+    left: 10,
+    top: 5,
+  },
+  closeImage: {
+    zIndex: 10000,
+    height: 50,
+    width: 50,
+  },
+  swipeActionContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  swipeActionText: {},
+  itemSeparator: {
+    // height: 1,
+    // backgroundColor: 'gray',
+  },
+});
 
 export const ChatScreen = ({navigation, route}) => {
   const {username, roomname} = route?.params;
-  const socket = io('http://192.168.1.215:5000');
-  const [messages, setMessages] = useState([]);
+  const socket = useRef(io(SERVER_URL)).current;
   const flatListRef = useRef(null);
-  // const messageRefs = useRef([]);
   const swipeableRefs = useRef([]);
-  const [message, setMessage] = useState();
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState('');
   const [room, setRoom] = useState(roomname);
-  const [showreply, setShowReply] = useState(false);
-  const [replyTo, setReplyTo] = useState({
-    message: '',
-    username: '',
-  });
+  const [showReply, setShowReply] = useState(false);
+  const [replyTo, setReplyTo] = useState({message: '', username: ''});
 
   const scrollToBottom = () => {
     if (flatListRef.current) {
       flatListRef.current.scrollToEnd({animated: true});
     }
   };
+
+  const getMessages = useCallback(async () => {
+    const {data: roomMessages} = await axiosInstance.get(
+      `/room/singleroom/${room}`,
+    );
+    setMessages(roomMessages.messages);
+  }, [room]);
+
+  const handleSwipeableWillOpen = useCallback(
+    index => {
+      setShowReply(true);
+      setReplyTo(messages[index]);
+      closeSwipeable(index);
+    },
+    [messages],
+  );
+
+  const handleSwipeableOpen = useCallback(index => {
+    closeSwipeable(index);
+  }, []);
+
+  const closeSwipeable = index => {
+    if (swipeableRefs.current[index]) {
+      swipeableRefs.current[index].close();
+    }
+  };
+
+  const sendMessage = () => {
+    const repliedTo = showReply ? replyTo : undefined;
+    socket.emit('send', {room, message, username, repliedTo});
+    setMessage('');
+    setShowReply(false);
+  };
+
+  const renderItem = ({item, index}) => (
+    <GestureHandlerRootView style={{maxWidth: '100%'}}>
+      <Swipeable
+        ref={ref => (swipeableRefs.current[index] = ref)}
+        useNativeDriver={true}
+        renderLeftActions={LeftSwipeActions}
+        renderRightActions={RightSwipeActions}
+        onSwipeableWillOpen={() => handleSwipeableWillOpen(index)}
+        onSwipeableOpen={() => handleSwipeableOpen(index)}
+        overshootLeft={100}
+        overshootRight={100}
+        friction={1.3}
+        rightThreshold={20}
+        leftThreshold={20}>
+        <View
+          style={[
+            styles.messageContainer,
+            username === item?.username
+              ? styles.sentMessage
+              : styles.receivedMessage,
+          ]}>
+          {item?.repliedTo && (
+            <View style={styles.repliedToContainer}>
+              <Text>{item.repliedTo.username}</Text>
+              <Text>{item.repliedTo.message}</Text>
+            </View>
+          )}
+          <Text style={styles.messageAuthor}>{item?.username}</Text>
+          <Text style={styles.messageText}>{item?.message}</Text>
+        </View>
+      </Swipeable>
+    </GestureHandlerRootView>
+  );
+
   useEffect(() => {
     socket.on('connect', () => {
       socket.emit('join', room);
@@ -76,84 +209,14 @@ export const ChatScreen = ({navigation, route}) => {
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [room]);
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  useEffect(() => {
-    const getMessages = async () => {
-      const {data} = await axios.get(
-        `http://192.168.1.215:5000/room/singleroom/${room}`,
-      );
-      setMessages(data.messages);
-    };
-
     getMessages();
-  }, []);
+  }, [getMessages]);
 
-  const sendMessage = () => {
-    const repliedTo = showreply ? replyTo : undefined;
-    socket.emit('send', {room, message, username, repliedTo});
-    setMessage('');
-    setShowReply(false);
-  };
+  useEffect(scrollToBottom, [messages]);
 
-  const closeSwipeable = index => {
-    if (swipeableRefs.current[index]) {
-      swipeableRefs.current[index].close();
-    }
-  };
-
-  const renderItem = ({item, index}) => {
-    console.log('item date', item);
-    return (
-      <GestureHandlerRootView style={{maxWidth: '100%'}}>
-        <Swipeable
-          ref={ref => (swipeableRefs.current[index] = ref)}
-          renderLeftActions={LeftSwipeActions}
-          renderRightActions={RightSwipeActions}
-          onSwipeableOpen={() => {
-            setShowReply(true);
-            setReplyTo(item);
-            closeSwipeable(index);
-          }}>
-          <View
-            style={[
-              styles.messageContainer,
-              username == item?.username
-                ? styles.sentMessage
-                : styles.receivedMessage,
-            ]}>
-            {username == item?.username ? (
-              ''
-            ) : (
-              <Text style={{fontWeight: 'bold'}}>{item?.username}</Text>
-            )}
-            {item?.repliedTo && (
-              <View
-                style={[
-                  styles.reply,
-                  username == item?.username
-                    ? styles.sentReply
-                    : styles.receivedReply,
-                ]}>
-                <Text style={{fontWeight: 'bold'}}>
-                  {item.repliedTo.username}
-                </Text>
-                <Text>{item.repliedTo.message}</Text>
-              </View>
-            )}
-            <Text>{item?.message}</Text>
-            <Text style={{textAlign: 'right'}}>
-              {item?.createdAt?.substr(0, 10)}
-            </Text>
-          </View>
-        </Swipeable>
-      </GestureHandlerRootView>
-    );
-  };
   return (
     <>
       <HeaderComponent
@@ -163,31 +226,28 @@ export const ChatScreen = ({navigation, route}) => {
       />
       <View style={styles.container}>
         <FlatList
-          onContentSizeChange={scrollToBottom}
           ref={flatListRef}
           data={messages}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={styles.messagesContainer}
           showsVerticalScrollIndicator={false}
-          ItemSeparatorComponent={() => <Separator />}
+          ItemSeparatorComponent={Separator}
+          onContentSizeChange={() =>
+            flatListRef.current.scrollToEnd({animated: true})
+          }
         />
-        {showreply && (
+        {showReply && (
           <View
             style={{
-              padding: 10,
-              width: '100%',
+              padding: 7,
+              margin: 3,
               backgroundColor: 'lightgray',
-              marginVertical: 5,
               position: 'relative',
+              borderRadius: 10,
             }}>
-            {/* <View style={{position: 'absolute', top: 5, right: 10}}> */}
-            <Pressable
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-              }}
+            <TouchableOpacity
+              style={{position: 'absolute', top: 4, right: 5, zIndex: 10}}
               onPress={() => {
                 setShowReply(false);
               }}>
@@ -195,11 +255,13 @@ export const ChatScreen = ({navigation, route}) => {
                 style={{height: 25, width: 25}}
                 source={require('../../assets/cross.png')}
               />
-            </Pressable>
+            </TouchableOpacity>
             {/* </View> */}
-            <View style={{position: 'absolute', left: 10, top: 5}}>
-              <Text style={{margin: 1}}>{replyTo.username}</Text>
-              <Text style={{margin: 1}}>{replyTo.message}</Text>
+            <View>
+              <Text style={{margin: 1, fontWeight: 'bold'}}>
+                {replyTo.username}
+              </Text>
+              <Text style={{margin: 1, maxWidth: 250}}>{replyTo.message}</Text>
             </View>
           </View>
         )}
@@ -217,61 +279,3 @@ export const ChatScreen = ({navigation, route}) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#F5F5F5',
-  },
-  messagesContainer: {
-    flexGrow: 1,
-  },
-  messageContainer: {
-    marginBottom: 8,
-    alignSelf: 'flex-start',
-    maxWidth: '60%',
-    minWidth: '40%',
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-  },
-  sentMessage: {
-    alignSelf: 'flex-end',
-    backgroundColor: '#DCF8C6',
-  },
-  receivedMessage: {
-    backgroundColor: '#FFFFFF',
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    padding: 8,
-  },
-  input: {
-    flex: 1,
-    marginRight: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    backgroundColor: '#F0F0F0',
-    borderRadius: 4,
-  },
-  reply: {
-    paddingHorizontal: 7,
-    paddingVertical: 5,
-    borderRadius: 5,
-    marginVertical: 5,
-  },
-  sentReply: {
-    borderRightColor: 'green',
-    borderRightWidth: 3,
-    backgroundColor: '#c7f7ab',
-  },
-  receivedReply: {
-    borderLeftColor: 'red',
-    borderLeftWidth: 3,
-    backgroundColor: '#f2f2f2',
-  },
-});
