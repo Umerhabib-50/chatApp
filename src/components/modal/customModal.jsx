@@ -6,7 +6,6 @@ import {createRoomAction, getRoomAction} from '../../redux';
 import axios from 'axios';
 import {CustomButton} from '../button/custom-button';
 export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
-  // const dispatch = useDispatch();
   const [roomName, setRoomName] = useState('');
   const createRoom = async () => {
     const {data} = await axios.post(
@@ -15,7 +14,6 @@ export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
         name: roomName,
       },
     );
-    console.log('createRoom', data);
     if (data?.room) {
       const {data} = await axios.get(`http://192.168.1.215:5000/room/allroom`);
       setData(data);
@@ -92,6 +90,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'space-evenly',
     alignItems: 'center',
+    borderColor: 'white',
+    borderWidth: 2,
   },
   button: {
     // borderRadius: 20,
