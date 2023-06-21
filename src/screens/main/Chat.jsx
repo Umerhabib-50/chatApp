@@ -7,12 +7,13 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  ImageBackground,
 } from 'react-native';
 import io from 'socket.io-client';
 
 import axios from 'axios';
 import {Swipeable, GestureHandlerRootView} from 'react-native-gesture-handler';
-import {ActivityIndicator} from 'react-native-paper';
+import {ActivityIndicator, TouchableRipple} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 import {deleteMsgAction} from '../../redux';
 import {chatStyles} from './css/chatStyles';
@@ -104,19 +105,19 @@ export const ChatScreen = ({navigation, route}) => {
   };
 
   const handleLongPress = id => {
-    Alert.alert('Delete Item', 'Are you sure you want to delete this item?', [
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: () => {
-          dispatch(deleteMsgAction(roomId, id));
-        },
-      },
-    ]);
+    // Alert.alert('Delete Item', 'Are you sure you want to delete this item?', [
+    //   {
+    //     text: 'Cancel',
+    //     style: 'cancel',
+    //   },
+    //   {
+    //     text: 'Delete',
+    //     style: 'destructive',
+    //     onPress: () => {
+    //       dispatch(deleteMsgAction(roomId, id));
+    //     },
+    //   },
+    // ]);
   };
 
   const renderItem = ({item, index}) => {
@@ -133,7 +134,9 @@ export const ChatScreen = ({navigation, route}) => {
           overshootFriction={8}
           rightThreshold={40}
           leftThreshold={40}>
-          <TouchableOpacity onLongPress={() => handleLongPress(item?._id)}>
+          <TouchableRipple
+            style={{marginBottom: 8}}
+            onLongPress={() => handleLongPress(item?._id)}>
             <View
               style={[
                 chatStyles.messageContainer,
@@ -165,7 +168,7 @@ export const ChatScreen = ({navigation, route}) => {
                 {item?.createdAt?.substr(0, 10)}
               </Text>
             </View>
-          </TouchableOpacity>
+          </TouchableRipple>
         </Swipeable>
       </GestureHandlerRootView>
     );
@@ -176,7 +179,9 @@ export const ChatScreen = ({navigation, route}) => {
       <View style={{height: '8%', backgroundColor: '#006257'}}>
         <View style={chatStyles.topView}>
           <View>
-            <TouchableOpacity onPress={() => navigation.navigate('rooms')}>
+            <TouchableOpacity
+              style={{width: 30}}
+              onPress={() => navigation.navigate('rooms')}>
               <Image
                 source={require('../../assets/backIcon.png')}
                 style={{width: 40, height: 40}}
@@ -188,7 +193,9 @@ export const ChatScreen = ({navigation, route}) => {
           </View>
         </View>
       </View>
-      <View style={{backgroundColor: 'red', height: '92%'}}>
+      <ImageBackground
+        source={require('../../assets/backgroundImage.png')}
+        style={chatStyles.imageContainer}>
         <View style={chatStyles.container}>
           {loading ? (
             <View style={chatStyles.loading}>
@@ -247,7 +254,7 @@ export const ChatScreen = ({navigation, route}) => {
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </ImageBackground>
     </View>
   );
 };

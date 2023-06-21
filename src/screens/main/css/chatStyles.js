@@ -7,6 +7,10 @@ export const chatStyles = StyleSheet.create({
     alignItems: 'center',
     height: '100%',
   },
+  imageContainer: {
+    flex: 1,
+    paddingHorizontal: '4%',
+  },
   roomText: {
     textAlign: 'center',
     color: 'white',
@@ -16,20 +20,26 @@ export const chatStyles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#F5F5F5',
+    height: '92%',
   },
   messagesContainer: {
     flexGrow: 1,
   },
   messageContainer: {
-    marginBottom: 8,
     alignSelf: 'flex-start',
     maxWidth: '60%',
     minWidth: '40%',
     borderRadius: 8,
     paddingHorizontal: 8,
     paddingVertical: 4,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   sentMessage: {
     alignSelf: 'flex-end',
