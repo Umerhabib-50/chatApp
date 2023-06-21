@@ -172,9 +172,7 @@ export const ChatScreen = ({navigation, route}) => {
                   </View>
                 )}
                 <Text>{item?.message}</Text>
-                <Text style={{textAlign: 'right'}}>
-                  {item?.createdAt?.substr(0, 10)}
-                </Text>
+                <Text style={{textAlign: 'right'}}>{item?.createdAt}</Text>
               </View>
             </>
           </TouchableOpacity>
@@ -216,74 +214,73 @@ export const ChatScreen = ({navigation, route}) => {
             </View>
           </View>
         </View>
-        <View style={{backgroundColor: 'red', height: '92%'}}>
-          <View style={styles.container}>
-            {loading ? (
-              <View
-                style={{
-                  height: '92%',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <ActivityIndicator
-                  size={'large'}
-                  animating={true}
-                  color={'#006257'}
-                />
-              </View>
-            ) : (
-              <FlatList
-                onContentSizeChange={scrollToBottom}
-                ref={flatListRef}
-                data={messages}
-                renderItem={renderItem}
-                keyExtractor={(item, index) => index.toString()}
-                contentContainerStyle={styles.messagesContainer}
-                showsVerticalScrollIndicator={false}
-                ItemSeparatorComponent={() => <Separator />}
-              />
-            )}
 
-            {showreply && (
-              <View
-                style={{
-                  padding: 10,
-                  width: '100%',
-                  backgroundColor: 'lightgray',
-                  marginVertical: 5,
-                  position: 'relative',
-                }}>
-                <Pressable
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'flex-end',
-                  }}
-                  onPress={() => {
-                    setShowReply(false);
-                  }}>
-                  <Image
-                    style={{height: 25, width: 25}}
-                    source={require('../../assets/cross.png')}
-                  />
-                </Pressable>
-                <View style={{position: 'absolute', left: 10, top: 5}}>
-                  <Text style={{margin: 1}}>{replyTo.username}</Text>
-                  <Text style={{margin: 1}}>{replyTo.message}</Text>
-                </View>
-              </View>
-            )}
-            <View style={styles.inputContainer}>
-              <TextInput
-                style={styles.input}
-                onChangeText={text => setMessage(text)}
-                value={message}
-                placeholder="Type a message"
+        <View style={styles.container}>
+          {loading ? (
+            <View
+              style={{
+                height: '92%',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <ActivityIndicator
+                size={'large'}
+                animating={true}
+                color={'#006257'}
               />
-              <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
-                <Text style={styles.sendButtonText}>Send</Text>
-              </TouchableOpacity>
             </View>
+          ) : (
+            <FlatList
+              onContentSizeChange={scrollToBottom}
+              ref={flatListRef}
+              data={messages}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => index.toString()}
+              contentContainerStyle={styles.messagesContainer}
+              showsVerticalScrollIndicator={false}
+              ItemSeparatorComponent={() => <Separator />}
+            />
+          )}
+
+          {showreply && (
+            <View
+              style={{
+                padding: 10,
+                width: '100%',
+                backgroundColor: 'lightgray',
+                marginVertical: 5,
+                position: 'relative',
+              }}>
+              <Pressable
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'flex-end',
+                }}
+                onPress={() => {
+                  setShowReply(false);
+                }}>
+                <Image
+                  style={{height: 25, width: 25}}
+                  source={require('../../assets/cross.png')}
+                />
+              </Pressable>
+              <View style={{position: 'absolute', left: 10, top: 5}}>
+                <Text style={{margin: 1}}>{replyTo.username}</Text>
+                <Text style={{margin: 1}}>{replyTo.message}</Text>
+              </View>
+            </View>
+          )}
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              onChangeText={text => setMessage(text)}
+              value={message}
+              placeholder="Type a message"
+            />
+            <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
+              <Text style={styles.sendButtonText}>Send</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
