@@ -46,6 +46,7 @@ export const createRoomReducer = (state = {}, action) => {
       return state;
   }
 };
+
 export const getRoomReducer = (state = {}, action) => {
   switch (action.type) {
     case GET_ROOMS_REQUEST:

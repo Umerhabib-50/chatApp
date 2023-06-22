@@ -19,7 +19,9 @@ export const allUsersAction = () => async dispatch => {
     dispatch({
       type: GET_USERS_REQUEST,
     });
-    const {data} = await axios.get(`http://192.168.1.215:5000/user/getusers`);
+    const {data} = await axios.get(
+      ` https://bac9-103-184-1-9.ngrok-free.app/user/getusers`,
+    );
     dispatch({
       type: GET_USERS_SUCCESS,
       payload: data,
@@ -44,7 +46,7 @@ export const createRoomAction = roomName => async dispatch => {
       type: CREATE_JOINROOM_REQUEST,
     });
     const {data} = await axios.post(
-      `http://192.168.1.215:5000/room/createroom`,
+      ` https://bac9-103-184-1-9.ngrok-free.app/room/createroom`,
       {
         name: roomName,
       },
@@ -65,7 +67,9 @@ export const getRoomAction = () => async dispatch => {
     dispatch({
       type: GET_ROOMS_REQUEST,
     });
-    const {data} = await axios.get(`http://192.168.1.215:5000/room/allroom`);
+    const {data} = await axios.get(
+      ` https://bac9-103-184-1-9.ngrok-free.app/room/allroom`,
+    );
     dispatch({
       type: GET_ROOMS_SUCCESS,
       payload: data,
@@ -89,7 +93,7 @@ export const deleteMsgAction = (roomId, msgId) => async dispatch => {
       },
     };
     const {data} = await axios.delete(
-      `http://192.168.1.215:5000/room/deletemessage`,
+      ` https://bac9-103-184-1-9.ngrok-free.app/room/deletemessage`,
       config,
     );
     dispatch({

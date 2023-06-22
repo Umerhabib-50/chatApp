@@ -38,7 +38,7 @@ const RightSwipeActions = () => {
 
 export const ChatScreen = ({navigation, route}) => {
   const {username, roomname, roomId} = route?.params;
-  const socket = io('http://192.168.1.215:5000');
+  const socket = io('https://bac9-103-184-1-9.ngrok-free.app');
   const [messages, setMessages] = useState([]);
   const flatListRef = useRef(null);
   const swipeableRefs = useRef([]);
@@ -79,7 +79,7 @@ export const ChatScreen = ({navigation, route}) => {
   useEffect(() => {
     const getMessages = async () => {
       const {data} = await axios.get(
-        `http://192.168.1.215:5000/room/singleroom/${room}`,
+        `https://bac9-103-184-1-9.ngrok-free.app/room/singleroom/${room}`,
       );
       setMessages(data.messages);
     };
@@ -105,19 +105,19 @@ export const ChatScreen = ({navigation, route}) => {
   };
 
   const handleLongPress = id => {
-    // Alert.alert('Delete Item', 'Are you sure you want to delete this item?', [
-    //   {
-    //     text: 'Cancel',
-    //     style: 'cancel',
-    //   },
-    //   {
-    //     text: 'Delete',
-    //     style: 'destructive',
-    //     onPress: () => {
-    //       dispatch(deleteMsgAction(roomId, id));
-    //     },
-    //   },
-    // ]);
+    Alert.alert('Delete Item', 'Are you sure you want to delete this item?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: () => {
+          dispatch(deleteMsgAction(roomId, id));
+        },
+      },
+    ]);
   };
 
   const renderItem = ({item, index}) => {

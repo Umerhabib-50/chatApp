@@ -9,13 +9,15 @@ export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
   const [roomName, setRoomName] = useState('');
   const createRoom = async () => {
     const {data} = await axios.post(
-      `http://192.168.1.215:5000/room/createroom`,
+      ` https://bac9-103-184-1-9.ngrok-free.app/room/createroom`,
       {
         name: roomName,
       },
     );
     if (data?.room) {
-      const {data} = await axios.get(`http://192.168.1.215:5000/room/allroom`);
+      const {data} = await axios.get(
+        ` https://bac9-103-184-1-9.ngrok-free.app/room/allroom`,
+      );
       setData(data);
     }
   };

@@ -12,7 +12,7 @@ import {
 import io from 'socket.io-client';
 import {CustomModal, HeaderComponent} from '../../components';
 import {useDispatch, useSelector} from 'react-redux';
-import {getRoomAction} from '../../redux';
+import {getRoomAction, logOutAction} from '../../redux';
 import {ActivityIndicator, IconButton} from 'react-native-paper';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 export const RoomsScreen = ({navigation}) => {
@@ -58,8 +58,13 @@ export const RoomsScreen = ({navigation}) => {
           ]}>
           <View>
             <Image
-              source={require('../../assets/pic3.png')}
-              style={{width: 45, height: 45, borderRadius: 50}}
+              source={require('../../assets/group.png')}
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: 50,
+                // backgroundColor: 'red',
+              }}
             />
           </View>
           <View>
@@ -82,13 +87,13 @@ export const RoomsScreen = ({navigation}) => {
           </View>
           <View style={styles.bottomBar}>
             <View>
-              <Text style={styles.bottomText}>Chats</Text>
+              <Text style={styles.bottomText}>Rooms</Text>
             </View>
             <View>
-              <Text style={styles.bottomText}>Status</Text>
-            </View>
-            <View>
-              <Text style={styles.bottomText}>Calls</Text>
+              <TouchableOpacity
+                onPress={() => dispatch(logOutAction(navigation))}>
+                <Text style={styles.bottomText}>Log Out</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>

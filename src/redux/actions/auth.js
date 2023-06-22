@@ -21,7 +21,7 @@ export const userLoginAction = userData => async dispatch => {
     });
 
     const {data} = await axios.post(
-      'http://192.168.1.215:5000/user/login',
+      ' https://bac9-103-184-1-9.ngrok-free.app/user/login',
       userData,
     );
 
@@ -45,7 +45,7 @@ export const userRegister = register_data => async dispatch => {
       type: USER_REGISTER_REQUEST,
     });
     const {data} = await axios.post(
-      `http://192.168.1.215:5000/user/register`,
+      ` https://bac9-103-184-1-9.ngrok-free.app/user/register`,
       register_data,
     );
     dispatch({
@@ -58,4 +58,12 @@ export const userRegister = register_data => async dispatch => {
       payload: error?.response && error?.response?.data,
     });
   }
+};
+export const logOutAction = navigation => dispatch => {
+  dispatch({type: USER_LOGOUT});
+
+  AsyncStorage.getAllKeys()
+    .then(keys => AsyncStorage.multiRemove(keys))
+    .then(() => navigation.navigate('login'));
+  // .then(() => navigation.reset({index: 1, routes: [{name: 'login'}]}));
 };
