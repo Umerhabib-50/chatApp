@@ -12,12 +12,14 @@ export const LoginScreen = ({navigation}) => {
     control,
     handleSubmit,
     formState: {errors},
+    reset,
   } = useForm();
 
   const dispatch = useDispatch();
 
   const onSubmit = data => {
     dispatch(userLoginAction(data));
+    reset();
   };
 
   return (
@@ -69,7 +71,11 @@ export const LoginScreen = ({navigation}) => {
             <Text style={{color: '#FFFFFF'}}>New Here ? </Text>
           </View>
           <View>
-            <TouchableOpacity onPress={() => navigation.navigate('register')}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('register');
+                reset();
+              }}>
               <Text style={{color: '#FFFFFF', fontWeight: 'bold'}}>
                 Register
               </Text>
