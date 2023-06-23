@@ -21,15 +21,19 @@ export const LoginScreen = ({navigation}) => {
   const onSubmit = data => {
     dispatch(userLoginAction(data));
   };
+
   useEffect(() => {
     if (initialRender.current) {
       initialRender.current = false;
     } else {
       if (data?.msg) {
         setShow(true);
+      } else {
+        setShow(false);
       }
     }
   }, [data?.msg]);
+
   return (
     <View style={styles.input_main}>
       <View style={styles.form}>
@@ -83,6 +87,7 @@ export const LoginScreen = ({navigation}) => {
               onPress={() => {
                 navigation.navigate('register');
                 reset();
+                setShow(false);
               }}>
               <Text style={{color: '#FFFFFF', fontWeight: 'bold'}}>
                 Register
