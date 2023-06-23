@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useForm} from 'react-hook-form';
 import {CustomButton, CustomInput} from '../../components';
@@ -8,14 +8,21 @@ export const RegisterScreen = ({navigation}) => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: {errors},
   } = useForm();
   const dispatch = useDispatch();
   const registerData = useSelector(state => state?.userRegister?.userRegister);
+  const isLoading = useSelector(state => state?.userRegister);
   const onSubmit = data => {
     dispatch(userRegister(data));
-    navigation.navigate(registerData?.status == true ? 'login' : 'register');
   };
+
+  useEffect(() => {
+    if (registerData?.status) {
+      navigation.navigate('login');
+    }
+  }, [registerData?.status]);
   return (
     <View style={styles.input_main}>
       <View style={styles.form}>
@@ -42,7 +49,10 @@ export const RegisterScreen = ({navigation}) => {
             errorMessage="Enter password"
           />
         </View>
-        <CustomButton title={'Register'} onPress={handleSubmit(onSubmit)} />
+        <CustomButton
+          title={isLoading?.loading ? 'Loading...' : 'Register'}
+          onPress={handleSubmit(onSubmit)}
+        />
         {registerData?.status == false && (
           <View>
             <Text
@@ -58,7 +68,10 @@ export const RegisterScreen = ({navigation}) => {
         )}
 
         <View>
-          <TouchableOpacity onPress={() => navigation.navigate('login')}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('login'), reset();
+            }}>
             <Text
               style={{
                 color: 'white',

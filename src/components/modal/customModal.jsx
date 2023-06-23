@@ -7,21 +7,8 @@ import axios from 'axios';
 import {CustomButton} from '../button/custom-button';
 export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
   const [roomName, setRoomName] = useState('');
-  const createRoom = async () => {
-    const {data} = await axios.post(
-      ` https://bac9-103-184-1-9.ngrok-free.app/room/createroom`,
-      {
-        name: roomName,
-      },
-    );
-    if (data?.room) {
-      const {data} = await axios.get(
-        ` https://bac9-103-184-1-9.ngrok-free.app/room/allroom`,
-      );
-      setData(data);
-    }
-  };
-
+  const dispatch = useDispatch();
+  const [showError, setShowError] = useState(false);
   return (
     <View style={styles.centeredView}>
       <Modal
@@ -35,10 +22,9 @@ export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
           style={styles.centeredView}
           onPress={() => {
             setModalVisible(!modalVisible);
+            setRoomName('');
           }}>
-          {/* <View style={styles.centeredView}>  */}
           <Pressable style={styles.modalView} onPress={() => {}}>
-            {/* <View style={styles.modalView}>  */}
             <Text style={styles.modalText}>Type Room Name</Text>
 
             <TextInput
@@ -48,28 +34,32 @@ export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
                 borderColor: 'white',
                 width: '80%',
               }}
-              placeholder="room"
+              placeholder="Room"
               onChangeText={text => {
                 setRoomName(text);
+                setShowError(false);
               }}
               value={roomName}
             />
+            {showError && (
+              <View>
+                <Text style={{color: '#FFFF00'}}>Please Enter Room Name</Text>
+              </View>
+            )}
 
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => {
-                // dispatch(createRoomAction(roomName));
-
-                // dispatch(getRoomAction());
-                createRoom();
-                setModalVisible(!modalVisible);
-                setRoomName('');
+                if (roomName) {
+                  dispatch(createRoomAction(roomName));
+                  setModalVisible(!modalVisible);
+                  setRoomName('');
+                } else {
+                  setShowError(true);
+                }
               }}>
               <CustomButton title={'Create Room'} />
-              {/* <Text style={styles.textStyle}>Create Room</Text> */}
             </Pressable>
-            {/* </View> 
-            </View>  */}
           </Pressable>
         </Pressable>
       </Modal>
@@ -101,9 +91,9 @@ const styles = StyleSheet.create({
     // elevation: 2,
     // width: '40%',
   },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
+  // buttonOpen: {
+  //   backgroundColor: '#F194FF',
+  // },
   // buttonClose: {
   //   backgroundColor: '#2196F3',
   // },

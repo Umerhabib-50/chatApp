@@ -18,22 +18,27 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 export const RoomsScreen = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
-  const {getRoom, error} = useSelector(state => state?.getRoom);
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
+  const {success: createRoomSuccess, loading: createRoomLoading} = useSelector(
+    state => state?.createRoom,
+  );
+  const {
+    getRoom,
+    error,
+    loading: getRoomLoading,
+  } = useSelector(state => state?.getRoom);
+  const loading = createRoomLoading || getRoomLoading;
+  const [data, setData] = useState(getRoom);
   const userName = useSelector(state => state?.userLogin?.userInfo);
   const username = userName?.user?.username;
   useEffect(() => {
-    setLoading(true);
     dispatch(getRoomAction());
-    setLoading(false);
   }, []);
 
   useEffect(() => {
-    setLoading(true);
-    setData(getRoom);
-    setLoading(false);
-  }, [getRoom]);
+    if (createRoomSuccess) {
+      dispatch(getRoomAction());
+    }
+  }, [createRoomSuccess]);
 
   const renderItem = ({item, index}) => {
     return (
@@ -114,7 +119,7 @@ export const RoomsScreen = ({navigation}) => {
               </View>
             ) : (
               <FlatList
-                data={data}
+                data={getRoom}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
               />

@@ -13,15 +13,14 @@ import {
   GET_USERS_REQUEST,
   GET_USERS_SUCCESS,
 } from '../constants';
+import {config} from '../../config';
 
 export const allUsersAction = () => async dispatch => {
   try {
     dispatch({
       type: GET_USERS_REQUEST,
     });
-    const {data} = await axios.get(
-      ` https://bac9-103-184-1-9.ngrok-free.app/user/getusers`,
-    );
+    const {data} = await axios.get(`${config}/user/getusers`);
     dispatch({
       type: GET_USERS_SUCCESS,
       payload: data,
@@ -45,12 +44,9 @@ export const createRoomAction = roomName => async dispatch => {
     dispatch({
       type: CREATE_JOINROOM_REQUEST,
     });
-    const {data} = await axios.post(
-      ` https://bac9-103-184-1-9.ngrok-free.app/room/createroom`,
-      {
-        name: roomName,
-      },
-    );
+    const {data} = await axios.post(`${config}/room/createroom`, {
+      name: roomName,
+    });
     dispatch({
       type: CREATE_JOINROOM_SUCCESS,
       payload: data,
@@ -67,9 +63,7 @@ export const getRoomAction = () => async dispatch => {
     dispatch({
       type: GET_ROOMS_REQUEST,
     });
-    const {data} = await axios.get(
-      ` https://bac9-103-184-1-9.ngrok-free.app/room/allroom`,
-    );
+    const {data} = await axios.get(`${config}/room/allroom`);
     dispatch({
       type: GET_ROOMS_SUCCESS,
       payload: data,
@@ -86,15 +80,15 @@ export const deleteMsgAction = (roomId, msgId) => async dispatch => {
     dispatch({
       type: DELETE_MESSAGE_REQUEST,
     });
-    const config = {
+    const deleteObj = {
       data: {
         roomId: roomId,
         messageId: msgId,
       },
     };
     const {data} = await axios.delete(
-      ` https://bac9-103-184-1-9.ngrok-free.app/room/deletemessage`,
-      config,
+      `${config}/room/deletemessage`,
+      deleteObj,
     );
     dispatch({
       type: DELETE_MESSAGE_SUCCESS,
