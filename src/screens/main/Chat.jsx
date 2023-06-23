@@ -40,6 +40,7 @@ export const ChatScreen = ({navigation, route}) => {
   const {username, roomname, roomId} = route?.params;
   const socket = io('https://bac9-103-184-1-9.ngrok-free.app');
   const [messages, setMessages] = useState([]);
+
   const flatListRef = useRef(null);
   const swipeableRefs = useRef([]);
   const [message, setMessage] = useState();
