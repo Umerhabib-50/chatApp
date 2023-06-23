@@ -20,10 +20,7 @@ export const userLoginAction = userData => async dispatch => {
       type: USER_LOGIN_REQUEST,
     });
 
-    const {data} = await axios.post(
-      ' https://bac9-103-184-1-9.ngrok-free.app/user/login',
-      userData,
-    );
+    const {data} = await axios.post(`${config}/user/login`, userData);
 
     dispatch({
       type: USER_LOGIN_SUCCESS,
@@ -44,10 +41,7 @@ export const userRegister = register_data => async dispatch => {
     dispatch({
       type: USER_REGISTER_REQUEST,
     });
-    const {data} = await axios.post(
-      ` https://bac9-103-184-1-9.ngrok-free.app/user/register`,
-      register_data,
-    );
+    const {data} = await axios.post(`${config}/user/register`, register_data);
     dispatch({
       type: USER_REGISTER_SUCCESS,
       payload: data,

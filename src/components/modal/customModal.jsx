@@ -34,7 +34,7 @@ export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
                 borderColor: 'white',
                 width: '80%',
               }}
-              placeholder="room"
+              placeholder="Room"
               onChangeText={text => {
                 setRoomName(text);
                 setShowError(false);
@@ -43,7 +43,7 @@ export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
             />
             {showError && (
               <View>
-                <Text style={{color: '#FFFF00'}}>Please Enter UserName</Text>
+                <Text style={{color: '#FFFF00'}}>Please Enter Room Name</Text>
               </View>
             )}
 
@@ -91,9 +91,9 @@ const styles = StyleSheet.create({
     // elevation: 2,
     // width: '40%',
   },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
+  // buttonOpen: {
+  //   backgroundColor: '#F194FF',
+  // },
   // buttonClose: {
   //   backgroundColor: '#2196F3',
   // },

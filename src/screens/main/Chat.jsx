@@ -17,6 +17,7 @@ import {ActivityIndicator, TouchableRipple} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 import {deleteMsgAction} from '../../redux';
 import {chatStyles} from './css/chatStyles';
+import {config} from '../../config';
 
 const Separator = () => <View style={chatStyles.itemSeparator} />;
 
@@ -38,7 +39,7 @@ const RightSwipeActions = () => {
 
 export const ChatScreen = ({navigation, route}) => {
   const {username, roomname, roomId} = route?.params;
-  const socket = io('https://bac9-103-184-1-9.ngrok-free.app');
+  const socket = io(config);
   const [messages, setMessages] = useState([]);
   const flatListRef = useRef(null);
   const swipeableRefs = useRef([]);
@@ -78,9 +79,7 @@ export const ChatScreen = ({navigation, route}) => {
 
   useEffect(() => {
     const getMessages = async () => {
-      const {data} = await axios.get(
-        `https://bac9-103-184-1-9.ngrok-free.app/room/singleroom/${room}`,
-      );
+      const {data} = await axios.get(`${config}/room/singleroom/${room}`);
       setMessages(data.messages);
     };
 
@@ -105,19 +104,23 @@ export const ChatScreen = ({navigation, route}) => {
   };
 
   const handleLongPress = id => {
-    Alert.alert('Delete Item', 'Are you sure you want to delete this item?', [
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: () => {
-          dispatch(deleteMsgAction(roomId, id));
+    Alert.alert(
+      'Delete Message',
+      'Are you sure you want to delete this Message?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
         },
-      },
-    ]);
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => {
+            dispatch(deleteMsgAction(roomId, id));
+          },
+        },
+      ],
+    );
   };
 
   const renderItem = ({item, index}) => {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useForm} from 'react-hook-form';
 import {CustomButton, CustomInput} from '../../components';
@@ -8,20 +8,28 @@ import {userLoginAction} from '../../redux';
 export const LoginScreen = ({navigation}) => {
   const data = useSelector(state => state?.userLogin?.userInfo);
   const isloading = useSelector(state => state?.userLogin);
+  const [show, setShow] = useState(false);
   const {
     control,
     handleSubmit,
     formState: {errors},
     reset,
   } = useForm();
-
+  const initialRender = useRef(true);
   const dispatch = useDispatch();
 
   const onSubmit = data => {
     dispatch(userLoginAction(data));
-    reset();
   };
-
+  useEffect(() => {
+    if (initialRender.current) {
+      initialRender.current = false;
+    } else {
+      if (data?.msg) {
+        setShow(true);
+      }
+    }
+  }, [data?.msg]);
   return (
     <View style={styles.input_main}>
       <View style={styles.form}>
@@ -48,12 +56,11 @@ export const LoginScreen = ({navigation}) => {
             placeholder="Password"
           />
         </View>
-        {/* <CustomButton title={'Login'} onPress={handleSubmit(onSubmit)} /> */}
         <CustomButton
           title={isloading?.loading ? 'Loading...' : 'Login'}
           onPress={handleSubmit(onSubmit)}
         />
-        {data?.status == false && (
+        {show && (
           <View>
             <Text
               style={{
@@ -66,6 +73,7 @@ export const LoginScreen = ({navigation}) => {
             </Text>
           </View>
         )}
+
         <View style={styles.bottom}>
           <View>
             <Text style={{color: '#FFFFFF'}}>New Here ? </Text>
