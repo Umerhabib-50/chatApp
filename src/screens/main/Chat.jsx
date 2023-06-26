@@ -10,7 +10,6 @@ import {
   ImageBackground,
 } from 'react-native';
 import io from 'socket.io-client';
-
 import axios from 'axios';
 import {Swipeable, GestureHandlerRootView} from 'react-native-gesture-handler';
 import {ActivityIndicator, TouchableRipple} from 'react-native-paper';
@@ -41,10 +40,9 @@ export const ChatScreen = ({navigation, route}) => {
   const {username, roomname, roomId} = route?.params;
   const socket = io(config);
   const [messages, setMessages] = useState([]);
-
   const flatListRef = useRef(null);
   const swipeableRefs = useRef([]);
-  const [message, setMessage] = useState();
+  const [message, setMessage] = useState('');
   const [room, setRoom] = useState(roomname);
   const [showReply, setShowReply] = useState(false);
   const dispatch = useDispatch();
@@ -80,12 +78,16 @@ export const ChatScreen = ({navigation, route}) => {
 
   useEffect(() => {
     const getMessages = async () => {
-      const {data} = await axios.get(`${config}/room/singleroom/${room}`);
-      setMessages(data.messages);
+      try {
+        const {data} = await axios.get(`${config}/room/singleroom/${room}`);
+        setMessages(data.messages);
+      } catch (error) {
+        console.log('getMessages error:', error);
+      }
     };
 
     getMessages();
-  }, [deleteMsg]);
+  }, []);
 
   const sendMessage = () => {
     if (message && message.trim().length > 0) {
@@ -116,8 +118,22 @@ export const ChatScreen = ({navigation, route}) => {
         {
           text: 'Delete',
           style: 'destructive',
-          onPress: () => {
-            dispatch(deleteMsgAction(roomId, id));
+          onPress: async () => {
+            try {
+              const deleteObj = {
+                data: {
+                  roomId: roomId,
+                  messageId: id,
+                },
+              };
+
+              await axios.delete(`${config}/room/deletemessage`, deleteObj);
+              setMessages(prevMessages =>
+                prevMessages.filter(obj => obj._id !== id),
+              );
+            } catch (error) {
+              console.log('delete msg error', error);
+            }
           },
         },
       ],
@@ -148,9 +164,7 @@ export const ChatScreen = ({navigation, route}) => {
                   ? chatStyles.sentMessage
                   : chatStyles.receivedMessage,
               ]}>
-              {username == item?.username ? (
-                ''
-              ) : (
+              {username == item?.username ? null : (
                 <Text style={{fontWeight: 'bold'}}>{item?.username}</Text>
               )}
               {item?.repliedTo && (
@@ -201,26 +215,16 @@ export const ChatScreen = ({navigation, route}) => {
         source={require('../../assets/backgroundImage.png')}
         style={chatStyles.imageContainer}>
         <View style={chatStyles.container}>
-          {loading ? (
-            <View style={chatStyles.loading}>
-              <ActivityIndicator
-                size={'large'}
-                animating={true}
-                color={'#006257'}
-              />
-            </View>
-          ) : (
-            <FlatList
-              onContentSizeChange={scrollToBottom}
-              ref={flatListRef}
-              data={messages}
-              renderItem={renderItem}
-              keyExtractor={(item, index) => index.toString()}
-              contentContainerStyle={chatStyles.messagesContainer}
-              showsVerticalScrollIndicator={false}
-              ItemSeparatorComponent={Separator}
-            />
-          )}
+          <FlatList
+            onContentSizeChange={scrollToBottom}
+            ref={flatListRef}
+            data={messages}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => index.toString()}
+            contentContainerStyle={chatStyles.messagesContainer}
+            showsVerticalScrollIndicator={false}
+            ItemSeparatorComponent={Separator}
+          />
 
           {showReply && (
             <View style={chatStyles.replymainView}>
@@ -254,7 +258,10 @@ export const ChatScreen = ({navigation, route}) => {
             <TouchableOpacity
               style={chatStyles.sendButton}
               onPress={sendMessage}>
-              <Text style={chatStyles.sendButtonText}>Send</Text>
+              <Image
+                style={{height: 22, width: 22}}
+                source={require('../../assets/send.png')}
+              />
             </TouchableOpacity>
           </View>
         </View>

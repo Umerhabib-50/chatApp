@@ -21,6 +21,7 @@ export const chatStyles = StyleSheet.create({
   container: {
     flex: 1,
     height: '92%',
+    paddingTop: 16,
   },
   messagesContainer: {
     flexGrow: 1,
@@ -50,7 +51,7 @@ export const chatStyles = StyleSheet.create({
   },
   inputContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    marginBottom: 7,
   },
   input: {
     flex: 1,
@@ -62,9 +63,13 @@ export const chatStyles = StyleSheet.create({
   },
   sendButton: {
     backgroundColor: '#006257',
-    borderRadius: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    borderRadius: 50,
+    // paddingHorizontal: 16,
+    // paddingVertical: 10,
+    padding: 16,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   sendButtonText: {
     fontSize: 16,
