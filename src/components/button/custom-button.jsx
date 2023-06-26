@@ -14,7 +14,7 @@ export const CustomButton = ({
           borderRadius: 4,
         }}
         onPress={onPress}>
-        <Text variant={'titleMedium'} style={{color: '#006257'}}>
+        <Text variant={'titleMedium'} style={{color: '#128C7E'}}>
           {title}
         </Text>
       </Button>

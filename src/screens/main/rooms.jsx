@@ -114,7 +114,7 @@ export const RoomsScreen = ({navigation}) => {
                 <ActivityIndicator
                   size={'large'}
                   animating={true}
-                  color={'#006257'}
+                  color={'#128C7E'}
                 />
               </View>
             ) : (
@@ -133,7 +133,7 @@ export const RoomsScreen = ({navigation}) => {
                   style={{height: 40, width: 40}}
                 />
               )}
-              containerColor={'#006257'}
+              containerColor={'#128C7E'}
               size={50}
               onPress={() => {
                 setModalVisible(true);
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   },
   header: {
     height: '15%',
-    backgroundColor: '#006257',
+    backgroundColor: '#128C7E',
     display: 'flex',
     justifyContent: 'space-evenly',
   },

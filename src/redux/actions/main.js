@@ -12,6 +12,9 @@ import {
   GET_USERS_FAIL,
   GET_USERS_REQUEST,
   GET_USERS_SUCCESS,
+  IMAGE_UPLOAD_FAIL,
+  IMAGE_UPLOAD_REQUEST,
+  IMAGE_UPLOAD_SUCCESS,
 } from '../constants';
 import {config} from '../../config';
 
@@ -98,6 +101,26 @@ export const deleteMsgAction = (roomId, msgId) => async dispatch => {
     console.log('error from delete error', error);
     dispatch({
       type: DELETE_MESSAGE_FAIL,
+      payload: error?.response && error?.response?.data,
+    });
+  }
+};
+//IMAGE UPLOAD ACTION
+
+export const roomImageAction = newFormdata => async dispatch => {
+  try {
+    dispatch({
+      type: IMAGE_UPLOAD_REQUEST,
+    });
+    const {data} = await axios.post(`${config}/room/createroom`);
+    console.log('imge from backend', data);
+    //  dispatch({
+    //    type: IMAGE_UPLOAD_SUCCESS,
+    //    payload: data,
+    //  });
+  } catch (error) {
+    dispatch({
+      type: IMAGE_UPLOAD_FAIL,
       payload: error?.response && error?.response?.data,
     });
   }

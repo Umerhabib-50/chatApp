@@ -180,7 +180,7 @@ export const ChatScreen = ({navigation, route}) => {
 
   return (
     <View style={{display: 'flex', height: '100%'}}>
-      <View style={{height: '8%', backgroundColor: '#006257'}}>
+      <View style={{height: '8%', backgroundColor: '#128C7E'}}>
         <View style={chatStyles.topView}>
           <View>
             <TouchableOpacity
@@ -206,7 +206,7 @@ export const ChatScreen = ({navigation, route}) => {
               <ActivityIndicator
                 size={'large'}
                 animating={true}
-                color={'#006257'}
+                color={'#128C7E'}
               />
             </View>
           ) : (
