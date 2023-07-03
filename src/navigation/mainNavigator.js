@@ -1,6 +1,12 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {ChatScreen, RoomsScreen, SettingScreen} from '../screens';
+import {
+  ChangeSubjectScreen,
+  ChatScreen,
+  RoomsScreen,
+  SettingScreen,
+  changeSub,
+} from '../screens';
 
 const MainStack = createNativeStackNavigator();
 
@@ -13,6 +19,7 @@ export const MainNavigator = () => {
       <MainStack.Screen name="rooms" component={RoomsScreen} />
       <MainStack.Screen name="chats" component={ChatScreen} />
       <MainStack.Screen name="setting" component={SettingScreen} />
+      <MainStack.Screen name="subChange" component={ChangeSubjectScreen} />
     </MainStack.Navigator>
   );
 };
