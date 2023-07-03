@@ -1,9 +1,12 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
 import {SettingStyle} from './css/settingStyle';
+import {CustomModal} from '../../components';
 
 export const SettingScreen = ({navigation, route}) => {
   const {roomname, username, roomId, image} = route?.params;
+  const [modalVisible, setModalVisible] = useState(false);
+  const [data, setData] = useState(roomname);
   return (
     <View style={{backgroundColor: '#006257', flex: 1}}>
       <View style={SettingStyle.tabBar}>
@@ -23,9 +26,21 @@ export const SettingScreen = ({navigation, route}) => {
           />
         </TouchableOpacity>
         <TouchableOpacity>
-          <Image source={{uri: image}} style={SettingStyle.roomImage} />
+          {image ? (
+            <Image source={{uri: image}} style={SettingStyle.roomImage} />
+          ) : (
+            <Image
+              source={require('../../assets/group.png')}
+              style={SettingStyle.roomImage}
+            />
+          )}
+
+          {/* <Image source={{uri: image}} style={SettingStyle.roomImage} /> */}
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('subChange')}>
+        <TouchableOpacity
+          onPress={() => {
+            setModalVisible(true);
+          }}>
           <Image
             source={require('../../assets/option.png')}
             style={{width: 30, height: 30}}
@@ -72,6 +87,13 @@ export const SettingScreen = ({navigation, route}) => {
           Created on 03/07/2023
         </Text>
       </View>
+      <CustomModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        data={data}
+        setData={setData}
+        setting={true}
+      />
     </View>
   );
 };

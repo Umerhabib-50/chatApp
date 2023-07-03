@@ -15,7 +15,13 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import axios from 'axios';
 import useSocket from '../../utils/socket';
 
-export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
+export const CustomModal = ({
+  modalVisible,
+  setModalVisible,
+  setData,
+  setting,
+  data,
+}) => {
   const socket = useSocket();
   const [selectedImage, setSelectedImage] = useState(null);
   const [roomName, setRoomName] = useState('');
@@ -105,8 +111,12 @@ export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
             </Pressable>
           </View>
           <View style={{marginLeft: '6%'}}>
-            <Text style={styles.modalText}>New Room</Text>
-            <Text style={{color: '#e3dac9'}}>Add Subject</Text>
+            <Text style={styles.modalText}>
+              {setting == true ? 'Enter new subject' : 'New Room'}
+            </Text>
+            {setting == false && (
+              <Text style={{color: '#e3dac9'}}>Add Subject</Text>
+            )}
           </View>
         </View>
         <View
@@ -151,7 +161,57 @@ export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
                 </Pressable>
               )}
             </View>
-            <View style={{width: '70%', marginLeft: '5%'}}>
+            {data ? (
+              <View style={{width: '70%', marginLeft: '5%'}}>
+                <TextInput
+                  // placeholder={'Enter Room Name'}
+                  mode="flat"
+                  activeOutlineColor="white"
+                  textColor="white"
+                  placeholderTextColor="#e3dac9"
+                  activeUnderlineColor="white"
+                  style={{backgroundColor: '#128C7E'}}
+                  onChangeText={text => {
+                    setRoomName(text);
+                    setShowError(false);
+                  }}
+                  defaultValue={data}
+                  value={roomName}
+                />
+                {showError && (
+                  <View style={{marginTop: '8%'}}>
+                    <Text style={{color: '#FFFF00'}}>
+                      Please Enter Room Name
+                    </Text>
+                  </View>
+                )}
+              </View>
+            ) : (
+              <View style={{width: '70%', marginLeft: '5%'}}>
+                <TextInput
+                  placeholder={'Enter Room Name'}
+                  mode="flat"
+                  activeOutlineColor="white"
+                  textColor="white"
+                  placeholderTextColor="#e3dac9"
+                  activeUnderlineColor="white"
+                  style={{backgroundColor: '#128C7E'}}
+                  onChangeText={text => {
+                    setRoomName(text);
+                    setShowError(false);
+                  }}
+                  value={roomName}
+                />
+                {showError && (
+                  <View style={{marginTop: '8%'}}>
+                    <Text style={{color: '#FFFF00'}}>
+                      Please Enter Room Name
+                    </Text>
+                  </View>
+                )}
+              </View>
+            )}
+            {/* <View style={{width: '70%', marginLeft: '5%'}}>
               <TextInput
                 placeholder={'Enter Room Name'}
                 mode="flat"
@@ -171,7 +231,7 @@ export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
                   <Text style={{color: '#FFFF00'}}>Please Enter Room Name</Text>
                 </View>
               )}
-            </View>
+            </View> */}
           </View>
 
           <View style={{display: 'flex', flexDirection: 'row-reverse'}}>
@@ -184,7 +244,7 @@ export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
               )}
               containerColor={'#075E54'}
               size={50}
-              onPress={handleCreateRoom}
+              // onPress={handleCreateRoom}
             />
           </View>
           {/* <TextInput
