@@ -110,7 +110,6 @@ export const ChatScreen = ({navigation, route}) => {
   };
 
   const handleLongPress = (id, name) => {
-    console.log('delete model name', name);
     Alert.alert(
       name === username ? 'Delete Message' : 'Oops ',
       name === username
@@ -146,7 +145,14 @@ export const ChatScreen = ({navigation, route}) => {
       ],
     );
   };
-
+  const mainHandler = () => {
+    Alert.alert('', 'Under Development.', [
+      {
+        text: 'OK',
+        onPress: () => console.log(''),
+      },
+    ]);
+  };
   const renderItem = ({item, index}) => {
     const {username: name} = item;
     return (
@@ -202,7 +208,7 @@ export const ChatScreen = ({navigation, route}) => {
 
   return (
     <View style={{display: 'flex', height: '100%'}}>
-      <View style={{height: '8%', backgroundColor: '#006257'}}>
+      <View style={chatStyles.header}>
         <View style={chatStyles.topView}>
           <View>
             <TouchableOpacity
@@ -236,10 +242,48 @@ export const ChatScreen = ({navigation, route}) => {
             )}
           </View>
           <View>
-            <TouchableOpacity onPress={() => navigation.navigate('setting')}>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('setting', {
+                  image,
+                  roomname,
+                  username,
+                  roomId,
+                  image,
+                })
+              }>
               <Text style={chatStyles.roomText}>{roomname}</Text>
             </TouchableOpacity>
           </View>
+        </View>
+        <View
+          style={{
+            display: 'flex',
+            justifyContent: 'space-evenly',
+            alignItems: 'center',
+            flexDirection: 'row',
+            width: '45%',
+          }}>
+          <TouchableOpacity onPress={() => mainHandler()}>
+            <Image
+              source={require('../../assets/videoCem.png')}
+              style={{width: 25, height: 25}}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => mainHandler()}>
+            <Image
+              source={require('../../assets/call.png')}
+              style={{width: 25, height: 25}}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => mainHandler()}>
+            <Image
+              source={require('../../assets/option.png')}
+              style={{width: 25, height: 30}}
+            />
+          </TouchableOpacity>
         </View>
       </View>
       <ImageBackground
@@ -259,17 +303,17 @@ export const ChatScreen = ({navigation, route}) => {
 
           {showReply && (
             <View style={chatStyles.replymainView}>
-              <TouchableOpacity
-                style={chatStyles.closeReply}
-                onPress={() => {
-                  setShowReply(false);
-                }}>
-                <Image
-                  style={{height: 25, width: 25}}
-                  source={require('../../assets/cross.png')}
-                />
-              </TouchableOpacity>
-              <View>
+              <View style={chatStyles.replyView}>
+                <TouchableOpacity
+                  style={chatStyles.closeReply}
+                  onPress={() => {
+                    setShowReply(false);
+                  }}>
+                  <Image
+                    style={{height: 25, width: 25}}
+                    source={require('../../assets/cross.png')}
+                  />
+                </TouchableOpacity>
                 <Text style={{margin: 1, fontWeight: 'bold'}}>
                   {replyTo.username}
                 </Text>

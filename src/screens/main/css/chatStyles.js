@@ -7,6 +7,13 @@ export const chatStyles = StyleSheet.create({
     alignItems: 'center',
     height: '100%',
   },
+  header: {
+    height: '8%',
+    backgroundColor: '#006257',
+    display: 'flex',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+  },
   imageContainer: {
     flex: 1,
     paddingHorizontal: '4%',
@@ -51,14 +58,17 @@ export const chatStyles = StyleSheet.create({
   },
   inputContainer: {
     flexDirection: 'row',
-    marginBottom: 7,
+    marginBottom: 2,
   },
   input: {
     flex: 1,
     backgroundColor: '#FFF',
-    borderRadius: 24,
+    padding: 0,
+    borderRadius: 40,
+    borderColor: 'gray',
+    height: 40,
     paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingVertical: 3,
     marginRight: 12,
   },
   sendButton: {
@@ -66,7 +76,7 @@ export const chatStyles = StyleSheet.create({
     borderRadius: 50,
     // paddingHorizontal: 16,
     // paddingVertical: 10,
-    padding: 16,
+    padding: 10,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -94,11 +104,19 @@ export const chatStyles = StyleSheet.create({
   },
 
   replymainView: {
-    padding: 7,
+    padding: 10,
     margin: 3,
-    backgroundColor: '#B8FFB8',
+    backgroundColor: '#ffffff',
     position: 'relative',
     borderRadius: 10,
+    width: '82%',
+  },
+  replyView: {
+    backgroundColor: '#dddddd',
+    padding: 5,
+    borderRadius: 9,
+    borderLeftWidth: 5,
+    borderLeftColor: 'green',
   },
   closeReply: {position: 'absolute', top: 4, right: 5, zIndex: 10},
   loading: {

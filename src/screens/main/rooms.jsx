@@ -8,6 +8,7 @@ import {
   Text,
   Image,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 
 import {CustomModal, HeaderComponent} from '../../components';
@@ -18,7 +19,6 @@ import useSocket from '../../utils/socket';
 
 export const RoomsScreen = ({navigation}) => {
   const socket = useSocket();
-  console.log(socket);
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   const {success: createRoomSuccess, loading: createRoomLoading} = useSelector(
@@ -33,6 +33,15 @@ export const RoomsScreen = ({navigation}) => {
   const [data, setData] = useState(getRoom);
   const userName = useSelector(state => state?.userLogin?.userInfo);
   const username = userName?.user?.username;
+
+  const mainHandler = () => {
+    Alert.alert('', 'Under Development.', [
+      {
+        text: 'OK',
+        onPress: () => console.log(''),
+      },
+    ]);
+  };
   useEffect(() => {
     dispatch(getRoomAction());
   }, []);
@@ -104,15 +113,54 @@ export const RoomsScreen = ({navigation}) => {
     <>
       <View style={styles.chatScreen}>
         <View style={styles.header}>
-          <View style={{paddingHorizontal: 20}}>
-            <Text style={{color: 'white', fontWeight: 'bold', fontSize: 19}}>
-              ChatApp
-            </Text>
+          <View
+            style={{
+              paddingHorizontal: 20,
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}>
+            <View>
+              <Text style={{color: 'white', fontWeight: 'bold', fontSize: 19}}>
+                ChatApp
+              </Text>
+            </View>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                width: '50%',
+              }}>
+              <TouchableOpacity onPress={() => mainHandler()}>
+                <Image
+                  source={require('../../assets/camera.png')}
+                  style={{width: 34, height: 34}}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => mainHandler()}>
+                <Image
+                  source={require('../../assets/search.png')}
+                  style={{width: 25, height: 25, marginTop: '20%'}}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => mainHandler()}>
+                <Image
+                  source={require('../../assets/option.png')}
+                  style={{width: 34, height: 34}}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
           <View style={styles.bottomBar}>
             <View>
               <Text style={styles.bottomText}>Rooms</Text>
             </View>
+            <TouchableOpacity onPress={() => mainHandler()}>
+              <Text style={styles.bottomText}>Status</Text>
+            </TouchableOpacity>
             <View>
               <TouchableOpacity
                 onPress={() => dispatch(logOutAction(navigation))}>
