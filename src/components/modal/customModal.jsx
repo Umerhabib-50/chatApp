@@ -13,7 +13,10 @@ import {useDispatch, useSelector} from 'react-redux';
 import {createRoomAction, getRoomAction, roomImageAction} from '../../redux';
 import {launchImageLibrary} from 'react-native-image-picker';
 import axios from 'axios';
+import useSocket from '../../utils/socket';
+
 export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
+  const socket = useSocket();
   const [selectedImage, setSelectedImage] = useState(null);
   const [roomName, setRoomName] = useState('');
   const [imageShow, setImageShow] = useState(false);
@@ -56,6 +59,7 @@ export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
         setModalVisible(false);
         setRoomName('');
         setSelectedImage(null);
+        socket.emit('createRoomRequest');
       } catch (error) {
         console.log('Error:', error.message);
       }

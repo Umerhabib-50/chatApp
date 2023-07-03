@@ -9,7 +9,7 @@ import {
   Alert,
   ImageBackground,
 } from 'react-native';
-import io from 'socket.io-client';
+
 import axios from 'axios';
 import {Swipeable, GestureHandlerRootView} from 'react-native-gesture-handler';
 import {ActivityIndicator, TouchableRipple} from 'react-native-paper';
@@ -17,6 +17,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {deleteMsgAction} from '../../redux';
 import {chatStyles} from './css/chatStyles';
 import {config} from '../../config';
+import useSocket from '../../utils/socket';
 
 const Separator = () => <View style={chatStyles.itemSeparator} />;
 
@@ -38,7 +39,7 @@ const RightSwipeActions = () => {
 
 export const ChatScreen = ({navigation, route}) => {
   const {username, roomname, roomId, image} = route?.params;
-  const socket = io(config);
+  const socket = useSocket();
   const [messages, setMessages] = useState([]);
   const flatListRef = useRef(null);
   const swipeableRefs = useRef([]);
@@ -59,18 +60,20 @@ export const ChatScreen = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    socket.on('connect', () => {
-      socket.emit('join', room);
-    });
+    if (socket) {
+      socket.on('connect', () => {
+        socket.emit('join', room);
+      });
 
-    socket.on('receive', newMessage => {
-      setMessages(prevMessages => [...prevMessages, newMessage]);
-    });
+      socket.on('receive', newMessage => {
+        setMessages(prevMessages => [...prevMessages, newMessage]);
+      });
 
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
+      return () => {
+        socket.off('receive');
+      };
+    }
+  }, [socket]);
 
   useEffect(() => {
     scrollToBottom();
@@ -132,7 +135,6 @@ export const ChatScreen = ({navigation, route}) => {
 
               await axios.delete(`${config}/room/deletemessage`, deleteObj);
 
-              // name === username &&
               setMessages(prevMessages =>
                 prevMessages.filter(obj => obj._id !== id),
               );
@@ -160,12 +162,6 @@ export const ChatScreen = ({navigation, route}) => {
           overshootFriction={8}
           rightThreshold={40}
           leftThreshold={40}>
-          {/* <View>
-            <Image
-              source={require('../../assets/backIcon.png')}
-              style={{width: 30, height: 30}}
-            />
-          </View> */}
           <TouchableRipple
             style={{marginBottom: 8}}
             onLongPress={() => handleLongPress(item?._id, name)}>
@@ -304,3 +300,5 @@ export const ChatScreen = ({navigation, route}) => {
     </View>
   );
 };
+
+export default ChatScreen;

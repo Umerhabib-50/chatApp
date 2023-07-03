@@ -9,13 +9,16 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import io from 'socket.io-client';
+
 import {CustomModal, HeaderComponent} from '../../components';
 import {useDispatch, useSelector} from 'react-redux';
 import {getRoomAction, logOutAction} from '../../redux';
 import {ActivityIndicator, IconButton} from 'react-native-paper';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import useSocket from '../../utils/socket';
+
 export const RoomsScreen = ({navigation}) => {
+  const socket = useSocket();
+  console.log(socket);
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   const {success: createRoomSuccess, loading: createRoomLoading} = useSelector(
@@ -39,6 +42,15 @@ export const RoomsScreen = ({navigation}) => {
       dispatch(getRoomAction());
     }
   }, [createRoomSuccess]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('createRoomSuccess', () => {
+        dispatch(getRoomAction());
+      });
+    }
+  }, []);
+
   const renderItem = ({item, index}) => {
     const {name, image} = item;
     return (
