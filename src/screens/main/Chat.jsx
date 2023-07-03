@@ -37,7 +37,7 @@ const RightSwipeActions = () => {
 };
 
 export const ChatScreen = ({navigation, route}) => {
-  const {username, roomname, roomId} = route?.params;
+  const {username, roomname, roomId, image} = route?.params;
   const socket = io(config);
   const [messages, setMessages] = useState([]);
   const flatListRef = useRef(null);
@@ -106,16 +106,19 @@ export const ChatScreen = ({navigation, route}) => {
     }
   };
 
-  const handleLongPress = id => {
+  const handleLongPress = (id, name) => {
+    console.log('delete model name', name);
     Alert.alert(
-      'Delete Message',
-      'Are you sure you want to delete this Message?',
+      name === username ? 'Delete Message' : 'Oops ',
+      name === username
+        ? 'Are you sure you want to delete this Message?'
+        : "You Can't Delete This Message",
       [
         {
           text: 'Cancel',
           style: 'cancel',
         },
-        {
+        name === username && {
           text: 'Delete',
           style: 'destructive',
           onPress: async () => {
@@ -128,6 +131,8 @@ export const ChatScreen = ({navigation, route}) => {
               };
 
               await axios.delete(`${config}/room/deletemessage`, deleteObj);
+
+              // name === username &&
               setMessages(prevMessages =>
                 prevMessages.filter(obj => obj._id !== id),
               );
@@ -141,6 +146,7 @@ export const ChatScreen = ({navigation, route}) => {
   };
 
   const renderItem = ({item, index}) => {
+    const {username: name} = item;
     return (
       <GestureHandlerRootView>
         <Swipeable
@@ -154,9 +160,15 @@ export const ChatScreen = ({navigation, route}) => {
           overshootFriction={8}
           rightThreshold={40}
           leftThreshold={40}>
+          {/* <View>
+            <Image
+              source={require('../../assets/backIcon.png')}
+              style={{width: 30, height: 30}}
+            />
+          </View> */}
           <TouchableRipple
             style={{marginBottom: 8}}
-            onLongPress={() => handleLongPress(item?._id)}>
+            onLongPress={() => handleLongPress(item?._id, name)}>
             <View
               style={[
                 chatStyles.messageContainer,
@@ -202,12 +214,35 @@ export const ChatScreen = ({navigation, route}) => {
               onPress={() => navigation.navigate('rooms')}>
               <Image
                 source={require('../../assets/backIcon.png')}
-                style={{width: 40, height: 40}}
+                style={{width: 30, height: 30}}
               />
             </TouchableOpacity>
           </View>
           <View>
-            <Text style={chatStyles.roomText}>{roomname}</Text>
+            {image ? (
+              <Image
+                source={{uri: image}}
+                style={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: 50,
+                }}
+              />
+            ) : (
+              <Image
+                source={require('../../assets/group.png')}
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 50,
+                }}
+              />
+            )}
+          </View>
+          <View>
+            <TouchableOpacity onPress={() => navigation.navigate('setting')}>
+              <Text style={chatStyles.roomText}>{roomname}</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>

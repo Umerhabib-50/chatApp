@@ -15,7 +15,7 @@ export const chatStyles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 25,
+    fontSize: 20,
     marginLeft: '4%',
   },
   container: {

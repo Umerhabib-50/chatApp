@@ -39,50 +39,57 @@ export const RoomsScreen = ({navigation}) => {
       dispatch(getRoomAction());
     }
   }, [createRoomSuccess]);
-
   const renderItem = ({item, index}) => {
+    const {name, image} = item;
     return (
       <TouchableOpacity
         onPress={() =>
-          // navigation.navigate('userjoinroom')
           navigation.navigate('chats', {
-            roomname: item?.name,
+            roomname: item.name,
             username,
-            roomId: item?._id,
+            roomId: item._id,
+            image,
           })
         }>
-        <View
-          style={[
-            styles.singleCard,
-            {
-              borderBottomWidth: 0.5,
-              borderBottomColor: 'gray',
-              marginLeft: 10,
-              marginRight: 10,
-            },
-          ]}>
+        <View style={[styles.singleCard]}>
           <View>
-            <Image
-              source={require('../../assets/group.png')}
-              style={{
-                width: 50,
-                height: 50,
-                borderRadius: 50,
-                // backgroundColor: 'red',
-              }}
-            />
+            {image ? (
+              <Image
+                source={{uri: image}}
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 50,
+                }}
+              />
+            ) : (
+              <Image
+                source={require('../../assets/group.png')}
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 50,
+                }}
+              />
+            )}
           </View>
           <View>
-            <Text style={styles.text}> {item?.name}</Text>
+            <Text style={styles.text}> {name}</Text>
           </View>
         </View>
+        <View
+          style={{
+            borderBottomWidth: 0.5,
+            borderBottomColor: '#DEDEDE',
+            marginLeft: 30,
+            marginRight: 30,
+          }}></View>
       </TouchableOpacity>
     );
   };
 
   return (
     <>
-      {/* <HeaderComponent userName={'Rooms'} /> */}
       <View style={styles.chatScreen}>
         <View style={styles.header}>
           <View style={{paddingHorizontal: 20}}>
@@ -211,10 +218,8 @@ const styles = StyleSheet.create({
   singleCard: {
     display: 'flex',
     flexDirection: 'row',
-    padding: 10,
     alignItems: 'center',
-    // marginLeft: 9,
-    // borderBottomWidth: 1,
-    // borderBottomWidth: 1,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
   },
 });

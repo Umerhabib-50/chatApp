@@ -35,10 +35,12 @@ export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
   };
 
   const handleCreateRoom = async () => {
-    if (roomName && selectedImage) {
+    if (roomName) {
       const formData = new FormData();
       formData.append('name', roomName);
-      formData.append('image', selectedImage);
+      {
+        selectedImage && formData.append('image', selectedImage);
+      }
 
       try {
         const response = await axios.post(
@@ -82,12 +84,14 @@ export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
-            backgroundColor: '#075E54',
+            // backgroundColor: '#075E54',
+            backgroundColor: '#006257',
           }}>
           <View>
             <Pressable
               onPress={() => {
                 setModalVisible(!modalVisible);
+                setSelectedImage('');
                 setRoomName('');
               }}>
               <Image
@@ -115,23 +119,32 @@ export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
             <View
               style={{
                 backgroundColor: '#e3dac9',
-                width: '15%',
-                height: '9%',
+                width: 40,
+                height: 40,
                 alignItems: 'center',
                 marginTop: '5%',
                 borderRadius: 50,
               }}>
-              <Pressable onPress={selectImage}>
-                <Image
-                  style={{width: 40, height: 40, marginTop: '7%'}}
-                  source={require('../../assets/camera.png')}
-                />
-              </Pressable>
+              {!selectedImage && (
+                <Pressable onPress={selectImage}>
+                  <Image
+                    style={{width: 35, height: 35, marginTop: '4%'}}
+                    source={require('../../assets/camera.png')}
+                  />
+                </Pressable>
+              )}
+
               {selectedImage && (
-                <Image
-                  source={selectedImage}
-                  style={{width: 40, height: 40, marginTop: '7%'}}
-                />
+                <Pressable onPress={selectImage}>
+                  <Image
+                    source={selectedImage}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 50,
+                    }}
+                  />
+                </Pressable>
               )}
             </View>
             <View style={{width: '70%', marginLeft: '5%'}}>
@@ -149,8 +162,14 @@ export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
                 }}
                 value={roomName}
               />
+              {showError && (
+                <View style={{marginTop: '8%'}}>
+                  <Text style={{color: '#FFFF00'}}>Please Enter Room Name</Text>
+                </View>
+              )}
             </View>
           </View>
+
           <View style={{display: 'flex', flexDirection: 'row-reverse'}}>
             <IconButton
               icon={() => (
@@ -179,11 +198,6 @@ export const CustomModal = ({modalVisible, setModalVisible, setData}) => {
             value={roomName}
           /> */}
         </View>
-        {showError && (
-          <View>
-            <Text style={{color: '#FFFF00'}}>Please Enter Room Name</Text>
-          </View>
-        )}
 
         <Pressable
           onPress={() => {
