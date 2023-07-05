@@ -11,38 +11,21 @@ import {
 } from 'react-native';
 
 import axios from 'axios';
-import {Swipeable, GestureHandlerRootView} from 'react-native-gesture-handler';
 import {ActivityIndicator, TouchableRipple} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 import {deleteMsgAction} from '../../redux';
 import {chatStyles} from './css/chatStyles';
 import {config} from '../../config';
 import useSocket from '../../utils/socket';
+import {SwipeableMessage} from '../../components/swippable/swippable';
 
 const Separator = () => <View style={chatStyles.itemSeparator} />;
-
-const LeftSwipeActions = () => {
-  return (
-    <View style={{flex: 1, justifyContent: 'center'}}>
-      <Text style={chatStyles.swipeActionText}></Text>
-    </View>
-  );
-};
-
-const RightSwipeActions = () => {
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'flex-end'}}>
-      <Text style={chatStyles.swipeActionText}></Text>
-    </View>
-  );
-};
 
 export const ChatScreen = ({navigation, route}) => {
   const {username, roomname, roomId, image} = route?.params;
   const socket = useSocket();
   const [messages, setMessages] = useState([]);
   const flatListRef = useRef(null);
-  const swipeableRefs = useRef([]);
   const [message, setMessage] = useState('');
   const [room, setRoom] = useState(roomname);
   const [showReply, setShowReply] = useState(false);
@@ -55,7 +38,7 @@ export const ChatScreen = ({navigation, route}) => {
 
   const scrollToBottom = () => {
     if (flatListRef.current) {
-      flatListRef.current.scrollToEnd({animated: true});
+      flatListRef.current.scrollToEnd({animated: false});
     }
   };
 
@@ -79,16 +62,16 @@ export const ChatScreen = ({navigation, route}) => {
     scrollToBottom();
   }, [messages]);
 
-  useEffect(() => {
-    const getMessages = async () => {
-      try {
-        const {data} = await axios.get(`${config}/room/singleroom/${room}`);
-        setMessages(data.messages);
-      } catch (error) {
-        console.log('getMessages error:', error);
-      }
-    };
+  const getMessages = async () => {
+    try {
+      const {data} = await axios.get(`${config}/room/singleroom/${room}`);
+      setMessages(data.messages);
+    } catch (error) {
+      console.log('getMessages error:', error);
+    }
+  };
 
+  useEffect(() => {
     getMessages();
   }, []);
 
@@ -98,14 +81,6 @@ export const ChatScreen = ({navigation, route}) => {
       socket.emit('send', {room, message, username, repliedTo});
       setMessage('');
       setShowReply(false);
-    }
-  };
-
-  const handleSwipeableWillOpen = index => {
-    setShowReply(true);
-    setReplyTo(messages[index]);
-    if (swipeableRefs.current[index]) {
-      swipeableRefs.current[index].close();
     }
   };
 
@@ -133,7 +108,6 @@ export const ChatScreen = ({navigation, route}) => {
               };
 
               await axios.delete(`${config}/room/deletemessage`, deleteObj);
-
               setMessages(prevMessages =>
                 prevMessages.filter(obj => obj._id !== id),
               );
@@ -156,53 +130,46 @@ export const ChatScreen = ({navigation, route}) => {
   const renderItem = ({item, index}) => {
     const {username: name} = item;
     return (
-      <GestureHandlerRootView>
-        <Swipeable
-          ref={ref => (swipeableRefs.current[index] = ref)}
-          useNativeDriver={true}
-          renderLeftActions={LeftSwipeActions}
-          renderRightActions={RightSwipeActions}
-          onSwipeableWillOpen={() => handleSwipeableWillOpen(index)}
-          overshootRight={false}
-          overshootLeft={false}
-          overshootFriction={8}
-          rightThreshold={40}
-          leftThreshold={40}>
-          <TouchableRipple
-            style={{marginBottom: 8}}
-            onLongPress={() => handleLongPress(item?._id, name)}>
-            <View
-              style={[
-                chatStyles.messageContainer,
-                username == item?.username
-                  ? chatStyles.sentMessage
-                  : chatStyles.receivedMessage,
-              ]}>
-              {username == item?.username ? null : (
-                <Text style={{fontWeight: 'bold'}}>{item?.username}</Text>
-              )}
-              {item?.repliedTo && (
-                <View
-                  style={[
-                    chatStyles.reply,
-                    username == item?.username
-                      ? chatStyles.sentReply
-                      : chatStyles.receivedReply,
-                  ]}>
-                  <Text style={{fontWeight: 'bold'}}>
-                    {item.repliedTo.username}
-                  </Text>
-                  <Text>{item.repliedTo.message}</Text>
-                </View>
-              )}
-              <Text>{item?.message}</Text>
-              <Text style={{textAlign: 'right'}}>
-                {item?.createdAt?.substr(0, 10)}
-              </Text>
-            </View>
-          </TouchableRipple>
-        </Swipeable>
-      </GestureHandlerRootView>
+      <SwipeableMessage
+        message={item}
+        setShowReply={setShowReply}
+        setReplyTo={setReplyTo}
+        
+        scrollToBottom={scrollToBottom}>
+        <TouchableRipple
+          style={{marginBottom: 8}}
+          onLongPress={() => handleLongPress(item?._id, name)}>
+          <View
+            style={[
+              chatStyles.messageContainer,
+              username == item?.username
+                ? chatStyles.sentMessage
+                : chatStyles.receivedMessage,
+            ]}>
+            {username == item?.username ? null : (
+              <Text style={{fontWeight: 'bold'}}>{item?.username}</Text>
+            )}
+            {item?.repliedTo && (
+              <View
+                style={[
+                  chatStyles.reply,
+                  username == item?.username
+                    ? chatStyles.sentReply
+                    : chatStyles.receivedReply,
+                ]}>
+                <Text style={{fontWeight: 'bold'}}>
+                  {item.repliedTo.username}
+                </Text>
+                <Text>{item.repliedTo.message}</Text>
+              </View>
+            )}
+            <Text>{item?.message}</Text>
+            <Text style={{textAlign: 'right'}}>
+              {item?.createdAt?.substr(0, 10)}
+            </Text>
+          </View>
+        </TouchableRipple>
+      </SwipeableMessage>
     );
   };
 
@@ -344,5 +311,3 @@ export const ChatScreen = ({navigation, route}) => {
     </View>
   );
 };
-
-export default ChatScreen;

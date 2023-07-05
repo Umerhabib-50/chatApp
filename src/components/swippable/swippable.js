@@ -1,66 +1,64 @@
-import React, {useRef, useState, useMemo} from 'react';
-import {View, StyleSheet} from 'react-native';
-import {
-  PanGestureHandler,
-  State,
-  GestureHandlerRootView,
-} from 'react-native-gesture-handler';
-import Animated, {
-  useAnimatedGestureHandler,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from 'react-native-reanimated';
+import React, {useRef} from 'react';
+import {View, Animated, PanResponder, Text, ScrollView} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
-export const SwipableComponent = ({children}) => {
-  const [swiped, setSwiped] = useState(false);
-  const translateX = useSharedValue(0);
+export const SwipeableMessage = ({
+  children,
+  message,
+  setShowReply,
+  setReplyTo,
 
-  const onGestureEvent = useAnimatedGestureHandler({
-    onStart: (_, ctx) => {
-      ctx.startX = translateX.value;
-    },
-    onActive: (event, ctx) => {
-      translateX.value = ctx.startX + event.translationX;
-    },
-    onEnd: event => {
-      if (Math.abs(event.translationX) > 120) {
-        setSwiped(true);
-      } else {
-        translateX.value = withSpring(0);
-      }
-    },
-  });
+  scrollToBottom,
+}) => {
+  const pan = useRef(new Animated.ValueXY()).current;
 
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{translateX: translateX.value}],
-    };
-  });
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (_, gestureState) => {
+        const {dx, dy} = gestureState;
+        return Math.abs(dx) > Math.abs(dy);
+      },
+      onPanResponderMove: (event, gestureState) => {
+        const {dx} = gestureState;
+        pan.setValue({x: dx, y: 0});
+        if (pan.x._value < -20 || pan.x._value < 30) {
+          Animated.spring(pan, {
+            toValue: {x: 0, y: 0},
+            useNativeDriver: false,
+          }).start();
+        }
+      },
+      onPanResponderRelease: () => {
+        if (pan.x._value < -50 || pan.x._value > 100) {
+          // console.log('Reply triggered!', pan.x._value);
+          // Implement your reply logic here
+          setShowReply(true);
+          setReplyTo({message: message.message, username: message.username});
+        }
 
-  const memoizedGestureHandler = useMemo(() => {
-    return (
-      <PanGestureHandler onGestureEvent={onGestureEvent}>
-        {children}
-      </PanGestureHandler>
-    );
-  }, []);
+        Animated.spring(pan, {
+          toValue: {x: 0, y: 0},
+          useNativeDriver: false,
+        }).start(() => {
+          // if (index === messages.length - 1) {
+          //   // Scroll to the bottom after the animation is finished
+          //   scrollToBottom();
+          // }
+        });
+      },
+    }),
+  ).current;
+
+  const panStyle = {
+    transform: pan.getTranslateTransform(),
+  };
 
   return (
-    <GestureHandlerRootView style={styles.container}>
-      <Animated.View style={[styles.container, animatedStyle]}>
-        {memoizedGestureHandler}
-        <View style={styles.contentContainer}>{children}</View>
+    <GestureHandlerRootView>
+      <Animated.View style={[panStyle]} {...panResponder.panHandlers}>
+        {children}
       </Animated.View>
     </GestureHandlerRootView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  contentContainer: {
-    flex: 1,
-  },
-});
