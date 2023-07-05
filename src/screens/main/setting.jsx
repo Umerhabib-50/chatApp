@@ -1,24 +1,30 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
 import {SettingStyle} from './css/settingStyle';
 import {CustomModal} from '../../components';
+import {useDispatch, useSelector} from 'react-redux';
+import {getRoomAction} from '../../redux';
 
 export const SettingScreen = ({navigation, route}) => {
-  const {roomname, username, roomId, image} = route?.params;
-  const [modalVisible, setModalVisible] = useState(false);
-  const [data, setData] = useState(roomname);
+  const {username, roomId} = route?.params;
+  // const [modalVisible, setModalVisible] = useState(false);
+
+  const getRoomData = useSelector(state => state?.getRoom?.getRoom);
+  const findArray = getRoomData?.find(data => data?._id == roomId);
+  const image = findArray?.image;
+  const roomname = findArray?.name;
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getRoomAction());
+  }, []);
+
   return (
     <View style={{backgroundColor: '#006257', flex: 1}}>
       <View style={SettingStyle.tabBar}>
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate('chats', {
-              image,
-              roomname,
-              username,
-              roomId,
-              image,
-            })
+            navigation.navigate('chats', {username, roomname, roomId, image})
           }>
           <Image
             source={require('../../assets/backIcon.png')}
@@ -26,20 +32,24 @@ export const SettingScreen = ({navigation, route}) => {
           />
         </TouchableOpacity>
         <TouchableOpacity>
-          {image ? (
-            <Image source={{uri: image}} style={SettingStyle.roomImage} />
+          {findArray?.image ? (
+            <Image
+              source={{uri: findArray?.image}}
+              style={SettingStyle.roomImage}
+            />
           ) : (
             <Image
               source={require('../../assets/group.png')}
               style={SettingStyle.roomImage}
             />
           )}
-
-          {/* <Image source={{uri: image}} style={SettingStyle.roomImage} /> */}
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            setModalVisible(true);
+            navigation.navigate('subChange', {
+              roomId,
+              roomname,
+            });
           }}>
           <Image
             source={require('../../assets/option.png')}
@@ -53,7 +63,7 @@ export const SettingScreen = ({navigation, route}) => {
           justifyContent: 'center',
         }}>
         <View>
-          <Text style={SettingStyle.roomName}>{roomname}</Text>
+          <Text style={SettingStyle.roomName}>{findArray?.name}</Text>
         </View>
         <View style={SettingStyle.menuIcon}>
           <TouchableOpacity>
@@ -87,13 +97,14 @@ export const SettingScreen = ({navigation, route}) => {
           Created on 03/07/2023
         </Text>
       </View>
-      <CustomModal
+      {/* <CustomModal
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         data={data}
         setData={setData}
         setting={true}
-      />
+        roomId={roomId}
+      /> */}
     </View>
   );
 };

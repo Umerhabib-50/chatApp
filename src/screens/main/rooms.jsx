@@ -13,7 +13,7 @@ import {
 
 import {CustomModal, HeaderComponent} from '../../components';
 import {useDispatch, useSelector} from 'react-redux';
-import {getRoomAction, logOutAction} from '../../redux';
+import {deleteRoomAction, getRoomAction, logOutAction} from '../../redux';
 import {ActivityIndicator, IconButton} from 'react-native-paper';
 import useSocket from '../../utils/socket';
 
@@ -29,11 +29,12 @@ export const RoomsScreen = ({navigation}) => {
     error,
     loading: getRoomLoading,
   } = useSelector(state => state?.getRoom);
+
   const loading = createRoomLoading || getRoomLoading;
   const [data, setData] = useState(getRoom);
   const userName = useSelector(state => state?.userLogin?.userInfo);
   const username = userName?.user?.username;
-
+  const {success: deleteRoomSuccess} = useSelector(state => state?.deleteRoom);
   const mainHandler = () => {
     Alert.alert('', 'Under Development.', [
       {
@@ -47,10 +48,10 @@ export const RoomsScreen = ({navigation}) => {
   }, []);
 
   useEffect(() => {
-    if (createRoomSuccess) {
+    if (createRoomSuccess || deleteRoomSuccess) {
       dispatch(getRoomAction());
     }
-  }, [createRoomSuccess]);
+  }, [createRoomSuccess, deleteRoomSuccess]);
 
   useEffect(() => {
     if (socket) {
@@ -59,15 +60,29 @@ export const RoomsScreen = ({navigation}) => {
       });
     }
   }, []);
-
+  const deleteRoomFun = id => {
+    Alert.alert('Delete Room', 'Are you sure you want to delete this Room?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: () => dispatch(deleteRoomAction(id)),
+      },
+    ]);
+  };
   const renderItem = ({item, index}) => {
-    const {name, image} = item;
+    const {name, image, _id} = item;
+    // console.log('check reeom and message', item?.messages[message.length - 1]);
     return (
       <TouchableOpacity
+        onLongPress={() => deleteRoomFun(_id)}
         onPress={() =>
           navigation.navigate('chats', {
-            roomname: item.name,
             username,
+            roomname: item.name,
             roomId: item._id,
             image,
           })
@@ -204,6 +219,7 @@ export const RoomsScreen = ({navigation}) => {
               size={50}
               onPress={() => {
                 setModalVisible(true);
+                // navigation.navigate('subChange');
               }}
             />
           </View>

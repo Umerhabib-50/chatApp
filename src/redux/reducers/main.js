@@ -5,6 +5,9 @@ import {
   DELETE_MESSAGE_FAIL,
   DELETE_MESSAGE_REQUEST,
   DELETE_MESSAGE_SUCCESS,
+  DELETE_ROOM_FAIL,
+  DELETE_ROOM_REQUEST,
+  DELETE_ROOM_SUCCESS,
   GET_ROOMS_FAIL,
   GET_ROOMS_REQUEST,
   GET_ROOMS_SUCCESS,
@@ -67,6 +70,18 @@ export const deleteMsgReducer = (state = {}, action) => {
       return {loading: false, deleteMsg: action.payload};
     case DELETE_MESSAGE_FAIL:
       return {loading: false, error: action.payload};
+    default:
+      return state;
+  }
+};
+export const deleteRoomReducer = (state = {}, action) => {
+  switch (action.type) {
+    case DELETE_ROOM_REQUEST:
+      return {loading: true, success: false};
+    case DELETE_ROOM_SUCCESS:
+      return {loading: false, deleteRoom: action.payload, success: true};
+    case DELETE_ROOM_FAIL:
+      return {loading: false, error: action.payload, success: false};
     default:
       return state;
   }

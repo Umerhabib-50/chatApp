@@ -6,12 +6,18 @@ import {
   DELETE_MESSAGE_FAIL,
   DELETE_MESSAGE_REQUEST,
   DELETE_MESSAGE_SUCCESS,
+  DELETE_ROOM_FAIL,
+  DELETE_ROOM_REQUEST,
+  DELETE_ROOM_SUCCESS,
   GET_ROOMS_FAIL,
   GET_ROOMS_REQUEST,
   GET_ROOMS_SUCCESS,
   GET_USERS_FAIL,
   GET_USERS_REQUEST,
   GET_USERS_SUCCESS,
+  UPDATE_IMAGE_ROOM_FAIL,
+  UPDATE_IMAGE_ROOM_REQUEST,
+  UPDATE_IMAGE_ROOM_SUCCESS,
 } from '../constants';
 import {config} from '../../config';
 
@@ -95,9 +101,25 @@ export const deleteMsgAction = (roomId, msgId) => async dispatch => {
       payload: data,
     });
   } catch (error) {
-    console.log('error from delete error', error);
     dispatch({
       type: DELETE_MESSAGE_FAIL,
+      payload: error?.response && error?.response?.data,
+    });
+  }
+};
+export const deleteRoomAction = id => async dispatch => {
+  try {
+    dispatch({
+      type: DELETE_ROOM_REQUEST,
+    });
+    const {data} = await axios.delete(`${config}/room/deleteroom/${id}`);
+    dispatch({
+      type: DELETE_ROOM_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: DELETE_ROOM_FAIL,
       payload: error?.response && error?.response?.data,
     });
   }
