@@ -37,7 +37,7 @@ export const chatStyles = StyleSheet.create({
     alignSelf: 'flex-start',
     maxWidth: '60%',
     minWidth: '40%',
-    borderRadius: 8,
+    // borderRadius: 8,
     paddingHorizontal: 8,
     paddingVertical: 4,
     shadowColor: '#000',
@@ -52,9 +52,13 @@ export const chatStyles = StyleSheet.create({
   sentMessage: {
     alignSelf: 'flex-end',
     backgroundColor: '#DCF8C6',
+    borderTopLeftRadius: 15,
+    borderBottomRightRadius: 15,
   },
   receivedMessage: {
     backgroundColor: '#FFFFFF',
+    borderTopRightRadius: 15,
+    borderBottomLeftRadius: 15,
   },
   inputContainer: {
     flexDirection: 'row',

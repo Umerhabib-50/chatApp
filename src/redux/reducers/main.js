@@ -53,11 +53,11 @@ export const createRoomReducer = (state = {}, action) => {
 export const getRoomReducer = (state = {}, action) => {
   switch (action.type) {
     case GET_ROOMS_REQUEST:
-      return {loading: true};
+      return {loading: true, success: false};
     case GET_ROOMS_SUCCESS:
-      return {loading: false, getRoom: action.payload};
+      return {loading: false, getRoom: action.payload, success: true};
     case GET_ROOMS_FAIL:
-      return {loading: false, error: action.payload};
+      return {loading: false, error: action.payload, success: false};
     default:
       return state;
   }
