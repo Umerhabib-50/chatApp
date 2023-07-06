@@ -183,7 +183,7 @@ export const ChatScreen = ({navigation, route}) => {
           <View>
             <TouchableOpacity
               style={{width: 30}}
-              onPress={() => navigation.navigate('rooms')}>
+              onPress={() => navigation.navigate('tabNavigation')}>
               <Image
                 source={require('../../assets/backIcon.png')}
                 style={{width: 35, height: 35}}
