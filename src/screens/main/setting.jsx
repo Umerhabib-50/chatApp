@@ -20,7 +20,7 @@ export const SettingScreen = ({navigation, route}) => {
   }, []);
 
   return (
-    <View style={{backgroundColor: '#006257', flex: 1}}>
+    <View style={{backgroundColor: '#128c7e', flex: 1}}>
       <View style={SettingStyle.tabBar}>
         <TouchableOpacity
           onPress={() =>

@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Alert,
   ImageBackground,
+  StyleSheet,
 } from 'react-native';
 
 import axios from 'axios';
@@ -130,11 +131,13 @@ export const ChatScreen = ({navigation, route}) => {
   const renderItem = ({item, index}) => {
     const {username: name} = item;
     return (
+      // <View style={styles.messageContainer}>
+      //   <Text style={styles.messageText}>{'hello'}</Text>
+      // </View>
       <SwipeableMessage
         message={item}
         setShowReply={setShowReply}
         setReplyTo={setReplyTo}
-        
         scrollToBottom={scrollToBottom}>
         <TouchableRipple
           style={{marginBottom: 8}}
@@ -183,7 +186,7 @@ export const ChatScreen = ({navigation, route}) => {
               onPress={() => navigation.navigate('rooms')}>
               <Image
                 source={require('../../assets/backIcon.png')}
-                style={{width: 30, height: 30}}
+                style={{width: 35, height: 35}}
               />
             </TouchableOpacity>
           </View>
@@ -192,8 +195,8 @@ export const ChatScreen = ({navigation, route}) => {
               <Image
                 source={{uri: image}}
                 style={{
-                  width: 30,
-                  height: 30,
+                  width: 35,
+                  height: 35,
                   borderRadius: 50,
                 }}
               />
@@ -311,3 +314,17 @@ export const ChatScreen = ({navigation, route}) => {
     </View>
   );
 };
+
+// const styles = StyleSheet.create({
+//   messageContainer: {
+//     backgroundColor: '#DCF8C6',
+//     borderRadius: 16,
+//     padding: 8,
+//     marginBottom: 8,
+//     alignSelf: 'flex-start',
+//     maxWidth: '80%',
+//   },
+//   messageText: {
+//     fontSize: 16,
+//   },
+// });
