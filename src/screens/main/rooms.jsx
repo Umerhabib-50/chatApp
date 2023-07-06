@@ -27,6 +27,7 @@ export const RoomsScreen = ({navigation}) => {
   const {
     getRoom,
     error,
+    success: getRoomSuccess,
     loading: getRoomLoading,
   } = useSelector(state => state?.getRoom);
 
@@ -75,7 +76,10 @@ export const RoomsScreen = ({navigation}) => {
   };
   const renderItem = ({item, index}) => {
     const {name, image, _id} = item;
-    // console.log('check reeom and message', item?.messages[message.length - 1]);
+
+    // const lastMsg = item?.messages[item?.messages.length - 1];
+    //  lastMsg?.message
+
     return (
       <TouchableOpacity
         onLongPress={() => deleteRoomFun(_id)}
@@ -93,8 +97,8 @@ export const RoomsScreen = ({navigation}) => {
               <Image
                 source={{uri: image}}
                 style={{
-                  width: 40,
-                  height: 40,
+                  width: 50,
+                  height: 50,
                   borderRadius: 50,
                 }}
               />
@@ -102,8 +106,8 @@ export const RoomsScreen = ({navigation}) => {
               <Image
                 source={require('../../assets/group.png')}
                 style={{
-                  width: 44,
-                  height: 44,
+                  width: 50,
+                  height: 50,
                   borderRadius: 50,
                 }}
               />
@@ -111,6 +115,16 @@ export const RoomsScreen = ({navigation}) => {
           </View>
           <View>
             <Text style={styles.text}> {name}</Text>
+            {/* <View style={{display: 'flex', flexDirection: 'row'}}>
+              <Text style={styles.subTitle}>
+                {lastMsg?.username == undefined
+                  ? 'Empty Room'
+                  : `${lastMsg?.username}:`}
+              </Text>
+              <Text style={{marginLeft: 3}}>
+                {lastMsg?.message == undefined ? '' : lastMsg?.message}
+              </Text>
+            </View> */}
           </View>
         </View>
         <View
@@ -267,7 +281,7 @@ const styles = StyleSheet.create({
 
     // fontWeight: 'bold',
     fontSize: 14,
-    marginTop: '20%',
+    // marginTop: '20%',
   },
   inputContainer: {
     display: 'flex',
@@ -289,15 +303,20 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   text: {
-    fontSize: 19,
+    fontSize: 15,
     marginLeft: 8,
     color: '#000000',
+    fontWeight: '500',
+  },
+  subTitle: {
+    marginLeft: 15,
   },
   singleCard: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 15,
-    paddingVertical: 8,
+    paddingVertical: 12,
+    marginTop: '2%',
   },
 });
