@@ -16,7 +16,8 @@ import {StatusBar} from 'react-native';
 
 const App = () => {
   useEffect(() => {
-    StatusBar.setBackgroundColor((Color = '#006257'));
+    // StatusBar.setBackgroundColor((Color = '#006257'));
+    StatusBar.setBackgroundColor((Color = '#128c7e'));
   }, []);
   return (
     <>

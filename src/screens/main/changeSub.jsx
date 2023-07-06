@@ -11,11 +11,13 @@ import {
 import {launchImageLibrary} from 'react-native-image-picker';
 import axios from 'axios';
 import useSocket from '../../utils/socket';
+import {CustomButton} from '../../components';
+import {config} from '../../config';
 
 export const ChangeSubjectScreen = ({navigation, route}) => {
   const {roomname, username, roomId} = route?.params;
   const [roomName, setRoomName] = useState(roomname);
-  console.log('roonName', roomName);
+
   const [imageShow, setImageShow] = useState(false);
   const socket = useSocket();
   const [selectedImage, setSelectedImage] = useState(null);
@@ -44,7 +46,7 @@ export const ChangeSubjectScreen = ({navigation, route}) => {
 
     try {
       const response = await axios.put(
-        `http://192.168.1.215:5000/room/rooms/${roomId}`,
+        `${config}/room/rooms/${roomId}`,
         formData,
         {
           headers: {
@@ -70,7 +72,7 @@ export const ChangeSubjectScreen = ({navigation, route}) => {
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
-            backgroundColor: '#006257',
+            backgroundColor: '#128c7e',
           }}>
           <View>
             <Pressable
@@ -137,10 +139,10 @@ export const ChangeSubjectScreen = ({navigation, route}) => {
                 // placeholder={roomname}
                 mode="flat"
                 activeOutlineColor="white"
-                textColor="white"
+                textColor="#000000"
                 placeholderTextColor="#e3dac9"
-                activeUnderlineColor="white"
-                style={{backgroundColor: '#128C7E'}}
+                activeUnderlineColor="#e3dac9"
+                style={{backgroundColor: '#ffffff'}}
                 onChangeText={text => {
                   setRoomName(text);
                   setShowError(false);
@@ -149,14 +151,29 @@ export const ChangeSubjectScreen = ({navigation, route}) => {
               />
               {showError && (
                 <View style={{marginTop: '8%'}}>
-                  <Text style={{color: '#FFFF00'}}>Please Enter Room Name</Text>
+                  <Text style={{color: 'red'}}>Please Enter Room Name</Text>
                 </View>
               )}
             </View>
           </View>
 
-          <View style={{display: 'flex', flexDirection: 'row-reverse'}}>
-            <IconButton
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginTop: '7%',
+            }}>
+            <CustomButton
+              onPress={() => {
+                setSelectedImage('');
+                setRoomName('');
+                navigation.navigate('setting', {roomname, username, roomId});
+              }}
+              title={'Cancel'}
+            />
+            <CustomButton onPress={updateRoomHandler} title={'Ok'} />
+            {/* <IconButton
               icon={() => (
                 <Image
                   source={require('../../assets/check.png')}
@@ -166,7 +183,7 @@ export const ChangeSubjectScreen = ({navigation, route}) => {
               containerColor={'#075E54'}
               size={50}
               onPress={updateRoomHandler}
-            />
+            /> */}
           </View>
         </View>
 
@@ -186,7 +203,7 @@ export const ChangeSubjectScreen = ({navigation, route}) => {
 };
 const styles = StyleSheet.create({
   modalView: {
-    backgroundColor: '#128C7E',
+    backgroundColor: '#ffffff',
     height: '100%',
     display: 'flex',
   },

@@ -145,19 +145,19 @@ export const RoomsScreen = ({navigation}) => {
               style={{
                 display: 'flex',
                 flexDirection: 'row',
-                justifyContent: 'space-between',
+                justifyContent: 'space-evenly',
                 width: '50%',
               }}>
               <TouchableOpacity onPress={() => mainHandler()}>
                 <Image
-                  source={require('../../assets/camera.png')}
-                  style={{width: 34, height: 34}}
+                  source={require('../../assets/chatCam.png')}
+                  style={{width: 23, height: 23, marginTop: '15%'}}
                 />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => mainHandler()}>
                 <Image
                   source={require('../../assets/search.png')}
-                  style={{width: 25, height: 25, marginTop: '20%'}}
+                  style={{width: 30, height: 30}}
                 />
               </TouchableOpacity>
 
@@ -215,7 +215,7 @@ export const RoomsScreen = ({navigation}) => {
                   style={{height: 40, width: 40}}
                 />
               )}
-              containerColor={'#006257'}
+              containerColor={'#128c7e'}
               size={50}
               onPress={() => {
                 setModalVisible(true);
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
   },
   header: {
     height: '15%',
-    backgroundColor: '#006257',
+    backgroundColor: '#128c7e',
     display: 'flex',
     justifyContent: 'space-evenly',
   },
@@ -264,8 +264,10 @@ const styles = StyleSheet.create({
   },
   bottomText: {
     color: 'white',
-    fontWeight: 'bold',
-    fontSize: 18,
+
+    // fontWeight: 'bold',
+    fontSize: 14,
+    marginTop: '20%',
   },
   inputContainer: {
     display: 'flex',

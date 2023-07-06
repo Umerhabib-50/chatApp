@@ -14,6 +14,8 @@ import {createRoomAction, getRoomAction, roomImageAction} from '../../redux';
 import {launchImageLibrary} from 'react-native-image-picker';
 import axios from 'axios';
 import useSocket from '../../utils/socket';
+import {CustomButton} from '../button/custom-button';
+import {config} from '../../config';
 
 export const CustomModal = ({
   modalVisible,
@@ -53,7 +55,7 @@ export const CustomModal = ({
 
       try {
         const response = await axios.post(
-          'http://192.168.1.215:5000/room/createroom',
+          `${config}/room/createroom`,
           formData,
           {
             headers: {
@@ -84,15 +86,14 @@ export const CustomModal = ({
       <View style={styles.modalView}>
         <View
           style={{
-            height: '9%',
+            height: '8%',
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
-
-            backgroundColor: '#006257',
+            backgroundColor: '#128c7e',
           }}>
           <View>
-            <Pressable
+            {/* <Pressable
               onPress={() => {
                 setModalVisible(!modalVisible);
                 setSelectedImage('');
@@ -102,11 +103,11 @@ export const CustomModal = ({
                 source={require('../../assets/backIcon.png')}
                 style={{width: 40, height: 40}}
               />
-            </Pressable>
+            </Pressable> */}
           </View>
           <View style={{marginLeft: '6%'}}>
             <Text style={styles.modalText}>
-              {setting == true ? 'Enter new subject' : 'New Room'}
+              {setting == true ? 'Enter new subject' : 'Enter new Room'}
             </Text>
             {setting == false && (
               <Text style={{color: '#e3dac9'}}>Add Subject</Text>
@@ -160,10 +161,10 @@ export const CustomModal = ({
                 placeholder={'Enter Room Name'}
                 mode="flat"
                 activeOutlineColor="white"
-                textColor="white"
+                textColor="#000000"
                 placeholderTextColor="#e3dac9"
                 activeUnderlineColor="white"
-                style={{backgroundColor: '#128C7E'}}
+                style={{backgroundColor: '#ffffff'}}
                 onChangeText={text => {
                   setRoomName(text);
                   setShowError(false);
@@ -172,24 +173,40 @@ export const CustomModal = ({
               />
               {showError && (
                 <View style={{marginTop: '8%'}}>
-                  <Text style={{color: '#FFFF00'}}>Please Enter Room Name</Text>
+                  <Text style={{color: 'red'}}>Please Enter Room Name</Text>
                 </View>
               )}
             </View>
           </View>
 
-          <View style={{display: 'flex', flexDirection: 'row-reverse'}}>
-            <IconButton
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginTop: '7%',
+            }}>
+            <CustomButton
+              onPress={() => {
+                setModalVisible(!modalVisible);
+                setSelectedImage('');
+                setRoomName('');
+                setShowError(false);
+              }}
+              title={'Cancel'}
+            />
+            <CustomButton onPress={handleCreateRoom} title={'Ok'} />
+            {/* <IconButton
               icon={() => (
                 <Image
                   source={require('../../assets/check.png')}
                   style={{height: 30, width: 30}}
                 />
               )}
-              containerColor={'#075E54'}
+              containerColor={'#128c7e'}
               size={50}
               onPress={handleCreateRoom}
-            />
+            /> */}
           </View>
         </View>
 
@@ -210,7 +227,7 @@ export const CustomModal = ({
 
 const styles = StyleSheet.create({
   modalView: {
-    backgroundColor: '#128C7E',
+    backgroundColor: '#ffffff',
     height: '100%',
     display: 'flex',
   },
@@ -224,6 +241,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 22,
   },
 });

@@ -9,7 +9,7 @@ export const chatStyles = StyleSheet.create({
   },
   header: {
     height: '8%',
-    backgroundColor: '#006257',
+    backgroundColor: '#128c7e',
     display: 'flex',
     justifyContent: 'space-between',
     flexDirection: 'row',
@@ -58,7 +58,7 @@ export const chatStyles = StyleSheet.create({
   },
   inputContainer: {
     flexDirection: 'row',
-    marginBottom: 2,
+    marginBottom: 5,
   },
   input: {
     flex: 1,
@@ -68,11 +68,19 @@ export const chatStyles = StyleSheet.create({
     borderColor: 'gray',
     height: 40,
     paddingHorizontal: 16,
-    paddingVertical: 3,
+    // paddingVertical: '6%',
     marginRight: 12,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   sendButton: {
-    backgroundColor: '#006257',
+    backgroundColor: '#128c7e',
     borderRadius: 50,
     // paddingHorizontal: 16,
     // paddingVertical: 10,

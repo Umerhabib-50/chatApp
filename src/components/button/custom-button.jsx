@@ -11,10 +11,14 @@ export const CustomButton = ({
       <Button
         style={{
           backgroundColor: 'white',
-          borderRadius: 4,
+          borderRadius: 0,
+          borderWidth: 0.5,
+          borderColor: '#e3dac9',
+          width: '50%',
+          paddingVertical: '2%',
         }}
         onPress={onPress}>
-        <Text variant={'titleMedium'} style={{color: '#006257'}}>
+        <Text variant={'labelMedium'} style={{color: '#006257'}}>
           {title}
         </Text>
       </Button>
