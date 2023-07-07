@@ -9,8 +9,19 @@ import {
 } from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {RoomsScreen} from './rooms';
-import {BusinessScreen} from './business';
-import {LogOutScreen} from './logOut';
+
+// const Tab = createMaterialTopTabNavigator();
+
+const Rooms = () => {
+  return (
+    <>
+      <View style={{flex: 1, backgroundColor: 'pink'}}>
+        <Text>rooms</Text>
+      </View>
+    </>
+  );
+};
+
 const Status = () => {
   return (
     <>
@@ -91,31 +102,17 @@ export const TabNavigationScreen = () => {
       </View>
       <Tab.Navigator
         screenOptions={{
-          tabBarLabelStyle: {color: 'white', fontWeight: 'bold'},
+          tabBarLabelStyle: {color: 'white',fontWeight:"bold"},
           tabBarStyle: {backgroundColor: '#128c7e'},
           tabBarIndicatorStyle: {
-            borderBottomColor: 'white',
+            borderBottomColor: 'white', 
             borderBottomWidth: 2,
           },
-          tabBarPressColor: 'transparent', // Remove ripple effect
         }}>
-        {/* <Tab.Screen
-          name="Status"
-          options={{
-            tabBarIcon: ({color, size}) => (
-              <Image
-                source={require('../../assets/home.png')}
-                style={{width: 25, height: 25}}
-              />
-            ),
-            tabBarShowLabel: false,
-            
-          }}
-          component={BusinessScreen}
-        /> */}
         <Tab.Screen name="Rooms" component={RoomsScreen} />
         <Tab.Screen name="Status" component={Status} />
-        <Tab.Screen name="LogOut" component={LogOutScreen} />
+        <Tab.Screen name="Status2" component={Status} />
+        <Tab.Screen name="Status3" component={Status} />
       </Tab.Navigator>
     </View>
   );

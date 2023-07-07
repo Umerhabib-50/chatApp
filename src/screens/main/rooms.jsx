@@ -33,8 +33,8 @@ export const RoomsScreen = ({navigation}) => {
 
   const loading = createRoomLoading || getRoomLoading;
   const [data, setData] = useState(getRoom);
-  const userName = useSelector(state => state?.userLogin?.userInfo);
-  const username = userName?.user?.username;
+  // const userName = useSelector(state => state?.userLogin?.userInfo);
+  // const username = userName?.user?.username;
   const {success: deleteRoomSuccess} = useSelector(state => state?.deleteRoom);
   const mainHandler = () => {
     Alert.alert('', 'Under Development.', [
@@ -85,10 +85,7 @@ export const RoomsScreen = ({navigation}) => {
         onLongPress={() => deleteRoomFun(_id)}
         onPress={() =>
           navigation.navigate('chats', {
-            username,
-            roomname: item.name,
             roomId: item._id,
-            image,
           })
         }>
         <View style={[styles.singleCard]}>
@@ -141,7 +138,7 @@ export const RoomsScreen = ({navigation}) => {
   return (
     <>
       {/* <View style={styles.chatScreen}> */}
-        {/* <View style={styles.header}>
+      {/* <View style={styles.header}>
           <View
             style={{
               paddingHorizontal: 20,
@@ -198,52 +195,52 @@ export const RoomsScreen = ({navigation}) => {
             </View>
           </View>
         </View> */}
-        <View style={styles.join}>
-          <View style={styles.card}>
-            {loading ? (
-              <View
-                style={{
-                  height: '92%',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <ActivityIndicator
-                  size={'large'}
-                  animating={true}
-                  color={'#006257'}
-                />
-              </View>
-            ) : (
-              <FlatList
-                data={getRoom}
-                renderItem={renderItem}
-                keyExtractor={(item, index) => index.toString()}
+      <View style={styles.join}>
+        <View style={styles.card}>
+          {loading ? (
+            <View
+              style={{
+                height: '92%',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <ActivityIndicator
+                size={'large'}
+                animating={true}
+                color={'#006257'}
+              />
+            </View>
+          ) : (
+            <FlatList
+              data={getRoom}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => index.toString()}
+            />
+          )}
+        </View>
+        <View style={{position: 'absolute', top: '86%', right: '3%'}}>
+          <IconButton
+            icon={() => (
+              <Image
+                source={require('../../assets/msgImage.png')}
+                style={{height: 40, width: 40}}
               />
             )}
-          </View>
-          <View style={{position: 'absolute', top: '86%', right: '3%'}}>
-            <IconButton
-              icon={() => (
-                <Image
-                  source={require('../../assets/msgImage.png')}
-                  style={{height: 40, width: 40}}
-                />
-              )}
-              containerColor={'#128c7e'}
-              size={50}
-              onPress={() => {
-                setModalVisible(true);
-                // navigation.navigate('setting');
-              }}
-            />
-          </View>
-          <CustomModal
-            modalVisible={modalVisible}
-            setModalVisible={setModalVisible}
-            data={data}
-            setData={setData}
+            containerColor={'#128c7e'}
+            size={50}
+            onPress={() => {
+              setModalVisible(true);
+              // navigation.navigate('setting');
+            }}
           />
         </View>
+        <CustomModal
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          data={data}
+          setData={setData}
+        />
+      </View>
       {/* </View> */}
     </>
   );
