@@ -213,7 +213,7 @@ export const SettingScreen = ({navigation, route}) => {
     {
       image: require('../../assets/bell.png'),
       title: 'Mute notifications',
-      title2: 'Encryption',
+      title2: 'notifications tone',
       subTitle: 'Always',
     },
     {
@@ -248,7 +248,7 @@ export const SettingScreen = ({navigation, route}) => {
             navigation.navigate('chats', {username, roomname, roomId, image})
           }>
           <Image
-            source={require('../../assets/backIcon.png')}
+            source={require('../../assets/backIconB.png')}
             style={SettingStyle.icon}
           />
         </TouchableOpacity>
@@ -268,8 +268,8 @@ export const SettingScreen = ({navigation, route}) => {
         <TouchableOpacity
           onPress={() => navigation.navigate('subChange', {roomId, roomname})}>
           <Image
-            source={require('../../assets/option.png')}
-            style={SettingStyle.icon}
+            source={require('../../assets/OptionB.png')}
+            style={{width: 20, height: 20}}
           />
         </TouchableOpacity>
       </View>
@@ -280,21 +280,21 @@ export const SettingScreen = ({navigation, route}) => {
         <View style={SettingStyle.menuIcon}>
           <TouchableOpacity style={SettingStyle.menuItem}>
             <Image
-              source={require('../../assets/call.png')}
+              source={require('../../assets/callB.png')}
               style={SettingStyle.menuImage}
             />
             <Text style={SettingStyle.menuText}>Audio</Text>
           </TouchableOpacity>
           <TouchableOpacity style={SettingStyle.menuItem}>
             <Image
-              source={require('../../assets/videoCem.png')}
+              source={require('../../assets/videoB.png')}
               style={SettingStyle.menuImage}
             />
             <Text style={SettingStyle.menuText}>Video</Text>
           </TouchableOpacity>
           <TouchableOpacity style={SettingStyle.menuItem}>
             <Image
-              source={require('../../assets/search.png')}
+              source={require('../../assets/searchB.png')}
               style={SettingStyle.menuImage}
             />
             <Text style={SettingStyle.menuText}>Search</Text>

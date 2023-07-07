@@ -128,26 +128,9 @@ export const ChatScreen = ({navigation, route}) => {
       },
     ]);
   };
-  const colorMapping = {};
 
-  const getColorForUsername = username => {
-    // Hash the username to generate a numeric value
-    let hash = 0;
-    for (let i = 0; i < username.length; i++) {
-      hash = username.charCodeAt(i) + ((hash << 5) - hash);
-    }
-
-    // Convert the numeric value to a color
-    const color =
-      '#' + ((hash & 0x00ffffff) | 0x80000000).toString(16).slice(1);
-
-    return color;
-  };
   const renderItem = ({item, index}) => {
     const {username: name} = item;
-
-    const color = getColorForUsername(name);
-
     return (
       <SwipeableMessage
         message={item}
@@ -165,7 +148,7 @@ export const ChatScreen = ({navigation, route}) => {
                 : chatStyles.receivedMessage,
             ]}>
             {username === item?.username ? null : (
-              <Text style={{fontWeight: 'bold', color}}>{item?.username}</Text>
+              <Text style={{fontWeight: 'bold'}}>{item?.username}</Text>
             )}
             {item?.repliedTo && (
               <View
@@ -198,7 +181,9 @@ export const ChatScreen = ({navigation, route}) => {
           <View>
             <TouchableOpacity
               style={{width: 30}}
-              onPress={() => navigation.navigate('tabNavigation')}>
+              onPress={() =>
+                navigation.navigate('tabNavigation', {screen: 'rooms'})
+              }>
               <Image
                 source={require('../../assets/backIcon.png')}
                 style={{width: 35, height: 35}}

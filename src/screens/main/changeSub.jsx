@@ -136,9 +136,9 @@ export const ChangeSubjectScreen = ({navigation, route}) => {
             <View style={{width: '70%', marginLeft: '5%'}}>
               <TextInput
                 mode="flat"
-                activeOutlineColor="white"
+                activeOutlineColor="#ffffff"
                 textColor="#000000"
-                placeholderTextColor="#e3dac9"
+                placeholderTextColor="#483c32"
                 activeUnderlineColor="#e3dac9"
                 style={{backgroundColor: '#ffffff'}}
                 onChangeText={text => {
@@ -146,7 +146,7 @@ export const ChangeSubjectScreen = ({navigation, route}) => {
                   setShowError(false);
                 }}
                 value={roomName}
-                selectionColor={'back'}
+                selectionColor={'#000000'}
               />
               {showError && (
                 <View style={{marginTop: '8%'}}>
