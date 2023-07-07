@@ -61,18 +61,10 @@ export const LoginScreen = ({navigation}) => {
             placeholder="Password"
           />
         </View>
-        <View
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            flexDirection: 'row',
-          }}>
-          <CustomButton
-            title={isloading?.loading ? 'Loading...' : 'Login'}
-            onPress={handleSubmit(onSubmit)}
-          />
-        </View>
-
+        <CustomButton
+          title={isloading?.loading ? 'Loading...' : 'Login'}
+          onPress={handleSubmit(onSubmit)}
+        />
         {show && (
           <View>
             <Text
@@ -115,7 +107,7 @@ const styles = StyleSheet.create({
     padding: '3%',
     justifyContent: 'center',
     height: '100%',
-    backgroundColor: '#128c7e',
+    backgroundColor: '#006257',
   },
   form: {
     padding: 29,

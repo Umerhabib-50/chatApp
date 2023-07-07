@@ -49,17 +49,10 @@ export const RegisterScreen = ({navigation}) => {
             errorMessage="Enter password"
           />
         </View>
-        <View
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            flexDirection: 'row',
-          }}>
-          <CustomButton
-            title={isLoading?.loading ? 'Loading...' : 'Register'}
-            onPress={handleSubmit(onSubmit)}
-          />
-        </View>
+        <CustomButton
+          title={isLoading?.loading ? 'Loading...' : 'Register'}
+          onPress={handleSubmit(onSubmit)}
+        />
         {registerData?.status == false && (
           <View>
             <Text
@@ -101,7 +94,7 @@ const styles = StyleSheet.create({
     padding: '3%',
     justifyContent: 'center',
     height: '100%',
-    backgroundColor: '#128c7e',
+    backgroundColor: '#006257',
   },
   form: {
     padding: 29,

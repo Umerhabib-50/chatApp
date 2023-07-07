@@ -17,18 +17,33 @@ import {useDispatch, useSelector} from 'react-redux';
 import {deleteMsgAction} from '../../redux';
 import {chatStyles} from './css/chatStyles';
 import {config} from '../../config';
-import useSocket from '../../utils/socket';
+// import useSocket from '../../utils/socket';
 import {SwipeableMessage} from '../../components/swippable/swippable';
-
+import io from 'socket.io-client';
+import {useIsFocused} from '@react-navigation/native';
 const Separator = () => <View style={chatStyles.itemSeparator} />;
 
 export const ChatScreen = ({navigation, route}) => {
-  const {username, roomname, roomId, image} = route?.params;
-  const socket = useSocket();
+  // const {roomname, roomId, image} = route?.params;
+  const socket = io(config);
+
+  const {roomId} = route?.params;
+
+  const userName = useSelector(state => state?.userLogin?.userInfo);
+  const username = userName?.user?.username;
+
+  const getRoomData = useSelector(state => state?.getRoom?.getRoom);
+  const findArray = getRoomData?.find(data => data?._id === roomId);
+
+  const room = findArray?.name;
+  const image = findArray?.image;
+
+  // const socket = useSocket();
   const [messages, setMessages] = useState([]);
   const flatListRef = useRef(null);
   const [message, setMessage] = useState('');
-  const [room, setRoom] = useState(roomname);
+  // const [room, setRoom] = useState(roomname);
+
   const [showReply, setShowReply] = useState(false);
   const dispatch = useDispatch();
   const {deleteMsg, loading} = useSelector(state => state?.deleteMsg);
@@ -43,21 +58,38 @@ export const ChatScreen = ({navigation, route}) => {
     }
   };
 
+  // useEffect(() => {
+  //   if (socket) {
+  //     socket.on('connect', () => {
+  //       socket.emit('join', room);
+  //       console.log('connection');
+  //     });
+
+  //     socket.on('receive', newMessage => {
+  //       console.log('receive');
+  //       setMessages(prevMessages => [...prevMessages, newMessage]);
+  //     });
+
+  //     return () => {
+  //       // console.log('receive');
+  //       // socket.off('receive');
+  //     };
+  //   }
+  // }, [socket]);
+
+  const isFocused = useIsFocused();
+
   useEffect(() => {
-    if (socket) {
-      socket.on('connect', () => {
-        socket.emit('join', room);
-      });
+    socket.on('connect', () => {
+      socket.emit('join', room);
+      console.log('connection');
+    });
 
-      socket.on('receive', newMessage => {
-        setMessages(prevMessages => [...prevMessages, newMessage]);
-      });
-
-      return () => {
-        socket.off('receive');
-      };
-    }
-  }, [socket]);
+    socket.on('receive', newMessage => {
+      console.log('receive');
+      setMessages(prevMessages => [...prevMessages, newMessage]);
+    });
+  }, [isFocused]);
 
   useEffect(() => {
     scrollToBottom();
@@ -80,6 +112,7 @@ export const ChatScreen = ({navigation, route}) => {
     if (message && message.trim().length > 0) {
       const repliedTo = showReply ? replyTo : undefined;
       socket.emit('send', {room, message, username, repliedTo});
+
       setMessage('');
       setShowReply(false);
     }
@@ -128,9 +161,20 @@ export const ChatScreen = ({navigation, route}) => {
       },
     ]);
   };
-
+  // <View style={styles.messageContainer}>
+  //   <Text style={styles.messageText}>{'hello'}</Text>
+  // </View>
+  const colorMapping = {};
   const renderItem = ({item, index}) => {
     const {username: name} = item;
+    let color = colorMapping[name];
+
+    if (!color) {
+      // Generate a random color if it's a new username
+      color = '#' + Math.floor(Math.random() * 16777215).toString(16);
+      colorMapping[name] = color;
+    }
+
     return (
       <SwipeableMessage
         message={item}
@@ -148,7 +192,7 @@ export const ChatScreen = ({navigation, route}) => {
                 : chatStyles.receivedMessage,
             ]}>
             {username === item?.username ? null : (
-              <Text style={{fontWeight: 'bold'}}>{item?.username}</Text>
+              <Text style={{fontWeight: 'bold', color}}>{item?.username}</Text>
             )}
             {item?.repliedTo && (
               <View
@@ -181,9 +225,7 @@ export const ChatScreen = ({navigation, route}) => {
           <View>
             <TouchableOpacity
               style={{width: 30}}
-              onPress={() =>
-                navigation.navigate('tabNavigation', {screen: 'rooms'})
-              }>
+              onPress={() => navigation.navigate('tabNavigation')}>
               <Image
                 source={require('../../assets/backIcon.png')}
                 style={{width: 35, height: 35}}
@@ -215,15 +257,11 @@ export const ChatScreen = ({navigation, route}) => {
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate('setting', {
-                  image,
-                  roomname,
-                  username,
                   roomId,
-                  image,
                 })
               }>
               <View>
-                <Text style={chatStyles.roomText}>{roomname}</Text>
+                <Text style={chatStyles.roomText}>{room}</Text>
                 <Text style={chatStyles.roominfo}>Tap here for group info</Text>
               </View>
             </TouchableOpacity>
