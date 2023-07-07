@@ -128,19 +128,25 @@ export const ChatScreen = ({navigation, route}) => {
       },
     ]);
   };
-  // <View style={styles.messageContainer}>
-  //   <Text style={styles.messageText}>{'hello'}</Text>
-  // </View>
   const colorMapping = {};
+
+  const getColorForUsername = username => {
+    // Hash the username to generate a numeric value
+    let hash = 0;
+    for (let i = 0; i < username.length; i++) {
+      hash = username.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    // Convert the numeric value to a color
+    const color =
+      '#' + ((hash & 0x00ffffff) | 0x80000000).toString(16).slice(1);
+
+    return color;
+  };
   const renderItem = ({item, index}) => {
     const {username: name} = item;
-    let color = colorMapping[name];
 
-    if (!color) {
-      // Generate a random color if it's a new username
-      color = '#' + Math.floor(Math.random() * 16777215).toString(16);
-      colorMapping[name] = color;
-    }
+    const color = getColorForUsername(name);
 
     return (
       <SwipeableMessage
