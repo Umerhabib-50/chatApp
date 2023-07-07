@@ -41,10 +41,14 @@ export const SettingStyle = StyleSheet.create({
     flex: 1,
   },
   tabBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 15,
-    paddingTop: 20,
+    // flexDirection: 'row',
+    // justifyContent: 'space-between',
+    // paddingHorizontal: 15,
+    // paddingTop: 20,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
   },
   icon: {
     width: 30,
