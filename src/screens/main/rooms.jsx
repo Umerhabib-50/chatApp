@@ -140,8 +140,8 @@ export const RoomsScreen = ({navigation}) => {
 
   return (
     <>
-      <View style={styles.chatScreen}>
-        <View style={styles.header}>
+      {/* <View style={styles.chatScreen}> */}
+        {/* <View style={styles.header}>
           <View
             style={{
               paddingHorizontal: 20,
@@ -197,7 +197,7 @@ export const RoomsScreen = ({navigation}) => {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+        </View> */}
         <View style={styles.join}>
           <View style={styles.card}>
             {loading ? (
@@ -244,7 +244,7 @@ export const RoomsScreen = ({navigation}) => {
             setData={setData}
           />
         </View>
-      </View>
+      {/* </View> */}
     </>
   );
 };
