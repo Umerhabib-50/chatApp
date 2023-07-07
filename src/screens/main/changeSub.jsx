@@ -119,7 +119,6 @@ export const ChangeSubjectScreen = ({navigation, route}) => {
                   />
                 </Pressable>
               )}
-
               {selectedImage && (
                 <Pressable onPress={selectImage}>
                   <Image
@@ -136,7 +135,6 @@ export const ChangeSubjectScreen = ({navigation, route}) => {
 
             <View style={{width: '70%', marginLeft: '5%'}}>
               <TextInput
-                // placeholder={roomname}
                 mode="flat"
                 activeOutlineColor="white"
                 textColor="#000000"
@@ -148,6 +146,7 @@ export const ChangeSubjectScreen = ({navigation, route}) => {
                   setShowError(false);
                 }}
                 value={roomName}
+                selectionColor={'back'}
               />
               {showError && (
                 <View style={{marginTop: '8%'}}>
