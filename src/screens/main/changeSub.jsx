@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, Text, Pressable, View, Image} from 'react-native';
 import {IconButton, TextInput} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
@@ -15,19 +15,11 @@ import {CustomButton} from '../../components';
 import {config} from '../../config';
 
 export const ChangeSubjectScreen = ({navigation, route}) => {
-  const {roomId} = route?.params;
-
-  const getRoomData = useSelector(state => state?.getRoom?.getRoom);
-
-  const findArray = getRoomData?.find(data => data?._id === roomId);
-
-  // const image = findArray?.image;
-  const roomname = findArray?.name;
-
+  const {roomname, username, roomId} = route?.params;
   const [roomName, setRoomName] = useState(roomname);
 
   const [imageShow, setImageShow] = useState(false);
-
+  const socket = useSocket();
   const [selectedImage, setSelectedImage] = useState(null);
   const dispatch = useDispatch();
   const [showError, setShowError] = useState(false);
@@ -62,18 +54,15 @@ export const ChangeSubjectScreen = ({navigation, route}) => {
           },
         },
       );
-
       dispatch(getRoomAction());
-      setTimeout(() => {
-        navigation.navigate('setting', {roomId});
-        setRoomName('');
-        setSelectedImage(null);
-      }, 2000);
+      navigation.navigate('setting', {roomname, username, roomId});
+      setRoomName('');
+      setSelectedImage(null);
+      socket.emit('createRoomRequest');
     } catch (error) {
       console.log('Error:', error.message);
     }
   };
-
   return (
     <>
       <View style={styles.modalView}>
@@ -147,9 +136,9 @@ export const ChangeSubjectScreen = ({navigation, route}) => {
             <View style={{width: '70%', marginLeft: '5%'}}>
               <TextInput
                 mode="flat"
-                activeOutlineColor="white"
+                activeOutlineColor="#ffffff"
                 textColor="#000000"
-                placeholderTextColor="#e3dac9"
+                placeholderTextColor="#483c32"
                 activeUnderlineColor="#e3dac9"
                 style={{backgroundColor: '#ffffff'}}
                 onChangeText={text => {
@@ -157,7 +146,7 @@ export const ChangeSubjectScreen = ({navigation, route}) => {
                   setShowError(false);
                 }}
                 value={roomName}
-                selectionColor={'back'}
+                selectionColor={'#000000'}
               />
               {showError && (
                 <View style={{marginTop: '8%'}}>
