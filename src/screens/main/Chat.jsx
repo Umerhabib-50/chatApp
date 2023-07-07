@@ -128,12 +128,21 @@ export const ChatScreen = ({navigation, route}) => {
       },
     ]);
   };
+  // <View style={styles.messageContainer}>
+  //   <Text style={styles.messageText}>{'hello'}</Text>
+  // </View>
+  const colorMapping = {};
   const renderItem = ({item, index}) => {
     const {username: name} = item;
+    let color = colorMapping[name];
+
+    if (!color) {
+      // Generate a random color if it's a new username
+      color = '#' + Math.floor(Math.random() * 16777215).toString(16);
+      colorMapping[name] = color;
+    }
+
     return (
-      // <View style={styles.messageContainer}>
-      //   <Text style={styles.messageText}>{'hello'}</Text>
-      // </View>
       <SwipeableMessage
         message={item}
         setShowReply={setShowReply}
@@ -145,18 +154,18 @@ export const ChatScreen = ({navigation, route}) => {
           <View
             style={[
               chatStyles.messageContainer,
-              username == item?.username
+              username === item?.username
                 ? chatStyles.sentMessage
                 : chatStyles.receivedMessage,
             ]}>
-            {username == item?.username ? null : (
-              <Text style={{fontWeight: 'bold'}}>{item?.username}</Text>
+            {username === item?.username ? null : (
+              <Text style={{fontWeight: 'bold', color}}>{item?.username}</Text>
             )}
             {item?.repliedTo && (
               <View
                 style={[
                   chatStyles.reply,
-                  username == item?.username
+                  username === item?.username
                     ? chatStyles.sentReply
                     : chatStyles.receivedReply,
                 ]}>
@@ -222,7 +231,10 @@ export const ChatScreen = ({navigation, route}) => {
                   image,
                 })
               }>
-              <Text style={chatStyles.roomText}>{roomname}</Text>
+              <View>
+                <Text style={chatStyles.roomText}>{roomname}</Text>
+                <Text style={chatStyles.roominfo}>Tap here for group info</Text>
+              </View>
             </TouchableOpacity>
           </View>
         </View>

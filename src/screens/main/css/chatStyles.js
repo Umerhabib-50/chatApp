@@ -19,11 +19,16 @@ export const chatStyles = StyleSheet.create({
     paddingHorizontal: '4%',
   },
   roomText: {
-    textAlign: 'center',
+    // textAlign: 'center',
     color: 'white',
     fontWeight: 'bold',
     fontSize: 20,
     marginLeft: '4%',
+  },
+  roominfo: {
+    marginLeft: '4%',
+    color: 'white',
+    fontWeight: '300',
   },
   container: {
     flex: 1,

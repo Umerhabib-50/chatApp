@@ -233,7 +233,7 @@ export const RoomsScreen = ({navigation}) => {
               size={50}
               onPress={() => {
                 setModalVisible(true);
-                // navigation.navigate('subChange');
+                // navigation.navigate('setting');
               }}
             />
           </View>
