@@ -162,8 +162,8 @@ export const CustomModal = ({
                 mode="flat"
                 activeOutlineColor="white"
                 textColor="#000000"
-                placeholderTextColor="#e3dac9"
-                activeUnderlineColor="white"
+                placeholderTextColor="#483c32"
+                activeUnderlineColor="#ffffff"
                 style={{backgroundColor: '#ffffff'}}
                 onChangeText={text => {
                   setRoomName(text);
