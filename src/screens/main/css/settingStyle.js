@@ -1,15 +1,54 @@
+// import {StyleSheet} from 'react-native';
+// export const SettingStyle = StyleSheet.create({
+//   tabBar: {
+//     display: 'flex',
+//     justifyContent: 'space-between',
+//     flexDirection: 'row',
+//   },
+//   roomImage: {
+//     width: 120,
+//     height: 120,
+//     borderRadius: 60,
+//     marginTop: '10%',
+//   },
+//   roomName: {
+//     color: '#ffffff',
+//     fontSize: 25,
+//     textAlign: 'center',
+//   },
+//   menuIcon: {
+//     display: 'flex',
+//     flexDirection: 'row',
+//     width: '50%',
+//     justifyContent: 'space-between',
+//     alignSelf: 'center',
+//     marginTop: '8%',
+//   },
+//   menuImage: {
+//     height: 30,
+//     width: 30,
+//   },
+//   menuText: {
+//     color: '#ffffff',
+//     marginTop: '20%',
+//   },
+// });
 import {StyleSheet} from 'react-native';
 
 export const SettingStyle = StyleSheet.create({
   container: {
-    backgroundColor: '#f4f4f4',
+    backgroundColor: '#128c7e',
     flex: 1,
   },
   tabBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 15,
-    paddingTop: 20,
+    // flexDirection: 'row',
+    // justifyContent: 'space-between',
+    // paddingHorizontal: 15,
+    // paddingTop: 20,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
   },
   icon: {
     width: 30,
@@ -22,14 +61,12 @@ export const SettingStyle = StyleSheet.create({
     marginTop: 30,
   },
   roomInfoContainer: {
-    marginTop: '3%',
     alignItems: 'center',
     paddingTop: 30,
     paddingBottom: 20,
-    backgroundColor: '#ffffff',
   },
   roomName: {
-    color: '#000000',
+    color: '#ffffff',
     fontSize: 25,
     textAlign: 'center',
   },
@@ -48,22 +85,21 @@ export const SettingStyle = StyleSheet.create({
     width: 30,
   },
   menuText: {
-    color: '#000000',
+    color: '#ffffff',
     marginTop: 5,
   },
   section: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#004940',
     paddingHorizontal: 15,
-    marginTop: 13,
-    paddingVertical: 14,
+    marginTop: 20,
   },
   sectionTitle: {
-    color: '#000000',
+    color: '#fff',
     fontWeight: '500',
     marginBottom: 5,
   },
   sectionSubtitle: {
-    color: '#666362',
+    color: '#dddddd',
   },
   row: {
     flexDirection: 'row',
@@ -80,7 +116,7 @@ export const SettingStyle = StyleSheet.create({
     marginLeft: 19,
   },
   rowTitle: {
-    color: '#000000',
+    color: '#fff',
     fontWeight: '500',
   },
   rowSubtitle: {

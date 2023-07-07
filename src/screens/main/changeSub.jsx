@@ -66,10 +66,9 @@ export const ChangeSubjectScreen = ({navigation, route}) => {
       dispatch(getRoomAction());
       setTimeout(() => {
         navigation.navigate('setting', {roomId});
-      }, 5000);
-
-      setRoomName('');
-      setSelectedImage(null);
+        setRoomName('');
+        setSelectedImage(null);
+      }, 2000);
     } catch (error) {
       console.log('Error:', error.message);
     }
