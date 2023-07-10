@@ -27,6 +27,7 @@ export const CustomModal = ({
   const socket = useSocket();
   const [selectedImage, setSelectedImage] = useState(null);
   const [roomName, setRoomName] = useState('');
+  const [desciption, setDesciption] = useState('');
   const [imageShow, setImageShow] = useState(false);
   const dispatch = useDispatch();
   const [showError, setShowError] = useState(false);
@@ -49,6 +50,7 @@ export const CustomModal = ({
     if (roomName) {
       const formData = new FormData();
       formData.append('name', roomName);
+      formData.append('description', desciption);
       {
         selectedImage && formData.append('image', selectedImage);
       }
@@ -160,16 +162,29 @@ export const CustomModal = ({
               <TextInput
                 placeholder={'Enter Room Name'}
                 mode="flat"
-                activeOutlineColor="white"
                 textColor="#000000"
                 placeholderTextColor="#483c32"
-                activeUnderlineColor="#ffffff"
+                activeUnderlineColor="#483c32"
                 style={{backgroundColor: '#ffffff'}}
                 onChangeText={text => {
                   setRoomName(text);
                   setShowError(false);
                 }}
                 value={roomName}
+              />
+              <TextInput
+                placeholder={'Add description'}
+                mode="flat"
+                multiline={true}
+                textColor="#000000"
+                placeholderTextColor="#483c32"
+                activeUnderlineColor="#483c32"
+                style={{backgroundColor: '#ffffff'}}
+                onChangeText={text => {
+                  setDesciption(text);
+                  setShowError(false);
+                }}
+                value={desciption}
               />
               {showError && (
                 <View style={{marginTop: '8%'}}>

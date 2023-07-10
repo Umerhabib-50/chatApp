@@ -24,67 +24,39 @@ import {useIsFocused} from '@react-navigation/native';
 const Separator = () => <View style={chatStyles.itemSeparator} />;
 
 export const ChatScreen = ({navigation, route}) => {
-  // const {roomname, roomId, image} = route?.params;
   const socket = io(config);
-
-  const {roomId} = route?.params;
-
+  const {roomId, description} = route?.params;
   const userName = useSelector(state => state?.userLogin?.userInfo);
   const username = userName?.user?.username;
-
   const getRoomData = useSelector(state => state?.getRoom?.getRoom);
   const findArray = getRoomData?.find(data => data?._id === roomId);
-
+  const str = findArray?.description;
+  const desc = str?.slice(0, 20);
   const room = findArray?.name;
   const image = findArray?.image;
-
-  // const socket = useSocket();
   const [messages, setMessages] = useState([]);
+
   const flatListRef = useRef(null);
   const [message, setMessage] = useState('');
-  // const [room, setRoom] = useState(roomname);
-
   const [showReply, setShowReply] = useState(false);
+  const [editMsg, setEditMsg] = useState('');
   const dispatch = useDispatch();
   const {deleteMsg, loading} = useSelector(state => state?.deleteMsg);
   const [replyTo, setReplyTo] = useState({
     message: '',
     username: '',
   });
-
   const scrollToBottom = () => {
     if (flatListRef.current) {
       flatListRef.current.scrollToEnd({animated: false});
     }
   };
-
-  // useEffect(() => {
-  //   if (socket) {
-  //     socket.on('connect', () => {
-  //       socket.emit('join', room);
-  //       console.log('connection');
-  //     });
-
-  //     socket.on('receive', newMessage => {
-  //       console.log('receive');
-  //       setMessages(prevMessages => [...prevMessages, newMessage]);
-  //     });
-
-  //     return () => {
-  //       // console.log('receive');
-  //       // socket.off('receive');
-  //     };
-  //   }
-  // }, [socket]);
-
   const isFocused = useIsFocused();
-
   useEffect(() => {
     socket.on('connect', () => {
       socket.emit('join', room);
       console.log('connection');
     });
-
     socket.on('receive', newMessage => {
       console.log('receive');
       setMessages(prevMessages => [...prevMessages, newMessage]);
@@ -118,16 +90,29 @@ export const ChatScreen = ({navigation, route}) => {
     }
   };
 
-  const handleLongPress = (id, name) => {
+  const handleLongPress = (id, name, message, time, date) => {
     Alert.alert(
-      name === username ? 'Delete Message' : 'Oops ',
+      name === username ? 'Message Options' : 'Oops ',
       name === username
-        ? 'Are you sure you want to delete this Message?'
+        ? 'What you want to do?'
         : "You Can't Delete This Message",
       [
-        {
-          text: 'Cancel',
-          style: 'cancel',
+        name === username
+          ? {
+              text: 'Nothing',
+              style: 'cancel',
+            }
+          : {
+              text: 'Cancel',
+              style: 'cancel',
+            },
+        name === username && {
+          text: 'Edit',
+          style: 'edit',
+          onPress: () => {
+            console.log(time, date);
+            // setEditMsg(message);
+          },
         },
         name === username && {
           text: 'Delete',
@@ -159,19 +144,11 @@ export const ChatScreen = ({navigation, route}) => {
       },
     ]);
   };
-  // <View style={styles.messageContainer}>
-  //   <Text style={styles.messageText}>{'hello'}</Text>
-  // </View>
-  // const colorMapping = {};
   const renderItem = ({item, index}) => {
-    const {username: name} = item;
-    // let color = colorMapping[name];
-
-    // if (!color) {
-    //   // Generate a random color if it's a new username
-    //   color = '#' + Math.floor(Math.random() * 16777215).toString(16);
-    //   colorMapping[name] = color;
-    // }
+    console.log('====================================');
+    console.log(item);
+    console.log('====================================');
+    const {username: name, _id, message, time, date} = item;
 
     return (
       <SwipeableMessage
@@ -181,7 +158,9 @@ export const ChatScreen = ({navigation, route}) => {
         scrollToBottom={scrollToBottom}>
         <TouchableRipple
           style={{marginBottom: 8}}
-          onLongPress={() => handleLongPress(item?._id, name)}>
+          onLongPress={() =>
+            handleLongPress(item?._id, name, message, time, date)
+          }>
           <View
             style={[
               chatStyles.messageContainer,
@@ -207,7 +186,7 @@ export const ChatScreen = ({navigation, route}) => {
               </View>
             )}
             <Text>{item?.message}</Text>
-            <Text style={{textAlign: 'right'}}>
+            <Text style={{textAlign: 'right', fontWeight: '500', fontSize: 11}}>
               {item?.createdAt?.substr(0, 10)}
             </Text>
           </View>
@@ -260,7 +239,7 @@ export const ChatScreen = ({navigation, route}) => {
               }>
               <View>
                 <Text style={chatStyles.roomText}>{room}</Text>
-                <Text style={chatStyles.roominfo}>Tap here for group info</Text>
+                <Text style={chatStyles.roominfo}>{desc}</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -336,7 +315,7 @@ export const ChatScreen = ({navigation, route}) => {
             <TextInput
               style={chatStyles.input}
               onChangeText={text => setMessage(text)}
-              value={message}
+              value={message || editMsg}
               placeholder="Message"
             />
             <TouchableOpacity

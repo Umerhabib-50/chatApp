@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, Image, TouchableOpacity, ScrollView} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getRoomAction} from '../../redux';
@@ -7,6 +7,8 @@ import {CustomModal} from '../../components';
 
 export const SettingScreen = ({navigation, route}) => {
   const {roomId} = route?.params;
+  const [showFullText, setShowFullText] = useState(false);
+
   const array = [
     {
       image: require('../../assets/bell.png'),
@@ -30,10 +32,12 @@ export const SettingScreen = ({navigation, route}) => {
 
   const getRoomData = useSelector(state => state?.getRoom?.getRoom);
   const findArray = getRoomData?.find(data => data?._id === roomId);
-  const image = findArray?.image;
-  const roomname = findArray?.name;
-  const dispatch = useDispatch();
+  const str = findArray?.description;
 
+  const dispatch = useDispatch();
+  const handleToggleText = () => {
+    setShowFullText(!showFullText);
+  };
   useEffect(() => {
     dispatch(getRoomAction());
   }, []);
@@ -99,7 +103,24 @@ export const SettingScreen = ({navigation, route}) => {
       </View>
 
       <View style={SettingStyle.section}>
-        <Text style={SettingStyle.sectionTitle}>Add room description</Text>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('subChange', {roomId, str});
+          }}>
+          {showFullText ? (
+            <Text style={{color: '#000000'}}>{str}</Text>
+          ) : (
+            <Text style={{color: '#000000'}}>{str?.slice(0, 100)}</Text>
+          )}
+        </TouchableOpacity>
+        {str?.length >= 19 && (
+          <TouchableOpacity onPress={() => handleToggleText()}>
+            <Text style={{color: '#128c7e'}}>
+              {showFullText ? 'Hide' : '...Read More'}
+            </Text>
+          </TouchableOpacity>
+        )}
+
         <Text style={SettingStyle.sectionSubtitle}>Created on 03/07/2023</Text>
       </View>
 

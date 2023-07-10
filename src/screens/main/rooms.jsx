@@ -75,7 +75,7 @@ export const RoomsScreen = ({navigation}) => {
     ]);
   };
   const renderItem = ({item, index}) => {
-    const {name, image, _id} = item;
+    const {name, image, _id, description} = item;
 
     // const lastMsg = item?.messages[item?.messages.length - 1];
     //  lastMsg?.message
@@ -86,6 +86,7 @@ export const RoomsScreen = ({navigation}) => {
         onPress={() =>
           navigation.navigate('chats', {
             roomId: item._id,
+            description,
           })
         }>
         <View style={[styles.singleCard]}>
@@ -112,6 +113,7 @@ export const RoomsScreen = ({navigation}) => {
           </View>
           <View>
             <Text style={styles.text}> {name}</Text>
+
             {/* <View style={{display: 'flex', flexDirection: 'row'}}>
               <Text style={styles.subTitle}>
                 {lastMsg?.username == undefined
