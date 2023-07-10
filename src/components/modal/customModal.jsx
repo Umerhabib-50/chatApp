@@ -26,6 +26,7 @@ export const CustomModal = ({
 }) => {
   const socket = useSocket();
   const [selectedImage, setSelectedImage] = useState(null);
+  console.log('selectedImage', selectedImage);
   const [roomName, setRoomName] = useState('');
   const [imageShow, setImageShow] = useState(false);
   const dispatch = useDispatch();
