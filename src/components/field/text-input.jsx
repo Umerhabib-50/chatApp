@@ -33,12 +33,12 @@ export const CustomInput = ({
                     value={value}
                     onChangeText={onChange}
                     placeholder={placeholder}
-                    placeholderTextColor="white"
+                    placeholderTextColor="#666362"
                     mode="outlined"
                     style={{
                       borderRadius: 10,
-                      color: 'white',
-                      borderColor: 'white',
+                      color: '#000000',
+                      borderColor: '#128c7e',
                       borderWidth: 1,
                       paddingLeft: 20,
                     }}
@@ -51,7 +51,7 @@ export const CustomInput = ({
         />
         {errors[name] && (
           <Text
-            style={{color: '#FFFF00', marginVertical: 3}}
+            style={{color: 'red', marginVertical: 3}}
             variant={'labelSmall'}>
             {errors[name].message === '' ? `${label} is required.` : ''}
           </Text>
