@@ -9,6 +9,7 @@ import {
   Alert,
   ImageBackground,
   StyleSheet,
+  Model,
 } from 'react-native';
 
 import axios from 'axios';
@@ -22,7 +23,7 @@ import {SwipeableMessage} from '../../components/swippable/swippable';
 import io from 'socket.io-client';
 import {useIsFocused} from '@react-navigation/native';
 import moment from 'moment';
-import {EditModel} from '../../components/modal/editModel';
+import {EditModel} from '../../components';
 
 const Separator = () => <View style={chatStyles.itemSeparator} />;
 
@@ -36,15 +37,17 @@ export const ChatScreen = ({navigation, route}) => {
   const str = findArray?.description;
   const desc = str?.slice(0, 20);
   const room = findArray?.name;
+  const replyInputRef = useRef(null);
   const image = findArray?.image;
   const [messages, setMessages] = useState([]);
-
   const flatListRef = useRef(null);
   const [message, setMessage] = useState('');
   const [showReply, setShowReply] = useState(false);
-  const [editMsg, setEditMsg] = useState('');
+  const [editMsg, setEditMsg] = useState(false);
   const dispatch = useDispatch();
+  const [defaultMsg, setDefaultMsg] = useState('');
   const {deleteMsg, loading} = useSelector(state => state?.deleteMsg);
+  const [visible, setVisible] = useState(false);
   const [replyTo, setReplyTo] = useState({
     message: '',
     username: '',
@@ -91,7 +94,7 @@ export const ChatScreen = ({navigation, route}) => {
     }
   };
 
-  const handleLongPress = (id, name, message, time, date) => {
+  const handleLongPress = (id, name, message, time, date, item) => {
     Alert.alert(
       name === username ? 'Message Options' : 'Oops ',
       name === username
@@ -115,7 +118,9 @@ export const ChatScreen = ({navigation, route}) => {
             const providedDate = moment(`${date} ${time}`, 'MM/DD/YYYY h:mm A');
             const newDate = providedDate.clone().add(15, 'minutes');
             if (newDate.isAfter(currentDate)) {
-              <EditModel />;
+              setEditMsg(true);
+              setVisible(true);
+              setDefaultMsg(item);
             } else {
               console.log('Cannot Edit');
               Alert.alert('Time Exceeded', 'Cannot Edit', [
@@ -171,7 +176,7 @@ export const ChatScreen = ({navigation, route}) => {
         <TouchableRipple
           style={{marginBottom: 8}}
           onLongPress={() =>
-            handleLongPress(item?._id, name, message, time, date)
+            handleLongPress(item?._id, name, message, time, date, item)
           }>
           <View
             style={[
@@ -207,141 +212,154 @@ export const ChatScreen = ({navigation, route}) => {
       </SwipeableMessage>
     );
   };
-
+  useEffect(() => {
+    if (showReply && replyInputRef.current) {
+      replyInputRef.current.focus();
+    }
+  }, [showReply]);
   return (
-    <View style={{display: 'flex', height: '100%'}}>
-      <View style={chatStyles.header}>
-        <View style={chatStyles.topView}>
-          <View>
-            <TouchableOpacity
-              style={{width: 30}}
-              onPress={() => navigation.navigate('tabNavigation')}>
-              <Image
-                source={require('../../assets/backIcon.png')}
-                style={{width: 35, height: 35}}
-              />
-            </TouchableOpacity>
-          </View>
-          <View>
-            {image ? (
-              <Image
-                source={{uri: image}}
-                style={{
-                  width: 35,
-                  height: 35,
-                  borderRadius: 50,
-                }}
-              />
-            ) : (
-              <Image
-                source={require('../../assets/group.png')}
-                style={{
-                  width: 34,
-                  height: 34,
-                  borderRadius: 50,
-                }}
-              />
-            )}
-          </View>
-          <View>
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('setting', {
-                  roomId,
-                })
-              }>
-              <View>
-                <Text style={chatStyles.roomText}>{room}</Text>
-                <Text style={chatStyles.roominfo}>{desc}</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View
-          style={{
-            display: 'flex',
-            justifyContent: 'space-evenly',
-            alignItems: 'center',
-            flexDirection: 'row',
-            width: '45%',
-          }}>
-          <TouchableOpacity onPress={() => mainHandler()}>
-            <Image
-              source={require('../../assets/videoCem.png')}
-              style={{width: 25, height: 25}}
-            />
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => mainHandler()}>
-            <Image
-              source={require('../../assets/call.png')}
-              style={{width: 25, height: 25}}
-            />
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => mainHandler()}>
-            <Image
-              source={require('../../assets/option.png')}
-              style={{width: 25, height: 30}}
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-      <ImageBackground
-        source={require('../../assets/backgroundImage.png')}
-        style={chatStyles.imageContainer}>
-        <View style={chatStyles.container}>
-          <FlatList
-            onContentSizeChange={scrollToBottom}
-            ref={flatListRef}
-            data={messages}
-            renderItem={renderItem}
-            keyExtractor={(item, index) => index.toString()}
-            contentContainerStyle={chatStyles.messagesContainer}
-            showsVerticalScrollIndicator={false}
-            ItemSeparatorComponent={Separator}
-          />
-
-          {showReply && (
-            <View style={chatStyles.replymainView}>
-              <View style={chatStyles.replyView}>
-                <TouchableOpacity
-                  style={chatStyles.closeReply}
-                  onPress={() => {
-                    setShowReply(false);
-                  }}>
-                  <Image
-                    style={{height: 25, width: 25}}
-                    source={require('../../assets/cross.png')}
-                  />
-                </TouchableOpacity>
-                <Text style={{margin: 1, fontWeight: 'bold'}}>
-                  {replyTo.username}
-                </Text>
-                <Text style={{margin: 1, maxWidth: 250}}>
-                  {replyTo.message}
-                </Text>
-              </View>
+    <>
+      <View style={{display: 'flex', height: '100%'}}>
+        <View style={chatStyles.header}>
+          <View style={chatStyles.topView}>
+            <View>
+              <TouchableOpacity
+                style={{width: 30}}
+                onPress={() => navigation.navigate('tabNavigation')}>
+                <Image
+                  source={require('../../assets/backIcon.png')}
+                  style={{width: 35, height: 35}}
+                />
+              </TouchableOpacity>
             </View>
-          )}
-          <View style={chatStyles.inputContainer}>
-            <TextInput
-              style={chatStyles.input}
-              onChangeText={text => setMessage(text)}
-              value={message}
-              placeholder="Message"
-            />
-            <TouchableOpacity
-              style={chatStyles.sendButton}
-              onPress={sendMessage}>
+            <View>
+              {image ? (
+                <Image
+                  source={{uri: image}}
+                  style={{
+                    width: 35,
+                    height: 35,
+                    borderRadius: 50,
+                  }}
+                />
+              ) : (
+                <Image
+                  source={require('../../assets/group.png')}
+                  style={{
+                    width: 34,
+                    height: 34,
+                    borderRadius: 50,
+                  }}
+                />
+              )}
+            </View>
+            <View>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('setting', {
+                    roomId,
+                  })
+                }>
+                <View>
+                  <Text style={chatStyles.roomText}>{room}</Text>
+                  <Text style={chatStyles.roominfo}>{desc}</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View
+            style={{
+              display: 'flex',
+              justifyContent: 'space-evenly',
+              alignItems: 'center',
+              flexDirection: 'row',
+              width: '45%',
+            }}>
+            <TouchableOpacity onPress={() => mainHandler()}>
               <Image
-                style={{height: 22, width: 22}}
-                source={require('../../assets/send.png')}
+                source={require('../../assets/videoCem.png')}
+                style={{width: 25, height: 25}}
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => mainHandler()}>
+              <Image
+                source={require('../../assets/call.png')}
+                style={{width: 25, height: 25}}
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => mainHandler()}>
+              <Image
+                source={require('../../assets/option.png')}
+                style={{width: 25, height: 30}}
               />
             </TouchableOpacity>
           </View>
         </View>
-      </ImageBackground>
-    </View>
+        <ImageBackground
+          source={require('../../assets/backgroundImage.png')}
+          style={chatStyles.imageContainer}>
+          <View style={chatStyles.container}>
+            <FlatList
+              onContentSizeChange={scrollToBottom}
+              ref={flatListRef}
+              data={messages}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => index.toString()}
+              contentContainerStyle={chatStyles.messagesContainer}
+              showsVerticalScrollIndicator={false}
+              ItemSeparatorComponent={Separator}
+            />
+
+            {showReply && (
+              <View style={chatStyles.replymainView}>
+                <View style={chatStyles.replyView}>
+                  <TouchableOpacity
+                    style={chatStyles.closeReply}
+                    onPress={() => {
+                      setShowReply(false);
+                    }}>
+                    <Image
+                      style={{height: 25, width: 25}}
+                      source={require('../../assets/cross.png')}
+                    />
+                  </TouchableOpacity>
+                  <Text style={{margin: 1, fontWeight: 'bold'}}>
+                    {replyTo.username}
+                  </Text>
+                  <Text style={{margin: 1, maxWidth: 250}}>
+                    {replyTo.message}
+                  </Text>
+                </View>
+              </View>
+            )}
+            <View style={chatStyles.inputContainer}>
+              <TextInput
+                ref={replyInputRef}
+                style={chatStyles.input}
+                onChangeText={text => setMessage(text)}
+                value={message}
+                placeholder="Message"
+              />
+              <TouchableOpacity
+                style={chatStyles.sendButton}
+                onPress={sendMessage}>
+                <Image
+                  style={{height: 22, width: 22}}
+                  source={require('../../assets/send.png')}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ImageBackground>
+      </View>
+      <EditModel
+        visible={visible}
+        setVisible={setVisible}
+        defaultMsg={defaultMsg}
+        setDefaultMsg={setDefaultMsg}
+      />
+    </>
   );
 };
