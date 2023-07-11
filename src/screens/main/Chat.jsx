@@ -58,10 +58,8 @@ export const ChatScreen = ({navigation, route}) => {
   useEffect(() => {
     socket.on('connect', () => {
       socket.emit('join', room);
-      console.log('connection');
     });
     socket.on('receive', newMessage => {
-      console.log('receive');
       setMessages(prevMessages => [...prevMessages, newMessage]);
     });
   }, [isFocused]);
@@ -120,9 +118,13 @@ export const ChatScreen = ({navigation, route}) => {
               <EditModel />;
             } else {
               console.log('Cannot Edit');
+              Alert.alert('Time Exceeded', 'Cannot Edit', [
+                {
+                  text: 'OK',
+                  onPress: () => console.log(''),
+                },
+              ]);
             }
-            // console.log(time, date);
-            // setEditMsg(message);
           },
         },
         name === username && {
@@ -147,6 +149,7 @@ export const ChatScreen = ({navigation, route}) => {
       ],
     );
   };
+
   const mainHandler = () => {
     Alert.alert('', 'Under Development.', [
       {
@@ -155,6 +158,7 @@ export const ChatScreen = ({navigation, route}) => {
       },
     ]);
   };
+
   const renderItem = ({item, index}) => {
     const {username: name, _id, message, time, date} = item;
 
@@ -324,7 +328,7 @@ export const ChatScreen = ({navigation, route}) => {
             <TextInput
               style={chatStyles.input}
               onChangeText={text => setMessage(text)}
-              value={message || editMsg}
+              value={message}
               placeholder="Message"
             />
             <TouchableOpacity
@@ -341,17 +345,3 @@ export const ChatScreen = ({navigation, route}) => {
     </View>
   );
 };
-
-// const styles = StyleSheet.create({
-//   messageContainer: {
-//     backgroundColor: '#DCF8C6',
-//     borderRadius: 16,
-//     padding: 8,
-//     marginBottom: 8,
-//     alignSelf: 'flex-start',
-//     maxWidth: '80%',
-//   },
-//   messageText: {
-//     fontSize: 16,
-//   },
-// });
