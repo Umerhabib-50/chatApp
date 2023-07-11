@@ -41,7 +41,12 @@ export const userRegister = register_data => async dispatch => {
     dispatch({
       type: USER_REGISTER_REQUEST,
     });
-    const {data} = await axios.post(`${config}/user/register`, register_data);
+    const {data} = await axios.post(`${config}/user/register`, register_data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
     dispatch({
       type: USER_REGISTER_SUCCESS,
       payload: data,
@@ -60,4 +65,10 @@ export const logOutAction = navigation => dispatch => {
     .then(keys => AsyncStorage.multiRemove(keys))
     .then(() => navigation.navigate('login'));
   // .then(() => navigation.reset({index: 1, routes: [{name: 'login'}]}));
+};
+
+export const emptyState = () => {
+  return {
+    type: 'CLEAR',
+  };
 };

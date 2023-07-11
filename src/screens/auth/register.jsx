@@ -1,11 +1,22 @@
-import React, {useEffect} from 'react';
-import {StyleSheet, Image, Text, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  StyleSheet,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+  Pressable,
+} from 'react-native';
 import {useForm} from 'react-hook-form';
 import {CustomButton, CustomInput} from '../../components';
 import {useDispatch, useSelector} from 'react-redux';
-import {userRegister} from '../../redux';
+import {emptyState, userRegister} from '../../redux';
 import {Button} from 'react-native-paper';
+import {launchImageLibrary} from 'react-native-image-picker';
+
 export const RegisterScreen = ({navigation}) => {
+  const [selectedImage, setSelectedImage] = useState(null);
+  console.log('selectedImage', selectedImage);
   const {
     control,
     handleSubmit,
@@ -17,7 +28,31 @@ export const RegisterScreen = ({navigation}) => {
   const errorMsg = registerData?.msg;
   const isLoading = useSelector(state => state?.userRegister);
   const onSubmit = data => {
-    dispatch(userRegister(data));
+    const {username, password} = data;
+
+    if (username && password) {
+      const formData = new FormData();
+      formData.append('username', username);
+      formData.append('password', password);
+
+      {
+        selectedImage && formData.append('image', selectedImage);
+      }
+      dispatch(userRegister(formData));
+    }
+  };
+
+  const selectImage = () => {
+    launchImageLibrary({}, response => {
+      if (response.assets && response.assets.length > 0) {
+        const image = {
+          uri: response.assets[0].uri,
+          type: response.assets[0].type,
+          name: response.assets[0].fileName,
+        };
+        setSelectedImage(image);
+      }
+    });
   };
   // useEffect(() => {
   //   if (errorMsg) {
@@ -25,6 +60,12 @@ export const RegisterScreen = ({navigation}) => {
   //   }
   // }, [errorMsg]);
 
+  useEffect(() => {
+    if (registerData?.status) {
+      navigation.navigate('login');
+      dispatch(emptyState());
+    }
+  }, [registerData?.status]);
   return (
     <View style={styles.mainView}>
       <View style={styles.header}>
@@ -79,16 +120,43 @@ export const RegisterScreen = ({navigation}) => {
         <View
           style={{
             display: 'flex',
-            justifyContent: 'center',
+            justifyContent: 'space-between',
             flexDirection: 'row',
+            paddingHorizontal: '2%',
           }}>
+          <View
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignContent: 'center',
+            }}>
+            <Pressable onPress={selectImage}>
+              <Image
+                style={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: 50,
+                  backgroundColor: '#128c7e',
+                }}
+                source={
+                  selectedImage
+                    ? selectedImage
+                    : require('../../assets/camera.png')
+                }
+              />
+            </Pressable>
+          </View>
+
           <Button
             style={{
               backgroundColor: '#128c7e',
               borderRadius: 0,
               borderWidth: 0.5,
-              width: '50%',
-              paddingVertical: '1%',
+              width: '72%',
+              // paddingVertical: '1%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignContent: 'center',
             }}
             onPress={handleSubmit(onSubmit)}>
             <Text variant={'titleMedium'} style={{color: '#ffffff'}}>

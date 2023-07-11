@@ -21,6 +21,8 @@ import {config} from '../../config';
 import {SwipeableMessage} from '../../components/swippable/swippable';
 import io from 'socket.io-client';
 import {useIsFocused} from '@react-navigation/native';
+import moment from 'moment';
+
 const Separator = () => <View style={chatStyles.itemSeparator} />;
 
 export const ChatScreen = ({navigation, route}) => {
@@ -110,7 +112,15 @@ export const ChatScreen = ({navigation, route}) => {
           text: 'Edit',
           style: 'edit',
           onPress: () => {
-            console.log(time, date);
+            const currentDate = moment();
+            const providedDate = moment(`${date} ${time}`, 'MM/DD/YYYY h:mm A');
+            const newDate = providedDate.clone().add(15, 'minutes');
+            if (newDate.isAfter(currentDate)) {
+              console.log('CAN EDIT');
+            } else {
+              console.log('Cannot Edit');
+            }
+            // console.log(time, date);
             // setEditMsg(message);
           },
         },
@@ -145,9 +155,6 @@ export const ChatScreen = ({navigation, route}) => {
     ]);
   };
   const renderItem = ({item, index}) => {
-    console.log('====================================');
-    console.log(item);
-    console.log('====================================');
     const {username: name, _id, message, time, date} = item;
 
     return (
@@ -187,7 +194,8 @@ export const ChatScreen = ({navigation, route}) => {
             )}
             <Text>{item?.message}</Text>
             <Text style={{textAlign: 'right', fontWeight: '500', fontSize: 11}}>
-              {item?.createdAt?.substr(0, 10)}
+              {/* {item?.createdAt?.substr(0, 10)} */}
+              {time}
             </Text>
           </View>
         </TouchableRipple>
