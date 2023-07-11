@@ -64,7 +64,16 @@ export const chatStyles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderTopRightRadius: 15,
     borderBottomLeftRadius: 15,
+    marginLeft: '1%',
   },
+  ownImge: {
+    alignSelf: 'flex-end',
+  },
+  ImageStyle: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  userImage: {},
   inputContainer: {
     flexDirection: 'row',
     marginBottom: 5,

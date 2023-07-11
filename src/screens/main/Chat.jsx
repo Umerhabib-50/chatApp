@@ -129,7 +129,6 @@ export const ChatScreen = ({navigation, route}) => {
               setVisible(true);
               setDefaultMsg(item);
             } else {
-              console.log('Cannot Edit');
               Alert.alert('Time Exceeded', 'Cannot Edit', [
                 {
                   text: 'OK',
@@ -173,7 +172,6 @@ export const ChatScreen = ({navigation, route}) => {
   };
 
   const renderItem = ({item, index}) => {
-    console.log(item);
     const {username: name, _id, message, time, date, userimg} = item;
     return (
       <SwipeableMessage
@@ -182,12 +180,30 @@ export const ChatScreen = ({navigation, route}) => {
         setReplyTo={setReplyTo}
         scrollToBottom={scrollToBottom}>
         <TouchableRipple
-          style={{marginBottom: 8}}
+          style={[
+            username !== item?.username && chatStyles.ImageStyle,
+            {marginBottom: 8},
+          ]}
           onLongPress={() =>
             handleLongPress(item?._id, name, message, time, date, item)
           }>
           <>
-            <Image style={{height: 20, width: 20}} source={userimg} />
+            <View
+              style={[
+                username === item?.username
+                  ? chatStyles.ownImge
+                  : chatStyles.userImage,
+              ]}>
+              {username !== item?.username && (
+                <Image
+                  style={{height: 20, width: 20, borderRadius: 50}}
+                  source={
+                    userimg ? {uri: userimg} : require('../../assets/group.png')
+                  }
+                />
+              )}
+            </View>
+
             <View
               style={[
                 chatStyles.messageContainer,
@@ -274,7 +290,7 @@ export const ChatScreen = ({navigation, route}) => {
                 }>
                 <View>
                   <Text style={chatStyles.roomText}>{room}</Text>
-                  <Text style={chatStyles.roominfo}>{desc}</Text>
+                  {desc && <Text style={chatStyles.roominfo}>{desc}</Text>}
                 </View>
               </TouchableOpacity>
             </View>

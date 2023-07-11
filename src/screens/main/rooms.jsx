@@ -14,7 +14,7 @@ import {
 import {CustomModal, HeaderComponent} from '../../components';
 import {useDispatch, useSelector} from 'react-redux';
 import {deleteRoomAction, getRoomAction, logOutAction} from '../../redux';
-import {ActivityIndicator, IconButton} from 'react-native-paper';
+import {IconButton} from 'react-native-paper';
 
 export const RoomsScreen = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -31,8 +31,6 @@ export const RoomsScreen = ({navigation}) => {
 
   const loading = createRoomLoading || getRoomLoading;
   const [data, setData] = useState(getRoom);
-  // const userName = useSelector(state => state?.userLogin?.userInfo);
-  // const username = userName?.user?.username;
   const {success: deleteRoomSuccess} = useSelector(state => state?.deleteRoom);
   const mainHandler = () => {
     Alert.alert('', 'Under Development.', [
@@ -52,13 +50,6 @@ export const RoomsScreen = ({navigation}) => {
     }
   }, [createRoomSuccess, deleteRoomSuccess]);
 
-  // useEffect(() => {
-  //   if (socket) {
-  //     socket.on('createRoomSuccess', () => {
-  //       dispatch(getRoomAction());
-  //     });
-  //   }
-  // }, []);
   const deleteRoomFun = id => {
     Alert.alert('Delete Room', 'Are you sure you want to delete this Room?', [
       {
@@ -74,9 +65,6 @@ export const RoomsScreen = ({navigation}) => {
   };
   const renderItem = ({item, index}) => {
     const {name, image, _id, description} = item;
-
-    // const lastMsg = item?.messages[item?.messages.length - 1];
-    //  lastMsg?.message
 
     return (
       <TouchableOpacity
@@ -111,17 +99,6 @@ export const RoomsScreen = ({navigation}) => {
           </View>
           <View>
             <Text style={styles.text}> {name}</Text>
-
-            {/* <View style={{display: 'flex', flexDirection: 'row'}}>
-              <Text style={styles.subTitle}>
-                {lastMsg?.username == undefined
-                  ? 'Empty Room'
-                  : `${lastMsg?.username}:`}
-              </Text>
-              <Text style={{marginLeft: 3}}>
-                {lastMsg?.message == undefined ? '' : lastMsg?.message}
-              </Text>
-            </View> */}
           </View>
         </View>
         <View
@@ -137,86 +114,13 @@ export const RoomsScreen = ({navigation}) => {
 
   return (
     <>
-      {/* <View style={styles.chatScreen}> */}
-      {/* <View style={styles.header}>
-          <View
-            style={{
-              paddingHorizontal: 20,
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
-            <View>
-              <Text style={{color: 'white', fontWeight: 'bold', fontSize: 19}}>
-                ChatApp
-              </Text>
-            </View>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-evenly',
-                width: '50%',
-              }}>
-              <TouchableOpacity onPress={() => mainHandler()}>
-                <Image
-                  source={require('../../assets/chatCam.png')}
-                  style={{width: 23, height: 23, marginTop: '15%'}}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => mainHandler()}>
-                <Image
-                  source={require('../../assets/search.png')}
-                  style={{width: 30, height: 30}}
-                />
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={() => mainHandler()}>
-                <Image
-                  source={require('../../assets/option.png')}
-                  style={{width: 34, height: 34}}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={styles.bottomBar}>
-            <View>
-              <Text style={styles.bottomText}>Rooms</Text>
-            </View>
-            <TouchableOpacity onPress={() => mainHandler()}>
-              <Text style={styles.bottomText}>Status</Text>
-            </TouchableOpacity>
-            <View>
-              <TouchableOpacity
-                onPress={() => dispatch(logOutAction(navigation))}>
-                <Text style={styles.bottomText}>Log Out</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View> */}
       <View style={styles.join}>
         <View style={styles.card}>
-          {loading ? (
-            <View
-              style={{
-                height: '92%',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <ActivityIndicator
-                size={'large'}
-                animating={true}
-                color={'#006257'}
-              />
-            </View>
-          ) : (
-            <FlatList
-              data={getRoom}
-              renderItem={renderItem}
-              keyExtractor={(item, index) => index.toString()}
-            />
-          )}
+          <FlatList
+            data={getRoom}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => index.toString()}
+          />
         </View>
         <View style={{position: 'absolute', top: '86%', right: '3%'}}>
           <IconButton
@@ -230,7 +134,6 @@ export const RoomsScreen = ({navigation}) => {
             size={50}
             onPress={() => {
               setModalVisible(true);
-              // navigation.navigate('setting');
             }}
           />
         </View>
@@ -241,7 +144,6 @@ export const RoomsScreen = ({navigation}) => {
           setData={setData}
         />
       </View>
-      {/* </View> */}
     </>
   );
 };
