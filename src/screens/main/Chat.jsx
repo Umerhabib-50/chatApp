@@ -47,6 +47,7 @@ export const ChatScreen = ({navigation, route}) => {
   const [editMsg, setEditMsg] = useState(false);
   const dispatch = useDispatch();
   const [defaultMsg, setDefaultMsg] = useState('');
+  const [msgDetails, setmsgDetails] = useState('');
   const {deleteMsg, loading} = useSelector(state => state?.deleteMsg);
   const [visible, setVisible] = useState(false);
   const [replyTo, setReplyTo] = useState({
@@ -65,6 +66,14 @@ export const ChatScreen = ({navigation, route}) => {
     });
     socket.on('receive', newMessage => {
       setMessages(prevMessages => [...prevMessages, newMessage]);
+    });
+
+    socket.on('message edit successfully', editedmsg => {
+      setMessages(() =>
+        messages.map(msg => {
+          return msg._id == editedmsg._id ? editedmsg : msg;
+        }),
+      );
     });
   }, [isFocused]);
 
@@ -127,7 +136,8 @@ export const ChatScreen = ({navigation, route}) => {
             if (newDate.isAfter(currentDate)) {
               setEditMsg(true);
               setVisible(true);
-              setDefaultMsg(item);
+              setDefaultMsg({...item, room});
+              setmsgDetails(item);
             } else {
               console.log('Cannot Edit');
               Alert.alert('Time Exceeded', 'Cannot Edit', [
@@ -173,7 +183,6 @@ export const ChatScreen = ({navigation, route}) => {
   };
 
   const renderItem = ({item, index}) => {
-    console.log(item);
     const {username: name, _id, message, time, date, userimg} = item;
     return (
       <SwipeableMessage
@@ -187,7 +196,7 @@ export const ChatScreen = ({navigation, route}) => {
             handleLongPress(item?._id, name, message, time, date, item)
           }>
           <>
-            <Image style={{height: 20, width: 20}} source={userimg} />
+            <Image style={{height: 20, width: 20}} source={{uri: userimg}} />
             <View
               style={[
                 chatStyles.messageContainer,
@@ -366,12 +375,17 @@ export const ChatScreen = ({navigation, route}) => {
           </View>
         </ImageBackground>
       </View>
-      <EditModel
-        visible={visible}
-        setVisible={setVisible}
-        defaultMsg={defaultMsg}
-        setDefaultMsg={setDefaultMsg}
-      />
+      {visible && (
+        <EditModel
+          visible={visible}
+          setVisible={setVisible}
+          defaultMsg={defaultMsg}
+          setDefaultMsg={setDefaultMsg}
+          msgDetails={msgDetails}
+          setmsgDetails={setmsgDetails}
+          socket={socket}
+        />
+      )}
     </>
   );
 };

@@ -9,10 +9,16 @@ import {
   TextInput,
 } from 'react-native';
 
-export const EditModel = ({visible, setVisible, defaultMsg, setDefaultMsg}) => {
-  const {_id, date, message, time, username} = defaultMsg;
-
-  const [textMsg, setTextMsg] = useState(message);
+export const EditModel = ({
+  visible,
+  setVisible,
+  defaultMsg,
+  setDefaultMsg,
+  msgDetails,
+  setmsgDetails,
+  socket,
+}) => {
+  const {_id, date, message, time, username, room} = defaultMsg;
 
   return (
     <Modal
@@ -39,7 +45,7 @@ export const EditModel = ({visible, setVisible, defaultMsg, setDefaultMsg}) => {
         </View>
         <View>
           <View style={styles.sentMessage}>
-            <Text style={{marginLeft: 6}}>{message}</Text>
+            <Text style={{marginLeft: 6}}>{msgDetails.message}</Text>
             <Text style={{fontWeight: '500', fontSize: 11, marginTop: '8%'}}>
               {time}
             </Text>
@@ -48,10 +54,17 @@ export const EditModel = ({visible, setVisible, defaultMsg, setDefaultMsg}) => {
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
-              onChangeText={text => setTextMsg(text)}
-              value={textMsg}
+              onChangeText={text =>
+                setDefaultMsg({...defaultMsg, message: text})
+              }
+              value={message}
             />
-            <TouchableOpacity style={styles.sendButton}>
+            <TouchableOpacity
+              style={styles.sendButton}
+              onPress={() => {
+                socket.emit('editMsgReq', {msgid: _id, message, room});
+                setVisible(!visible);
+              }}>
               <Image
                 style={{height: 22, width: 22}}
                 source={require('../../assets/check.png')}
