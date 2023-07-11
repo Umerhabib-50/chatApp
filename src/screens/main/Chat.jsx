@@ -22,6 +22,7 @@ import {SwipeableMessage} from '../../components/swippable/swippable';
 import io from 'socket.io-client';
 import {useIsFocused} from '@react-navigation/native';
 import moment from 'moment';
+import {EditModel} from '../../components/modal/editModel';
 
 const Separator = () => <View style={chatStyles.itemSeparator} />;
 
@@ -116,7 +117,7 @@ export const ChatScreen = ({navigation, route}) => {
             const providedDate = moment(`${date} ${time}`, 'MM/DD/YYYY h:mm A');
             const newDate = providedDate.clone().add(15, 'minutes');
             if (newDate.isAfter(currentDate)) {
-              console.log('CAN EDIT');
+              <EditModel />;
             } else {
               console.log('Cannot Edit');
             }
