@@ -173,6 +173,7 @@ export const ChatScreen = ({navigation, route}) => {
   };
 
   const renderItem = ({item, index}) => {
+    console.log(item);
     const {username: name, _id, message, time, date, userimg} = item;
     return (
       <SwipeableMessage
