@@ -15,10 +15,8 @@ import {CustomModal, HeaderComponent} from '../../components';
 import {useDispatch, useSelector} from 'react-redux';
 import {deleteRoomAction, getRoomAction, logOutAction} from '../../redux';
 import {ActivityIndicator, IconButton} from 'react-native-paper';
-import useSocket from '../../utils/socket';
 
 export const RoomsScreen = ({navigation}) => {
-  const socket = useSocket();
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   const {success: createRoomSuccess, loading: createRoomLoading} = useSelector(
@@ -54,13 +52,13 @@ export const RoomsScreen = ({navigation}) => {
     }
   }, [createRoomSuccess, deleteRoomSuccess]);
 
-  useEffect(() => {
-    if (socket) {
-      socket.on('createRoomSuccess', () => {
-        dispatch(getRoomAction());
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (socket) {
+  //     socket.on('createRoomSuccess', () => {
+  //       dispatch(getRoomAction());
+  //     });
+  //   }
+  // }, []);
   const deleteRoomFun = id => {
     Alert.alert('Delete Room', 'Are you sure you want to delete this Room?', [
       {

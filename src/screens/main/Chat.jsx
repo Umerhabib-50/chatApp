@@ -29,6 +29,7 @@ export const ChatScreen = ({navigation, route}) => {
   const socket = io(config);
   const {roomId, description} = route?.params;
   const userName = useSelector(state => state?.userLogin?.userInfo);
+
   const username = userName?.user?.username;
   const getRoomData = useSelector(state => state?.getRoom?.getRoom);
   const findArray = getRoomData?.find(data => data?._id === roomId);
@@ -83,7 +84,13 @@ export const ChatScreen = ({navigation, route}) => {
   const sendMessage = () => {
     if (message && message.trim().length > 0) {
       const repliedTo = showReply ? replyTo : undefined;
-      socket.emit('send', {room, message, username, repliedTo});
+      socket.emit('send', {
+        room,
+        message,
+        username,
+        repliedTo,
+        userimg: userName?.user?.image,
+      });
 
       setMessage('');
       setShowReply(false);
@@ -141,7 +148,8 @@ export const ChatScreen = ({navigation, route}) => {
               };
 
               await axios.delete(`${config}/room/deletemessage`, deleteObj);
-              setMessages(() => messages.filter(obj => obj._id !== id));
+              const data = messages.filter(obj => obj._id !== id);
+              setMessages(data);
             } catch (error) {
               console.log('delete msg error', error);
             }
@@ -161,8 +169,7 @@ export const ChatScreen = ({navigation, route}) => {
   };
 
   const renderItem = ({item, index}) => {
-    const {username: name, _id, message, time, date} = item;
-
+    const {username: name, _id, message, time, date, userimg} = item;
     return (
       <SwipeableMessage
         message={item}
@@ -174,36 +181,40 @@ export const ChatScreen = ({navigation, route}) => {
           onLongPress={() =>
             handleLongPress(item?._id, name, message, time, date)
           }>
-          <View
-            style={[
-              chatStyles.messageContainer,
-              username === item?.username
-                ? chatStyles.sentMessage
-                : chatStyles.receivedMessage,
-            ]}>
-            {username === item?.username ? null : (
-              <Text style={{fontWeight: 'bold'}}>{item?.username}</Text>
-            )}
-            {item?.repliedTo && (
-              <View
-                style={[
-                  chatStyles.reply,
-                  username === item?.username
-                    ? chatStyles.sentReply
-                    : chatStyles.receivedReply,
-                ]}>
-                <Text style={{fontWeight: 'bold'}}>
-                  {item.repliedTo.username}
-                </Text>
-                <Text>{item.repliedTo.message}</Text>
-              </View>
-            )}
-            <Text>{item?.message}</Text>
-            <Text style={{textAlign: 'right', fontWeight: '500', fontSize: 11}}>
-              {/* {item?.createdAt?.substr(0, 10)} */}
-              {time}
-            </Text>
-          </View>
+          <>
+            <Image style={{height: 20, width: 20}} source={userimg} />
+            <View
+              style={[
+                chatStyles.messageContainer,
+                username === item?.username
+                  ? chatStyles.sentMessage
+                  : chatStyles.receivedMessage,
+              ]}>
+              {username === item?.username ? null : (
+                <Text style={{fontWeight: 'bold'}}>{item?.username}</Text>
+              )}
+              {item?.repliedTo && (
+                <View
+                  style={[
+                    chatStyles.reply,
+                    username === item?.username
+                      ? chatStyles.sentReply
+                      : chatStyles.receivedReply,
+                  ]}>
+                  <Text style={{fontWeight: 'bold'}}>
+                    {item.repliedTo.username}
+                  </Text>
+                  <Text>{item.repliedTo.message}</Text>
+                </View>
+              )}
+              <Text>{item?.message}</Text>
+              <Text
+                style={{textAlign: 'right', fontWeight: '500', fontSize: 11}}>
+                {/* {item?.createdAt?.substr(0, 10)} */}
+                {time}
+              </Text>
+            </View>
+          </>
         </TouchableRipple>
       </SwipeableMessage>
     );

@@ -8,7 +8,6 @@ import {Button} from 'react-native-paper';
 
 export const LoginScreen = ({navigation}) => {
   const data = useSelector(state => state?.userLogin?.userInfo);
-
   const isloading = useSelector(state => state?.userLogin);
   const [show, setShow] = useState(false);
   const {
