@@ -66,7 +66,7 @@ export const SettingScreen = ({navigation, route}) => {
           )}
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => navigation.navigate('subChange', {roomId})}>
+          onPress={() => navigation.navigate('subChange', {roomId, str})}>
           <Image
             source={require('../../assets/OptionB.png')}
             style={{width: 20, height: 20}}
