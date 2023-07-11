@@ -25,7 +25,7 @@ export const RegisterScreen = ({navigation}) => {
   } = useForm();
   const dispatch = useDispatch();
   const registerData = useSelector(state => state?.userRegister?.userRegister);
-
+  const errorMsg = registerData?.msg;
   const isLoading = useSelector(state => state?.userRegister);
   const onSubmit = data => {
     const {username, password} = data;
@@ -54,6 +54,11 @@ export const RegisterScreen = ({navigation}) => {
       }
     });
   };
+  // useEffect(() => {
+  //   if (errorMsg) {
+  //     navigation.navigate('login');
+  //   }
+  // }, [errorMsg]);
 
   useEffect(() => {
     if (registerData?.status) {
@@ -99,7 +104,7 @@ export const RegisterScreen = ({navigation}) => {
             errorMessage="Enter password"
           />
         </View>
-        {registerData?.status == false && (
+        {errorMsg && (
           <View>
             <Text
               style={{
@@ -108,7 +113,7 @@ export const RegisterScreen = ({navigation}) => {
                 marginBottom: '3%',
                 fontWeight: 'bold',
               }}>
-              {registerData?.msg}
+              {errorMsg}
             </Text>
           </View>
         )}

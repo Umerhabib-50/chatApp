@@ -8,7 +8,7 @@ export const chatStyles = StyleSheet.create({
     height: '100%',
   },
   header: {
-    height: '8%',
+    height: '9%',
     backgroundColor: '#128c7e',
     display: 'flex',
     justifyContent: 'space-between',

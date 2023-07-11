@@ -15,8 +15,7 @@ import {CustomButton} from '../../components';
 import {config} from '../../config';
 
 export const ChangeSubjectScreen = ({navigation, route}) => {
-  const {roomId} = route?.params;
-
+  const {roomId, str} = route?.params;
   const getRoomData = useSelector(state => state?.getRoom?.getRoom);
 
   const findArray = getRoomData?.find(data => data?._id === roomId);
@@ -25,6 +24,7 @@ export const ChangeSubjectScreen = ({navigation, route}) => {
   const roomname = findArray?.name;
 
   const [roomName, setRoomName] = useState(roomname);
+  const [description, setDesciption] = useState(str);
 
   const [imageShow, setImageShow] = useState(false);
 
@@ -48,6 +48,7 @@ export const ChangeSubjectScreen = ({navigation, route}) => {
   const updateRoomHandler = async () => {
     const formData = new FormData();
     formData.append('name', roomName);
+    formData.append('description', description);
     {
       selectedImage && formData.append('image', selectedImage);
     }
@@ -99,7 +100,7 @@ export const ChangeSubjectScreen = ({navigation, route}) => {
             </Pressable>
           </View>
           <View style={{marginLeft: '6%'}}>
-            <Text style={styles.modalText}>Enter new subject</Text>
+            <Text style={styles.modalText}>Change RoomName/Description</Text>
           </View>
         </View>
         <View
@@ -159,6 +160,21 @@ export const ChangeSubjectScreen = ({navigation, route}) => {
                 value={roomName}
                 selectionColor={'#000000'}
               />
+              <TextInput
+                mode="flat"
+                activeOutlineColor="white"
+                textColor="#000000"
+                multiline={true}
+                placeholderTextColor="#e3dac9"
+                activeUnderlineColor="#e3dac9"
+                style={{backgroundColor: '#ffffff'}}
+                selectionColor={'#000000'}
+                onChangeText={text => {
+                  setDesciption(text);
+                  setShowError(false);
+                }}
+                value={description}
+              />
               {showError && (
                 <View style={{marginTop: '8%'}}>
                   <Text style={{color: 'red'}}>Please Enter Room Name</Text>
@@ -178,7 +194,7 @@ export const ChangeSubjectScreen = ({navigation, route}) => {
               onPress={() => {
                 setSelectedImage('');
                 setRoomName('');
-                navigation.navigate('setting', {roomname, username, roomId});
+                navigation.navigate('setting', {roomId});
               }}
               title={'Cancel'}
             />
