@@ -11,13 +11,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import {RoomsScreen} from './rooms';
 import {BusinessScreen} from './business';
 import {LogOutScreen} from './logOut';
-const Status = () => {
-  return (
-    <>
-      <Text>status</Text>
-    </>
-  );
-};
+import {StatusScreen} from './statusFile/status';
 
 const mainHandler = () => {
   Alert.alert('', 'Under Development.', [
@@ -114,7 +108,7 @@ export const TabNavigationScreen = () => {
           component={BusinessScreen}
         /> */}
         <Tab.Screen name="Rooms" component={RoomsScreen} />
-        <Tab.Screen name="Status" component={Status} />
+        <Tab.Screen name="Status" component={StatusScreen} />
         <Tab.Screen name="LogOut" component={LogOutScreen} />
       </Tab.Navigator>
     </View>

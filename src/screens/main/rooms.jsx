@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -111,7 +111,16 @@ export const RoomsScreen = ({navigation}) => {
       </TouchableOpacity>
     );
   };
+  const wait = timeout => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  };
 
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
+    setIsRefreshing(true);
+    dispatch(getRoomAction());
+    wait(2000).then(() => setIsRefreshing(false));
+  }, []);
   return (
     <>
       <View style={styles.join}>
@@ -120,6 +129,8 @@ export const RoomsScreen = ({navigation}) => {
             data={getRoom}
             renderItem={renderItem}
             keyExtractor={(item, index) => index.toString()}
+            refreshing={isRefreshing}
+            onRefresh={onRefresh}
           />
         </View>
         <View style={{position: 'absolute', top: '86%', right: '3%'}}>

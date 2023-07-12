@@ -7,6 +7,7 @@ import {
   deleteMsgReducer,
   deleteRoomReducer,
   getRoomReducer,
+  statusUploadReducer,
 } from './main';
 
 export default combineReducers({
@@ -18,4 +19,5 @@ export default combineReducers({
   getRoom: getRoomReducer,
   deleteMsg: deleteMsgReducer,
   deleteRoom: deleteRoomReducer,
+  statusUpload: statusUploadReducer,
 });

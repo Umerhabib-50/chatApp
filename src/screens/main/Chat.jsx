@@ -210,7 +210,9 @@ export const ChatScreen = ({navigation, route}) => {
                 <Image
                   style={{height: 20, width: 20, borderRadius: 50}}
                   source={
-                    userimg ? {uri: userimg} : require('../../assets/group.png')
+                    userimg
+                      ? {uri: userimg}
+                      : require('../../assets/msgUser.png')
                   }
                 />
               )}
@@ -252,11 +254,11 @@ export const ChatScreen = ({navigation, route}) => {
       </SwipeableMessage>
     );
   };
-  useEffect(() => {
-    if (showReply && replyInputRef.current) {
-      replyInputRef.current.focus();
-    }
-  }, [showReply]);
+  // useEffect(() => {
+  //   if (showReply && replyInputRef.current) {
+  //     replyInputRef.current.focus();
+  //   }
+  // }, [showReply]);
   return (
     <>
       <View style={{display: 'flex', height: '100%'}}>
@@ -376,7 +378,7 @@ export const ChatScreen = ({navigation, route}) => {
             )}
             <View style={chatStyles.inputContainer}>
               <TextInput
-                ref={replyInputRef}
+                // ref={replyInputRef}
                 style={chatStyles.input}
                 onChangeText={text => setMessage(text)}
                 value={message}

@@ -15,6 +15,9 @@ import {
   GET_USERS_FAIL,
   GET_USERS_REQUEST,
   GET_USERS_SUCCESS,
+  STATUS_UPLAOD_FAIL,
+  STATUS_UPLAOD_REQUEST,
+  STATUS_UPLAOD_SUCCESS,
   UPDATE_IMAGE_ROOM_FAIL,
   UPDATE_IMAGE_ROOM_REQUEST,
   UPDATE_IMAGE_ROOM_SUCCESS,
@@ -120,6 +123,28 @@ export const deleteRoomAction = id => async dispatch => {
   } catch (error) {
     dispatch({
       type: DELETE_ROOM_FAIL,
+      payload: error?.response && error?.response?.data,
+    });
+  }
+};
+export const statusUplaodAction = (id, formData) => async dispatch => {
+  try {
+    dispatch({
+      type: STATUS_UPLAOD_REQUEST,
+    });
+    const {data} = await axios.post(`${config}/status/create/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    dispatch({
+      type: STATUS_UPLAOD_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: STATUS_UPLAOD_FAIL,
       payload: error?.response && error?.response?.data,
     });
   }

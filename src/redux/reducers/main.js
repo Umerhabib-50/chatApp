@@ -13,6 +13,9 @@ import {
   GET_ROOMS_SUCCESS,
   GET_USERS_FAIL,
   GET_USERS_REQUEST,
+  STATUS_UPLAOD_FAIL,
+  STATUS_UPLAOD_REQUEST,
+  STATUS_UPLAOD_SUCCESS,
 } from '../constants';
 
 //..............|| ALL USERS  REDUCER ||.............
@@ -82,6 +85,20 @@ export const deleteRoomReducer = (state = {}, action) => {
       return {loading: false, deleteRoom: action.payload, success: true};
     case DELETE_ROOM_FAIL:
       return {loading: false, error: action.payload, success: false};
+    default:
+      return state;
+  }
+};
+export const statusUploadReducer = (state = {}, action) => {
+  switch (action.type) {
+    case STATUS_UPLAOD_REQUEST:
+      return {loading: true, success: false};
+    case STATUS_UPLAOD_SUCCESS:
+      return {loading: false, statusUpload: action.payload, success: true};
+    case STATUS_UPLAOD_FAIL:
+      return {loading: false, error: action.payload, success: false};
+    case 'CLEAR':
+      return {};
     default:
       return state;
   }
