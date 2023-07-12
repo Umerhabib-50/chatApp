@@ -58,6 +58,7 @@ export const EditModel = ({
                 setDefaultMsg({...defaultMsg, message: text})
               }
               value={message}
+              multiline={true}
             />
             <TouchableOpacity
               style={styles.sendButton}

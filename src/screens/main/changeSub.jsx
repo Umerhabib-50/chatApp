@@ -165,7 +165,7 @@ export const ChangeSubjectScreen = ({navigation, route}) => {
                 activeOutlineColor="white"
                 textColor="#000000"
                 multiline={true}
-                placeholderTextColor="#e3dac9"
+                placeholderTextColor="gray"
                 activeUnderlineColor="#e3dac9"
                 style={{backgroundColor: '#ffffff'}}
                 selectionColor={'#000000'}
@@ -173,6 +173,7 @@ export const ChangeSubjectScreen = ({navigation, route}) => {
                   setDesciption(text);
                   setShowError(false);
                 }}
+                placeholder="Add Description"
                 value={description}
               />
               {showError && (

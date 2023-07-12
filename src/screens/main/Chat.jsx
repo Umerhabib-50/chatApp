@@ -69,11 +69,13 @@ export const ChatScreen = ({navigation, route}) => {
     });
 
     socket.on('message edit successfully', editedmsg => {
-      setMessages(() =>
-        messages.map(msg => {
-          return msg._id == editedmsg._id ? editedmsg : msg;
-        }),
-      );
+      setMessages(prevMessages => {
+        return prevMessages.map(msg => {
+          return msg._id === editedmsg._id
+            ? {...msg, message: editedmsg.message}
+            : msg;
+        });
+      });
     });
   }, [isFocused]);
 
@@ -139,7 +141,6 @@ export const ChatScreen = ({navigation, route}) => {
               setDefaultMsg({...item, room});
               setmsgDetails(item);
             } else {
-              console.log('Cannot Edit');
               Alert.alert('Time Exceeded', 'Cannot Edit', [
                 {
                   text: 'OK',
@@ -191,12 +192,30 @@ export const ChatScreen = ({navigation, route}) => {
         setReplyTo={setReplyTo}
         scrollToBottom={scrollToBottom}>
         <TouchableRipple
-          style={{marginBottom: 8}}
+          style={[
+            username !== item?.username && chatStyles.ImageStyle,
+            {marginBottom: 8},
+          ]}
           onLongPress={() =>
             handleLongPress(item?._id, name, message, time, date, item)
           }>
           <>
-            <Image style={{height: 20, width: 20}} source={{uri: userimg}} />
+            <View
+              style={[
+                username === item?.username
+                  ? chatStyles.ownImge
+                  : chatStyles.userImage,
+              ]}>
+              {username !== item?.username && (
+                <Image
+                  style={{height: 20, width: 20, borderRadius: 50}}
+                  source={
+                    userimg ? {uri: userimg} : require('../../assets/group.png')
+                  }
+                />
+              )}
+            </View>
+
             <View
               style={[
                 chatStyles.messageContainer,
@@ -283,7 +302,7 @@ export const ChatScreen = ({navigation, route}) => {
                 }>
                 <View>
                   <Text style={chatStyles.roomText}>{room}</Text>
-                  <Text style={chatStyles.roominfo}>{desc}</Text>
+                  {desc && <Text style={chatStyles.roominfo}>{desc}</Text>}
                 </View>
               </TouchableOpacity>
             </View>
@@ -362,6 +381,7 @@ export const ChatScreen = ({navigation, route}) => {
                 onChangeText={text => setMessage(text)}
                 value={message}
                 placeholder="Message"
+                multiline={true}
               />
               <TouchableOpacity
                 style={chatStyles.sendButton}
