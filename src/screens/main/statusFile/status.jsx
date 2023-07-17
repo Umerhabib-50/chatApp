@@ -37,9 +37,6 @@ export const StatusScreen = ({navigation}) => {
               screen: 'statusShow',
               params: {user, image, statuses},
             });
-          }}
-          onLongPress={() => {
-            handleLongPress(statuses);
           }}>
           <View
             style={{
@@ -63,11 +60,18 @@ export const StatusScreen = ({navigation}) => {
               />
               <Text style={{marginLeft: '8%', fontSize: 20}}>{user}</Text>
             </View>
-            <View>
-              <Text style={{fontWeight: '300', color: '#128c7e'}}>
+            <TouchableOpacity
+              onPress={() => {
+                handleLongPress(statuses);
+              }}>
+              <Image
+                style={{width: 25, height: 25}}
+                source={require('../../../assets/optionH.png')}
+              />
+              {/* <Text style={{fontWeight: '300', color: '#128c7e'}}>
                 {length}
-              </Text>
-            </View>
+              </Text> */}
+            </TouchableOpacity>
           </View>
         </TouchableOpacity>
       )

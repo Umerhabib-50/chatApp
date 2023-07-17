@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {
   initialWindowMetrics,
@@ -12,7 +12,7 @@ import {RootNavigator} from './navigation/rootNavigator';
 import {Provider as StoreProvider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import {store, persistedStore} from './redux/store';
-import {StatusBar} from 'react-native';
+import {StatusBar, View} from 'react-native';
 
 const App = () => {
   useEffect(() => {

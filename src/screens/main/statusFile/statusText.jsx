@@ -47,7 +47,7 @@ export const StatusText = ({navigation, route}) => {
 
       <View
         style={{
-          justifyContent: 'center',
+          justifyContent: 'space-between',
           alignItems: 'center',
           flex: 1,
           width: '100%',
@@ -79,32 +79,85 @@ export const StatusText = ({navigation, route}) => {
             />
           </View>
         ) : (
-          <Image style={{height: '55%', width: '100%'}} source={data} />
+          <Image
+            style={{height: '65%', width: '100%', marginTop: '20%'}}
+            source={data}
+          />
+        )}
+        {type == 'object' && (
+          <View
+            style={{
+              flexDirection: 'row',
+            }}>
+            <TextInput
+              // ref={replyInputRef}
+              style={{
+                flex: 1,
+                backgroundColor: '#FFF',
+                padding: 0,
+                borderRadius: 40,
+                borderColor: 'gray',
+                height: 40,
+                paddingHorizontal: 16,
+                // paddingVertical: '6%',
+                marginRight: 12,
+                shadowColor: '#000',
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 3.84,
+                elevation: 5,
+              }}
+              onChangeText={text => setText(text)}
+              value={text}
+              placeholder="Message"
+              multiline={true}
+            />
+            <TouchableOpacity
+              style={{
+                backgroundColor: '#128c7e',
+                borderRadius: 50,
+                // paddingHorizontal: 16,
+                // paddingVertical: 10,
+                padding: 10,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              onPress={onSubmit}>
+              <Image
+                style={{height: 22, width: 22}}
+                source={require('../../../assets/send.png')}
+              />
+            </TouchableOpacity>
+          </View>
         )}
       </View>
 
-      {/* {text && ( */}
-      <View style={{position: 'absolute', top: '86%', right: '3%'}}>
-        <TouchableOpacity onPress={onSubmit}>
-          {loading ? (
-            <View style={{marginRight: '7%', top: '80%'}}>
-              <ActivityIndicator animating={true} color={'#000000'} />
-            </View>
-          ) : (
-            <IconButton
-              icon={() => (
-                <Image
-                  source={require('../../../assets/send.png')}
-                  style={{height: 20, width: 20}}
-                />
-              )}
-              containerColor={'#128c7e'}
-              size={28}
-            />
-          )}
-        </TouchableOpacity>
-      </View>
-      {/* )} */}
+      {type == 'string' && (
+        <View style={{position: 'absolute', top: '86%', right: '3%'}}>
+          <TouchableOpacity onPress={onSubmit}>
+            {loading ? (
+              <View style={{marginRight: '7%', top: '80%'}}>
+                <ActivityIndicator animating={true} color={'#000000'} />
+              </View>
+            ) : (
+              <IconButton
+                icon={() => (
+                  <Image
+                    source={require('../../../assets/send.png')}
+                    style={{height: 20, width: 20}}
+                  />
+                )}
+                containerColor={'#128c7e'}
+                size={28}
+              />
+            )}
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };
