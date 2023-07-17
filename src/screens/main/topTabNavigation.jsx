@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {createContext, useState} from 'react';
 import {
   View,
   Text,
@@ -12,7 +12,7 @@ import {RoomsScreen} from './rooms';
 import {BusinessScreen} from './business';
 import {LogOutScreen} from './logOut';
 import {StatusScreen} from './statusFile/status';
-
+export const TabContext = createContext();
 const mainHandler = () => {
   Alert.alert('', 'Under Development.', [
     {
@@ -23,52 +23,57 @@ const mainHandler = () => {
 };
 
 export const TabNavigationScreen = () => {
+  const [activeTab, setActiveTab] = useState('Rooms');
   const Tab = createMaterialTopTabNavigator();
+  const handleTabPress = tab => {
+    setActiveTab(tab);
+  };
   return (
-    <View style={{flex: 1}}>
-      <View style={styles.header}>
-        <View
-          style={{
-            paddingHorizontal: 20,
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}>
-          <View>
-            <Text style={{color: 'white', fontWeight: 'bold', fontSize: 19}}>
-              ChatApp
-            </Text>
-          </View>
+    <TabContext.Provider value={{activeTab, setActiveTab}}>
+      <View style={{flex: 1}}>
+        <View style={styles.header}>
           <View
             style={{
+              paddingHorizontal: 20,
               display: 'flex',
               flexDirection: 'row',
-              justifyContent: 'space-evenly',
-              width: '50%',
+              alignItems: 'center',
+              justifyContent: 'space-between',
             }}>
-            <TouchableOpacity onPress={() => mainHandler()}>
-              <Image
-                source={require('../../assets/chatCam.png')}
-                style={{width: 23, height: 23, marginTop: '15%'}}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => mainHandler()}>
-              <Image
-                source={require('../../assets/search.png')}
-                style={{width: 30, height: 30}}
-              />
-            </TouchableOpacity>
+            <View>
+              <Text style={{color: 'white', fontWeight: 'bold', fontSize: 19}}>
+                ChatApp
+              </Text>
+            </View>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-evenly',
+                width: '50%',
+              }}>
+              <TouchableOpacity onPress={() => mainHandler()}>
+                <Image
+                  source={require('../../assets/chatCam.png')}
+                  style={{width: 23, height: 23, marginTop: '15%'}}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => mainHandler()}>
+                <Image
+                  source={require('../../assets/search.png')}
+                  style={{width: 30, height: 30}}
+                />
+              </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => mainHandler()}>
-              <Image
-                source={require('../../assets/option.png')}
-                style={{width: 34, height: 34}}
-              />
-            </TouchableOpacity>
+              <TouchableOpacity onPress={() => mainHandler()}>
+                <Image
+                  source={require('../../assets/option.png')}
+                  style={{width: 34, height: 34}}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-        {/* <View style={styles.bottomBar}>
+          {/* <View style={styles.bottomBar}>
             <View>
               <Text style={styles.bottomText}>Rooms</Text>
             </View>
@@ -82,36 +87,42 @@ export const TabNavigationScreen = () => {
               </TouchableOpacity>
             </View>
           </View> */}
+        </View>
+
+        <Tab.Navigator
+          screenOptions={{
+            tabBarLabelStyle: {color: 'white', fontWeight: 'bold'},
+            tabBarStyle: {backgroundColor: '#128c7e'},
+            tabBarIndicatorStyle: {
+              borderBottomColor: 'white',
+              borderBottomWidth: 2,
+            },
+            tabBarPressColor: 'transparent', // Remove ripple effect
+          }}>
+          <Tab.Screen
+            name="Rooms"
+            component={RoomsScreen}
+            listeners={{
+              tabPress: () => handleTabPress('Rooms'),
+            }}
+          />
+          <Tab.Screen
+            name="Status"
+            component={StatusScreen}
+            listeners={{
+              tabPress: () => handleTabPress('Status'),
+            }}
+          />
+          <Tab.Screen
+            name="LogOut"
+            component={LogOutScreen}
+            listeners={{
+              tabPress: () => handleTabPress('LogOut'),
+            }}
+          />
+        </Tab.Navigator>
       </View>
-      <Tab.Navigator
-        screenOptions={{
-          tabBarLabelStyle: {color: 'white', fontWeight: 'bold'},
-          tabBarStyle: {backgroundColor: '#128c7e'},
-          tabBarIndicatorStyle: {
-            borderBottomColor: 'white',
-            borderBottomWidth: 2,
-          },
-          tabBarPressColor: 'transparent', // Remove ripple effect
-        }}>
-        {/* <Tab.Screen
-          name="Status"
-          options={{
-            tabBarIcon: ({color, size}) => (
-              <Image
-                source={require('../../assets/home.png')}
-                style={{width: 25, height: 25}}
-              />
-            ),
-            tabBarShowLabel: false,
-            
-          }}
-          component={BusinessScreen}
-        /> */}
-        <Tab.Screen name="Rooms" component={RoomsScreen} />
-        <Tab.Screen name="Status" component={StatusScreen} />
-        <Tab.Screen name="LogOut" component={LogOutScreen} />
-      </Tab.Navigator>
-    </View>
+    </TabContext.Provider>
   );
 };
 

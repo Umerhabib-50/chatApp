@@ -9,9 +9,15 @@ import {
   DELETE_ROOM_FAIL,
   DELETE_ROOM_REQUEST,
   DELETE_ROOM_SUCCESS,
+  DELETE_STATUS_FAIL,
+  DELETE_STATUS_REQUEST,
+  DELETE_STATUS_SUCCESS,
   GET_ROOMS_FAIL,
   GET_ROOMS_REQUEST,
   GET_ROOMS_SUCCESS,
+  GET_STATUS_FAIL,
+  GET_STATUS_REQUEST,
+  GET_STATUS_SUCCESS,
   GET_USERS_FAIL,
   GET_USERS_REQUEST,
   GET_USERS_SUCCESS,
@@ -145,6 +151,43 @@ export const statusUplaodAction = (id, formData) => async dispatch => {
   } catch (error) {
     dispatch({
       type: STATUS_UPLAOD_FAIL,
+      payload: error?.response && error?.response?.data,
+    });
+  }
+};
+export const getstatusAction = () => async dispatch => {
+  try {
+    dispatch({
+      type: GET_STATUS_REQUEST,
+    });
+    const {data} = await axios.get(`${config}/status/getstatus`);
+    dispatch({
+      type: GET_STATUS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: GET_STATUS_FAIL,
+      payload: error?.response && error?.response?.data,
+    });
+  }
+};
+export const deleteStatusAction = obj => async dispatch => {
+  try {
+    dispatch({
+      type: DELETE_STATUS_REQUEST,
+    });
+
+    const {data} = await axios.delete(`${config}/status/delete`, {
+      data: obj,
+    });
+    dispatch({
+      type: DELETE_STATUS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: DELETE_STATUS_FAIL,
       payload: error?.response && error?.response?.data,
     });
   }
