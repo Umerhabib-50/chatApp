@@ -4,3 +4,6 @@ export * from './main/rooms';
 export * from './main/Chat';
 export * from './main/setting';
 export * from './main/changeSub';
+export * from './main/statusFile/status';
+export * from './main/statusFile/statusText';
+export * from './main/statusFile/statusShow';

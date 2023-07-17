@@ -53,19 +53,19 @@ export const SettingScreen = ({navigation, route}) => {
               style={SettingStyle.icon}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => setVisible(true)}>
-            {findArray?.image ? (
+          {findArray?.image ? (
+            <TouchableOpacity onPress={() => setVisible(true)}>
               <Image
                 source={{uri: findArray?.image}}
                 style={SettingStyle.roomImage}
               />
-            ) : (
-              <Image
-                source={require('../../assets/group.png')}
-                style={SettingStyle.roomImage}
-              />
-            )}
-          </TouchableOpacity>
+            </TouchableOpacity>
+          ) : (
+            <Image
+              source={require('../../assets/group.png')}
+              style={SettingStyle.roomImage}
+            />
+          )}
           <TouchableOpacity
             onPress={() => navigation.navigate('subChange', {roomId, str})}>
             <Image
@@ -108,7 +108,7 @@ export const SettingScreen = ({navigation, route}) => {
             onPress={() => {
               navigation.navigate('subChange', {roomId, str});
             }}>
-            {!str && <Text style={{color: '#000000'}}>Add description</Text>}
+            {!str && <Text style={{color: '#128c7e'}}>Add description</Text>}
             {showFullText ? (
               <Text style={{color: '#000000'}}>{str}</Text>
             ) : (

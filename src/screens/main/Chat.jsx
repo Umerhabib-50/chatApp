@@ -132,7 +132,22 @@ export const ChatScreen = ({navigation, route}) => {
           text: 'Edit',
           style: 'edit',
           onPress: () => {
-            // ...
+            const currentDate = moment();
+            const providedDate = moment(`${date} ${time}`, 'MM/DD/YYYY h:mm A');
+            const newDate = providedDate.clone().add(15, 'minutes');
+            if (newDate.isAfter(currentDate)) {
+              setEditMsg(true);
+              setVisible(true);
+              setDefaultMsg({...item, room});
+              setmsgDetails(item);
+            } else {
+              Alert.alert('Time Exceeded', 'Cannot Edit', [
+                {
+                  text: 'OK',
+                  onPress: () => console.log(''),
+                },
+              ]);
+            }
           },
         },
         name === username && {
@@ -148,12 +163,8 @@ export const ChatScreen = ({navigation, route}) => {
               };
 
               await axios.delete(`${config}/room/deletemessage`, deleteObj);
-              const updatedMessages = messages.filter(obj => obj._id !== id);
-              setMessages(updatedMessages);
-
-              if (replyTo?.message === message && replyTo?.username === name) {
-                setReplyTo({message: '', username: ''});
-              }
+              const data = messages.filter(obj => obj._id !== id);
+              setMessages(data);
             } catch (error) {
               console.log('delete msg error', error);
             }
@@ -199,7 +210,9 @@ export const ChatScreen = ({navigation, route}) => {
                 <Image
                   style={{height: 20, width: 20, borderRadius: 50}}
                   source={
-                    userimg ? {uri: userimg} : require('../../assets/group.png')
+                    userimg
+                      ? {uri: userimg}
+                      : require('../../assets/msgUser.png')
                   }
                 />
               )}
@@ -241,11 +254,11 @@ export const ChatScreen = ({navigation, route}) => {
       </SwipeableMessage>
     );
   };
-  useEffect(() => {
-    if (showReply && replyInputRef.current) {
-      replyInputRef.current.focus();
-    }
-  }, [showReply]);
+  // useEffect(() => {
+  //   if (showReply && replyInputRef.current) {
+  //     replyInputRef.current.focus();
+  //   }
+  // }, [showReply]);
   return (
     <>
       <View style={{display: 'flex', height: '100%'}}>
@@ -365,7 +378,7 @@ export const ChatScreen = ({navigation, route}) => {
             )}
             <View style={chatStyles.inputContainer}>
               <TextInput
-                ref={replyInputRef}
+                // ref={replyInputRef}
                 style={chatStyles.input}
                 onChangeText={text => setMessage(text)}
                 value={message}

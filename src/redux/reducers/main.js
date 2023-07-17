@@ -8,11 +8,20 @@ import {
   DELETE_ROOM_FAIL,
   DELETE_ROOM_REQUEST,
   DELETE_ROOM_SUCCESS,
+  DELETE_STATUS_FAIL,
+  DELETE_STATUS_REQUEST,
+  DELETE_STATUS_SUCCESS,
   GET_ROOMS_FAIL,
   GET_ROOMS_REQUEST,
   GET_ROOMS_SUCCESS,
+  GET_STATUS_FAIL,
+  GET_STATUS_REQUEST,
+  GET_STATUS_SUCCESS,
   GET_USERS_FAIL,
   GET_USERS_REQUEST,
+  STATUS_UPLAOD_FAIL,
+  STATUS_UPLAOD_REQUEST,
+  STATUS_UPLAOD_SUCCESS,
 } from '../constants';
 
 //..............|| ALL USERS  REDUCER ||.............
@@ -81,6 +90,44 @@ export const deleteRoomReducer = (state = {}, action) => {
     case DELETE_ROOM_SUCCESS:
       return {loading: false, deleteRoom: action.payload, success: true};
     case DELETE_ROOM_FAIL:
+      return {loading: false, error: action.payload, success: false};
+    default:
+      return state;
+  }
+};
+export const statusUploadReducer = (state = {}, action) => {
+  switch (action.type) {
+    case STATUS_UPLAOD_REQUEST:
+      return {loading: true, success: false};
+    case STATUS_UPLAOD_SUCCESS:
+      return {loading: false, statusUpload: action.payload, success: true};
+    case STATUS_UPLAOD_FAIL:
+      return {loading: false, error: action.payload, success: false};
+    case 'CLEAR':
+      return {};
+    default:
+      return state;
+  }
+};
+export const getStatusReducer = (state = {}, action) => {
+  switch (action.type) {
+    case GET_STATUS_REQUEST:
+      return {loading: true, success: false};
+    case GET_STATUS_SUCCESS:
+      return {loading: false, statusGet: action.payload, success: true};
+    case GET_STATUS_FAIL:
+      return {loading: false, error: action.payload, success: false};
+    default:
+      return state;
+  }
+};
+export const deleteStatusReducer = (state = {}, action) => {
+  switch (action.type) {
+    case DELETE_STATUS_REQUEST:
+      return {loading: true, success: false};
+    case DELETE_STATUS_SUCCESS:
+      return {loading: false, statusdelete: action.payload, success: true};
+    case DELETE_STATUS_FAIL:
       return {loading: false, error: action.payload, success: false};
     default:
       return state;

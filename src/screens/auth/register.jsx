@@ -16,7 +16,7 @@ import {launchImageLibrary} from 'react-native-image-picker';
 
 export const RegisterScreen = ({navigation}) => {
   const [selectedImage, setSelectedImage] = useState(null);
-  console.log('selectedImage', selectedImage);
+
   const {
     control,
     handleSubmit,
