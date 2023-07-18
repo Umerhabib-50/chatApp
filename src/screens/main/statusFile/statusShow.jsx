@@ -14,34 +14,39 @@ export const StatusShow = ({navigation, route}) => {
   const {user, image, statuses} = route.params;
   const flatListRef = useRef(null);
   const {width} = Dimensions.get('window');
-  const [progress, setProgress] = useState(0);
+  const [progresses, setProgresses] = useState(statuses.map(() => 0));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [holdStatus, setHoldStatus] = useState(false);
+
   useEffect(() => {
     const timer = setInterval(() => {
       if (!holdStatus) {
-        if (progress >= 1) {
+        if (progresses[currentIndex] < 1) {
+          setProgresses(prevProgresses => {
+            const updatedProgresses = [...prevProgresses];
+            updatedProgresses[currentIndex] += 0.01;
+            return updatedProgresses;
+          });
+        } else {
           if (currentIndex === statuses.length - 1) {
             navigation.navigate('Status');
-            setProgress(0);
             setCurrentIndex(0);
           } else {
             setCurrentIndex(prevIndex => prevIndex + 1);
             flatListRef.current.scrollToIndex({index: currentIndex + 1});
           }
-        } else {
-          setProgress(prevProgress => prevProgress + 0.01);
         }
       }
     }, 10);
     return () => {
       clearInterval(timer);
     };
-  }, [holdStatus, progress, currentIndex, navigation, statuses.length]);
+  }, [holdStatus, progresses, currentIndex, navigation, statuses.length]);
 
   useEffect(() => {
-    setProgress(0);
-  }, [currentIndex]);
+    setProgresses(statuses.map((_, index) => (index < currentIndex ? 1 : 0)));
+  }, [currentIndex, statuses]);
+
   const handlePressIn = () => {
     setHoldStatus(true);
   };
@@ -50,7 +55,7 @@ export const StatusShow = ({navigation, route}) => {
     setHoldStatus(false);
   };
 
-  const renderItem = ({item, ind}) => {
+  const renderItem = ({item, index}) => {
     const {text, mediaUrl} = item;
 
     return (
@@ -74,12 +79,7 @@ export const StatusShow = ({navigation, route}) => {
             )}
           </View>
 
-          <View
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              // height: '20%',
-            }}>
+          <View style={{alignItems: 'center', justifyContent: 'center'}}>
             <Text
               style={{
                 color: '#ffffff',
@@ -105,20 +105,34 @@ export const StatusShow = ({navigation, route}) => {
             alignItems: 'center',
             backgroundColor: 'rgba(0, 0, 0, 1)',
           }}>
-          <Progress.Bar
-            progress={progress}
-            height={2}
-            width={width}
-            color={'#ffffff'}
-          />
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              width: '100%',
+              paddingTop: 5,
+              paddingHorizontal: 3,
+            }}>
+            {statuses.map((_, index) => {
+              const progress = index < currentIndex ? 1 : progresses[index];
+              return (
+                <Progress.Bar
+                  style={{borderColor: 'black', backgroundColor: 'gray'}}
+                  key={index}
+                  progress={progress}
+                  height={3}
+                  width={width / statuses.length - 4}
+                  color={'#ffffff'}
+                  animated={false}
+                />
+              );
+            })}
+          </View>
         </View>
 
         <View
-          style={{
-            height: '10%',
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
+          style={{height: '10%', flexDirection: 'row', alignItems: 'center'}}>
           <TouchableOpacity onPress={() => navigation.navigate('Status')}>
             <Image
               style={{height: 25, width: 25, marginLeft: '3%'}}
@@ -146,13 +160,13 @@ export const StatusShow = ({navigation, route}) => {
             horizontal
             data={statuses}
             renderItem={renderItem}
-            keyExtractor={(item, index) => index.toString()}
+            keyExtractor={(_, index) => index.toString()}
             onScroll={event => {
               const contentOffsetX = event.nativeEvent.contentOffset.x;
-              const index = Math.round(contentOffsetX / width);
-              if (index !== currentIndex) {
-                setCurrentIndex(index);
-                setProgress(0);
+              const newIndex = Math.round(contentOffsetX / width);
+              if (newIndex !== currentIndex) {
+                setCurrentIndex(newIndex);
+                // setProgresses(statuses.map(() => 0));
               }
             }}
           />

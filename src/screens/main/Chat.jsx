@@ -54,11 +54,7 @@ export const ChatScreen = ({navigation, route}) => {
   const [visible, setVisible] = useState(false);
   const [modalShow, setModelShow] = useState(false);
   const [indivisualImage, setIndivisualImage] = useState('');
-<<<<<<< HEAD
-
-=======
   const [name, setName] = useState('');
->>>>>>> 65fc36ee4a32395a86a9ac0568f2b617e407d508
   const [replyTo, setReplyTo] = useState({
     message: '',
     username: '',
