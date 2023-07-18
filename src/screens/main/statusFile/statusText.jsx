@@ -33,7 +33,7 @@ export const StatusText = ({navigation, route}) => {
   }, [success]);
   return (
     <View style={{flex: 1}}>
-      <View style={{backgroundColor: '#128c7e'}}>
+      <View style={{backgroundColor: '#2b2b2b'}}>
         <TouchableOpacity
           onPress={() =>
             navigation.navigate('tabNavigation', {screen: 'Status'})
@@ -51,7 +51,8 @@ export const StatusText = ({navigation, route}) => {
           alignItems: 'center',
           flex: 1,
           width: '100%',
-          backgroundColor: '#9dc183',
+          // backgroundColor: 'rgba(0, 0, 0, 1)',
+          backgroundColor: '#2b2b2b',
           // paddingHorizontal: 8,
         }}>
         {type == 'string' ? (
@@ -69,13 +70,17 @@ export const StatusText = ({navigation, route}) => {
                 fontWeight: '600',
                 maxWidth: '70%',
                 minWidth: '36%',
+                color: '#ffffff',
+
+                textAlign: 'center',
               }}
+              placeholderTextColor="#ffffff"
               autoFocus={true}
               placeholder="Type a status"
               multiline={true}
               onChangeText={value => setText(value)}
               value={text}
-              defaultValue="umer"
+              selectionColor="#ffffff"
             />
           </View>
         ) : (
@@ -115,23 +120,29 @@ export const StatusText = ({navigation, route}) => {
               placeholder="Message"
               multiline={true}
             />
-            <TouchableOpacity
-              style={{
-                backgroundColor: '#128c7e',
-                borderRadius: 50,
-                // paddingHorizontal: 16,
-                // paddingVertical: 10,
-                padding: 10,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-              onPress={onSubmit}>
-              <Image
-                style={{height: 22, width: 22}}
-                source={require('../../../assets/send.png')}
-              />
-            </TouchableOpacity>
+            {loading ? (
+              <View style={{marginRight: '2%', marginTop: '2%'}}>
+                <ActivityIndicator animating={true} color={'#000000'} />
+              </View>
+            ) : (
+              <TouchableOpacity
+                style={{
+                  backgroundColor: '#128c7e',
+                  borderRadius: 50,
+                  // paddingHorizontal: 16,
+                  // paddingVertical: 10,
+                  padding: 10,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                onPress={onSubmit}>
+                <Image
+                  style={{height: 22, width: 22}}
+                  source={require('../../../assets/send.png')}
+                />
+              </TouchableOpacity>
+            )}
           </View>
         )}
       </View>

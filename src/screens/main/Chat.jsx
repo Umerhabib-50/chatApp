@@ -10,6 +10,8 @@ import {
   ImageBackground,
   StyleSheet,
   Model,
+  Modal,
+  Pressable,
 } from 'react-native';
 
 import axios from 'axios';
@@ -50,6 +52,9 @@ export const ChatScreen = ({navigation, route}) => {
   const [msgDetails, setmsgDetails] = useState('');
   const {deleteMsg, loading} = useSelector(state => state?.deleteMsg);
   const [visible, setVisible] = useState(false);
+  const [modalShow, setModelShow] = useState(false);
+  const [indivisualImage, setIndivisualImage] = useState('');
+  const [name, setName] = useState('');
   const [replyTo, setReplyTo] = useState({
     message: '',
     username: '',
@@ -111,7 +116,11 @@ export const ChatScreen = ({navigation, route}) => {
       setShowReply(false);
     }
   };
-
+  const modalShowFun = (userimg, name) => {
+    setModelShow(!modalShow);
+    setIndivisualImage(userimg);
+    setName(name);
+  };
   const handleLongPress = (id, name, message, time, date, item) => {
     Alert.alert(
       name === username ? 'Message Options' : 'Oops ',
@@ -200,24 +209,25 @@ export const ChatScreen = ({navigation, route}) => {
             handleLongPress(item?._id, name, message, time, date, item)
           }>
           <>
-            <View
-              style={[
-                username === item?.username
-                  ? chatStyles.ownImge
-                  : chatStyles.userImage,
-              ]}>
-              {username !== item?.username && (
-                <Image
-                  style={{height: 20, width: 20, borderRadius: 50}}
-                  source={
-                    userimg
-                      ? {uri: userimg}
-                      : require('../../assets/msgUser.png')
-                  }
-                />
-              )}
-            </View>
-
+            <TouchableOpacity onPress={() => modalShowFun(userimg, name)}>
+              <View
+                style={[
+                  username === item?.username
+                    ? chatStyles.ownImge
+                    : chatStyles.userImage,
+                ]}>
+                {username !== item?.username && (
+                  <Image
+                    style={{height: 20, width: 20, borderRadius: 50}}
+                    source={
+                      userimg
+                        ? {uri: userimg}
+                        : require('../../assets/msgUser.png')
+                    }
+                  />
+                )}
+              </View>
+            </TouchableOpacity>
             <View
               style={[
                 chatStyles.messageContainer,
@@ -407,6 +417,61 @@ export const ChatScreen = ({navigation, route}) => {
           setmsgDetails={setmsgDetails}
           socket={socket}
         />
+      )}
+      {modalShow && (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalShow}
+          onRequestClose={() => {
+            setModelShow(!modalShow);
+          }}>
+          <Pressable
+            onPress={() => setModelShow(!modalShow)}
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            }}>
+            <Pressable
+              onPress={() => {}}
+              style={{
+                width: 250,
+                height: 250,
+                marginTop: '30%',
+                position: 'relative',
+              }}>
+              <View
+                style={{
+                  position: 'absolute',
+                  zIndex: 1000,
+                  height: 30,
+                  backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                  width: '100%',
+                }}>
+                <Text
+                  style={{fontSize: 20, color: '#ffffff', marginLeft: '7%'}}>
+                  {name}
+                </Text>
+              </View>
+              <View>
+                <Image
+                  style={{
+                    width: 250,
+                    height: 250,
+                    backgroundColor: '#ffffff',
+                    position: 'absolute',
+                  }}
+                  source={
+                    indivisualImage
+                      ? {uri: indivisualImage}
+                      : require('../../assets/group.png')
+                  }
+                />
+              </View>
+            </Pressable>
+          </Pressable>
+        </Modal>
       )}
     </>
   );

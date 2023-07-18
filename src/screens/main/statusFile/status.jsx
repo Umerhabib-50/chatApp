@@ -1,10 +1,4 @@
-import React, {
-  useContext,
-  useEffect,
-  useCallback,
-  useRef,
-  useState,
-} from 'react';
+import React, {useContext, useEffect, useState, useCallback} from 'react';
 import {View, Text, Image, TouchableOpacity, FlatList} from 'react-native';
 import {IconButton} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
@@ -15,19 +9,25 @@ import Modal from 'react-native-modal';
 
 export const StatusScreen = ({navigation}) => {
   const tab = useContext(TabContext);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const dispatch = useDispatch();
-  const [modelStatus, modalStatuses] = useState('');
 
   const userName = useSelector(state => state?.userLogin?.userInfo);
   const getUser = userName?.user?.username;
   const getUserId = userName?.user?._id;
   const getStatus = useSelector(state => state?.statusGet?.statusGet);
-  const {statusGet, success} = useSelector(state => state?.statusGet);
-  const deleteStatus = useSelector(state => state?.statusdelete?.statusdelete);
-  const renderItem = ({item, index}) => {
+  const deleteStatus = useSelector(state => state?.statusDelete?.statusDelete);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalStatuses, setModalStatuses] = useState([]);
+  // let findUser = getStatus?.allStatuses.find(item => item?.user == getUser);
+  // const singleUserLength = findUser?.statuses?.length;
+  const renderItem = ({item}) => {
     const {user, image, statuses} = item;
+
+    const lastStatus = statuses[statuses.length - 1];
+    // const {mediaUrl, text} = lastStatus;
+    const statusMedia = lastStatus?.mediaUrl;
+    const statusText = lastStatus?.text;
     const length = statuses?.length;
     return (
       length > 0 && (
@@ -40,7 +40,6 @@ export const StatusScreen = ({navigation}) => {
           }}>
           <View
             style={{
-              display: 'flex',
               flexDirection: 'row',
               alignItems: 'center',
               paddingHorizontal: 20,
@@ -48,37 +47,57 @@ export const StatusScreen = ({navigation}) => {
               marginTop: '1%',
               justifyContent: 'space-between',
             }}>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <Image
-                style={{height: 55, width: 55, borderRadius: 50}}
-                source={{uri: image}}
-              />
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              {statusMedia ? (
+                <Image
+                  style={{
+                    height: 55,
+                    width: 55,
+                    borderRadius: 50,
+                  }}
+                  source={{uri: statusMedia}}
+                />
+              ) : (
+                <View
+                  style={{
+                    width: 55,
+                    height: 55,
+                    borderRadius: 50,
+                    backgroundColor: '#2e242c',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: statusText?.length >= 60 ? 4 : 7,
+                      textAlign: 'center',
+                      paddingVertical: 10,
+                      paddingHorizontal: 7,
+                      color: '#ffffff',
+                    }}
+                    numberOfLines={statusText?.length >= 300 ? 9 : null}>
+                    {statusText}
+                  </Text>
+                </View>
+              )}
               <Text style={{marginLeft: '8%', fontSize: 20}}>{user}</Text>
             </View>
-            <TouchableOpacity
-              onPress={() => {
-                handleLongPress(statuses);
-              }}>
+            {/* <TouchableOpacity onPress={() => handleLongPress(statuses)}>
               <Image
                 style={{width: 25, height: 25}}
                 source={require('../../../assets/optionH.png')}
-              />
-              {/* <Text style={{fontWeight: '300', color: '#128c7e'}}>
-                {length}
-              </Text> */}
-            </TouchableOpacity>
+              /> */}
+            {/* <Text style={{ fontWeight: '300', color: '#128c7e' }}>{length}</Text> */}
+            {/* </TouchableOpacity> */}
           </View>
         </TouchableOpacity>
       )
     );
   };
-  const deletestatus = statusId => {
-    let obj = {
+
+  const deleteStatusById = statusId => {
+    const obj = {
       userId: getUserId,
       statusId: statusId,
     };
@@ -90,7 +109,6 @@ export const StatusScreen = ({navigation}) => {
     return (
       <View
         style={{
-          display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
           paddingHorizontal: 10,
@@ -98,12 +116,7 @@ export const StatusScreen = ({navigation}) => {
           marginTop: '1%',
           justifyContent: 'space-between',
         }}>
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
           {text && (
             <View
               style={{
@@ -123,9 +136,6 @@ export const StatusScreen = ({navigation}) => {
               source={{uri: mediaUrl}}
             />
           )}
-
-          {/* )} */}
-
           <Text
             style={{
               marginLeft: '8%',
@@ -136,8 +146,8 @@ export const StatusScreen = ({navigation}) => {
             {username}
           </Text>
         </View>
-        <TouchableOpacity onPress={() => deletestatus(statusId)}>
-          {getUser == username && (
+        <TouchableOpacity onPress={() => deleteStatusById(statusId)}>
+          {getUser === username && (
             <Image
               source={require('../../../assets/delete.png')}
               style={{width: 25, height: 25}}
@@ -147,6 +157,7 @@ export const StatusScreen = ({navigation}) => {
       </View>
     );
   };
+
   const selectImage = () => {
     launchImageLibrary({}, response => {
       if (response.assets && response.assets.length > 0) {
@@ -159,17 +170,32 @@ export const StatusScreen = ({navigation}) => {
       }
     });
   };
+
+  const handleLongPress = useCallback(statuses => {
+    setModalStatuses(statuses);
+    setIsModalVisible(true);
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setIsModalVisible(false);
+  }, []);
+
+  const wait = timeout => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  };
+
+  const onRefresh = useCallback(() => {
+    dispatch(getstatusAction());
+    wait(2000).then(() => {});
+  }, []);
+
   useEffect(() => {
     dispatch(getstatusAction());
   }, []);
-  // useEffect(() => {
-  //   if (tab == 'status') {
-  //     dispatch(getstatusAction());
-  //   }
-  // }, [tab]);
+
   useEffect(() => {
     if (deleteStatus?.message) {
-      setIsModalVisible(false);
+      closeModal();
       dispatch(getstatusAction());
     }
   }, [deleteStatus]);
@@ -180,64 +206,16 @@ export const StatusScreen = ({navigation}) => {
     }
   }, [selectedImage]);
 
-  const handleLongPress = statuses => {
-    modalStatuses(statuses);
-    setIsModalVisible(true);
-  };
-
-  const closeModal = () => {
-    setIsModalVisible(false);
-  };
-  const wait = timeout => {
-    return new Promise(resolve => setTimeout(resolve, timeout));
-  };
-
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const onRefresh = useCallback(() => {
-    setIsRefreshing(true);
-    dispatch(getstatusAction());
-    wait(2000).then(() => setIsRefreshing(false));
-  }, []);
   return (
     <>
       <View style={{flex: 1}}>
-        <View>
-          <FlatList
-            data={getStatus?.allStatuses}
-            renderItem={renderItem}
-            keyExtractor={(item, index) => index.toString()}
-            refreshing={isRefreshing}
-            onRefresh={onRefresh}
-          />
-        </View>
-        <Modal
-          isVisible={isModalVisible}
-          style={{
-            margin: 0,
-            justifyContent: 'flex-end',
-          }}
-          onBackdropPress={closeModal}
-          animationIn="slideInUp"
-          animationOut="slideOutDown"
-          backdropOpacity={0.5}
-          backdropTransitionOutTiming={0}
-          backdropTransitionInTiming={0}>
-          {/* Your modal content */}
-          <View
-            style={{
-              height: '40%',
-              backgroundColor: '#000000',
-              padding: 16,
-              borderTopLeftRadius: 10,
-              borderTopRightRadius: 10,
-            }}>
-            <FlatList
-              data={modelStatus}
-              renderItem={modelRender}
-              keyExtractor={(item, index) => index.toString()}
-            />
-          </View>
-        </Modal>
+        <FlatList
+          data={getStatus?.allStatuses}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+          refreshing={false}
+          onRefresh={onRefresh}
+        />
       </View>
       <View style={{position: 'absolute', bottom: 16, right: 16}}>
         <TouchableOpacity
@@ -266,6 +244,33 @@ export const StatusScreen = ({navigation}) => {
           />
         </TouchableOpacity>
       </View>
+      <Modal
+        isVisible={isModalVisible}
+        style={{
+          margin: 0,
+          justifyContent: 'flex-end',
+        }}
+        onBackdropPress={closeModal}
+        animationIn="slideInUp"
+        animationOut="slideOutDown"
+        backdropOpacity={0.5}
+        backdropTransitionOutTiming={0}
+        backdropTransitionInTiming={0}>
+        <View
+          style={{
+            height: '40%',
+            backgroundColor: '#000000',
+            padding: 16,
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+          }}>
+          <FlatList
+            data={modalStatuses}
+            renderItem={modelRender}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        </View>
+      </Modal>
     </>
   );
 };
