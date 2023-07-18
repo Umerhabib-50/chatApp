@@ -8,7 +8,8 @@ export const SwipeableMessage = ({
   message,
   setShowReply,
   setReplyTo,
-
+  index,
+  messages,
   scrollToBottom,
 }) => {
   const pan = useRef(new Animated.ValueXY()).current;
@@ -41,10 +42,11 @@ export const SwipeableMessage = ({
           toValue: {x: 0, y: 0},
           useNativeDriver: false,
         }).start(() => {
-          // if (index === messages.length - 1) {
-          //   // Scroll to the bottom after the animation is finished
-          //   scrollToBottom();
-          // }
+          if (index > messages.length - 5) {
+            // Scroll to the bottom after the animation is finished
+            console.log('swippable', index, messages.length - 6);
+            scrollToBottom();
+          }
         });
       },
     }),

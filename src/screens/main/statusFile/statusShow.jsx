@@ -51,8 +51,6 @@ export const StatusShow = ({navigation, route}) => {
   };
 
   const renderItem = ({item, ind}) => {
-    console.log('index', ind);
-    setIndex(ind);
     const {text, mediaUrl} = item;
 
     return (

@@ -54,7 +54,7 @@ export const ChatScreen = ({navigation, route}) => {
   const [visible, setVisible] = useState(false);
   const [modalShow, setModelShow] = useState(false);
   const [indivisualImage, setIndivisualImage] = useState('');
-  console.log('first', indivisualImage);
+
   const [replyTo, setReplyTo] = useState({
     message: '',
     username: '',
@@ -198,7 +198,9 @@ export const ChatScreen = ({navigation, route}) => {
         message={item}
         setShowReply={setShowReply}
         setReplyTo={setReplyTo}
-        scrollToBottom={scrollToBottom}>
+        scrollToBottom={scrollToBottom}
+        index={index}
+        messages={messages}>
         <TouchableRipple
           style={[
             username !== item?.username && chatStyles.ImageStyle,
@@ -263,11 +265,11 @@ export const ChatScreen = ({navigation, route}) => {
       </SwipeableMessage>
     );
   };
-  // useEffect(() => {
-  //   if (showReply && replyInputRef.current) {
-  //     replyInputRef.current.focus();
-  //   }
-  // }, [showReply]);
+  useEffect(() => {
+    if (showReply && replyInputRef.current) {
+      replyInputRef.current.focus();
+    }
+  }, [showReply]);
   return (
     <>
       <View style={{display: 'flex', height: '100%'}}>
@@ -361,6 +363,7 @@ export const ChatScreen = ({navigation, route}) => {
               contentContainerStyle={chatStyles.messagesContainer}
               showsVerticalScrollIndicator={false}
               ItemSeparatorComponent={Separator}
+              keyboardShouldPersistTaps="handled"
             />
 
             {showReply && (
@@ -387,7 +390,7 @@ export const ChatScreen = ({navigation, route}) => {
             )}
             <View style={chatStyles.inputContainer}>
               <TextInput
-                // ref={replyInputRef}
+                ref={replyInputRef}
                 style={chatStyles.input}
                 onChangeText={text => setMessage(text)}
                 value={message}
