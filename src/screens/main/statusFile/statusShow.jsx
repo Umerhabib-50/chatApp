@@ -6,89 +6,80 @@ import {
   TouchableOpacity,
   FlatList,
   Dimensions,
-  ProgressBar,
-  ScrollView,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import * as Progress from 'react-native-progress';
+
 export const StatusShow = ({navigation, route}) => {
   const {user, image, statuses} = route.params;
   const flatListRef = useRef(null);
-  const [imageUri, setImageUri] = useState('');
   const {width} = Dimensions.get('window');
-  const [showText, setShowText] = useState(false);
   const [progress, setProgress] = useState(0);
-  const handleToggleText = () => {
-    setShowText(!showText);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [holdStatus, setHoldStatus] = useState(false);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (!holdStatus) {
+        if (progress >= 1) {
+          if (currentIndex === statuses.length - 1) {
+            navigation.navigate('Status');
+            setProgress(0);
+            setCurrentIndex(0);
+          } else {
+            setCurrentIndex(prevIndex => prevIndex + 1);
+            flatListRef.current.scrollToIndex({index: currentIndex + 1});
+          }
+        } else {
+          setProgress(prevProgress => prevProgress + 0.01);
+        }
+      }
+    }, 10);
+    return () => {
+      clearInterval(timer);
+    };
+  }, [holdStatus, progress, currentIndex, navigation, statuses.length]);
+
+  useEffect(() => {
+    setProgress(0);
+  }, [currentIndex]);
+  const handlePressIn = () => {
+    setHoldStatus(true);
   };
-  useEffect(() => {
-    const durationInSeconds = 5;
-    const interval = 200; // Update the progress every 100 milliseconds
-    const totalIntervals = (durationInSeconds * 1000) / interval;
-    let currentInterval = 0;
 
-    const timer = setInterval(() => {
-      if (currentInterval >= totalIntervals) {
-        clearInterval(timer);
-      } else {
-        const newProgress = (currentInterval + 1) / totalIntervals;
-        setProgress(newProgress);
-        currentInterval++;
-      }
-    }, interval);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
-  useEffect(() => {
-    const navigateToNextIndex = currentIndex => {
-      if (currentIndex === statuses.length - 1) {
-        navigation.navigate('Status');
-      } else {
-        flatListRef.current.scrollToIndex({index: currentIndex + 1});
-      }
-    };
-
-    let currentIndex = 0;
-    const timer = setInterval(() => {
-      navigateToNextIndex(currentIndex);
-      currentIndex++;
-      setProgress(0);
-    }, 5000);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
+  const handlePressOut = () => {
+    setHoldStatus(false);
+  };
 
   const renderItem = ({item}) => {
     const {text, mediaUrl} = item;
-    setImageUri(mediaUrl);
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: width,
-          height: '100%',
-        }}>
-        <View>
-          {mediaUrl && (
-            <Image
-              style={{width: width, height: '70%', marginTop: '5%'}}
-              source={{uri: mediaUrl}}
-            />
-          )}
-        </View>
 
+    return (
+      <TouchableWithoutFeedback
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}>
         <View
           style={{
-            alignItems: 'center',
+            flex: 1,
             justifyContent: 'center',
-            height: '20%',
+            alignItems: 'center',
+            width: width,
+            height: '100%',
           }}>
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <View>
+            {mediaUrl && (
+              <Image
+                style={{width: width, height: '70%', marginTop: '5%'}}
+                source={{uri: mediaUrl}}
+              />
+            )}
+          </View>
+
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              // height: '20%',
+            }}>
             <Text
               style={{
                 color: '#ffffff',
@@ -97,20 +88,11 @@ export const StatusShow = ({navigation, route}) => {
                 marginBottom: 10,
                 maxWidth: '90%',
               }}>
-              {showText ? text : text?.slice(0, 100)}
+              {text}
             </Text>
-          </ScrollView>
+          </View>
         </View>
-        <View>
-          {text?.length >= 70 && (
-            <TouchableOpacity onPress={() => handleToggleText()}>
-              <Text style={{color: '#128c7e'}}>
-                {showText ? 'Hide' : '...Read More'}
-              </Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      </View>
+      </TouchableWithoutFeedback>
     );
   };
 
@@ -123,24 +105,39 @@ export const StatusShow = ({navigation, route}) => {
             alignItems: 'center',
             backgroundColor: '#9dc183',
           }}>
-          <Progress.Bar progress={progress} width={width} color={'#ffffff'} />
+          <Progress.Bar
+            progress={progress}
+            height={2}
+            width={width}
+            color={'#ffffff'}
+          />
         </View>
+
         <View
-          style={{height: '10%', flexDirection: 'row', alignItems: 'center'}}>
+          style={{
+            height: '10%',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
           <TouchableOpacity onPress={() => navigation.navigate('Status')}>
             <Image
               style={{height: 25, width: 25, marginLeft: '3%'}}
               source={require('../../../assets/backIcon.png')}
             />
           </TouchableOpacity>
+
           <Image
             style={{height: 40, width: 40, borderRadius: 50}}
-            source={{uri: image}}
+            source={
+              image ? {uri: image} : require('../../../assets/msgUser.png')
+            }
           />
+
           <Text style={{marginLeft: '2%', fontSize: 20, color: '#ffffff'}}>
             {user}
           </Text>
         </View>
+
         <View style={{flex: 1}}>
           <FlatList
             ref={flatListRef}
@@ -150,6 +147,14 @@ export const StatusShow = ({navigation, route}) => {
             data={statuses}
             renderItem={renderItem}
             keyExtractor={(item, index) => index.toString()}
+            onScroll={event => {
+              const contentOffsetX = event.nativeEvent.contentOffset.x;
+              const index = Math.round(contentOffsetX / width);
+              if (index !== currentIndex) {
+                setCurrentIndex(index);
+                setProgress(0);
+              }
+            }}
           />
         </View>
       </View>

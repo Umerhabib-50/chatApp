@@ -115,23 +115,29 @@ export const StatusText = ({navigation, route}) => {
               placeholder="Message"
               multiline={true}
             />
-            <TouchableOpacity
-              style={{
-                backgroundColor: '#128c7e',
-                borderRadius: 50,
-                // paddingHorizontal: 16,
-                // paddingVertical: 10,
-                padding: 10,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-              onPress={onSubmit}>
-              <Image
-                style={{height: 22, width: 22}}
-                source={require('../../../assets/send.png')}
-              />
-            </TouchableOpacity>
+            {loading ? (
+              <View style={{marginRight: '2%', marginTop: '2%'}}>
+                <ActivityIndicator animating={true} color={'#000000'} />
+              </View>
+            ) : (
+              <TouchableOpacity
+                style={{
+                  backgroundColor: '#128c7e',
+                  borderRadius: 50,
+                  // paddingHorizontal: 16,
+                  // paddingVertical: 10,
+                  padding: 10,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                onPress={onSubmit}>
+                <Image
+                  style={{height: 22, width: 22}}
+                  source={require('../../../assets/send.png')}
+                />
+              </TouchableOpacity>
+            )}
           </View>
         )}
       </View>
