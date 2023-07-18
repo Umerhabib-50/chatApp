@@ -54,7 +54,11 @@ export const ChatScreen = ({navigation, route}) => {
   const [visible, setVisible] = useState(false);
   const [modalShow, setModelShow] = useState(false);
   const [indivisualImage, setIndivisualImage] = useState('');
+<<<<<<< HEAD
 
+=======
+  const [name, setName] = useState('');
+>>>>>>> 65fc36ee4a32395a86a9ac0568f2b617e407d508
   const [replyTo, setReplyTo] = useState({
     message: '',
     username: '',
@@ -116,9 +120,10 @@ export const ChatScreen = ({navigation, route}) => {
       setShowReply(false);
     }
   };
-  const modalShowFun = userimg => {
+  const modalShowFun = (userimg, name) => {
     setModelShow(!modalShow);
     setIndivisualImage(userimg);
+    setName(name);
   };
   const handleLongPress = (id, name, message, time, date, item) => {
     Alert.alert(
@@ -210,7 +215,7 @@ export const ChatScreen = ({navigation, route}) => {
             handleLongPress(item?._id, name, message, time, date, item)
           }>
           <>
-            <TouchableOpacity onPress={() => modalShowFun(userimg)}>
+            <TouchableOpacity onPress={() => modalShowFun(userimg, name)}>
               <View
                 style={[
                   username === item?.username
@@ -437,15 +442,40 @@ export const ChatScreen = ({navigation, route}) => {
             }}>
             <Pressable
               onPress={() => {}}
-              style={{width: 250, height: 250, marginTop: '30%'}}>
-              <Image
-                style={{width: 250, height: 250, backgroundColor: '#ffffff'}}
-                source={
-                  indivisualImage
-                    ? {uri: indivisualImage}
-                    : require('../../assets/group.png')
-                }
-              />
+              style={{
+                width: 250,
+                height: 250,
+                marginTop: '30%',
+                position: 'relative',
+              }}>
+              <View
+                style={{
+                  position: 'absolute',
+                  zIndex: 1000,
+                  height: 30,
+                  backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                  width: '100%',
+                }}>
+                <Text
+                  style={{fontSize: 20, color: '#ffffff', marginLeft: '7%'}}>
+                  {name}
+                </Text>
+              </View>
+              <View>
+                <Image
+                  style={{
+                    width: 250,
+                    height: 250,
+                    backgroundColor: '#ffffff',
+                    position: 'absolute',
+                  }}
+                  source={
+                    indivisualImage
+                      ? {uri: indivisualImage}
+                      : require('../../assets/group.png')
+                  }
+                />
+              </View>
             </Pressable>
           </Pressable>
         </Modal>

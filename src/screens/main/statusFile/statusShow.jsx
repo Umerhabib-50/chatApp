@@ -98,12 +98,12 @@ export const StatusShow = ({navigation, route}) => {
 
   return (
     <>
-      <View style={{flex: 1, backgroundColor: '#9dc183'}}>
+      <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 1)'}}>
         <View
           style={{
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: '#9dc183',
+            backgroundColor: 'rgba(0, 0, 0, 1)',
           }}>
           <Progress.Bar
             progress={progress}

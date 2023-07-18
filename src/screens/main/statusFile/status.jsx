@@ -48,13 +48,12 @@ export const StatusScreen = ({navigation}) => {
               justifyContent: 'space-between',
             }}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              {statusMedia && statusText ? (
+              {statusMedia ? (
                 <Image
                   style={{
                     height: 55,
                     width: 55,
                     borderRadius: 50,
-                    backgroundColor: 'red',
                   }}
                   source={{uri: statusMedia}}
                 />
@@ -64,21 +63,20 @@ export const StatusScreen = ({navigation}) => {
                     width: 55,
                     height: 55,
                     borderRadius: 50,
-                    backgroundColor: 'red',
+                    backgroundColor: '#2e242c',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                   }}>
                   <Text
                     style={{
-                      fontSize: statusText?.length >= 30 ? 10 : 15,
+                      fontSize: statusText?.length >= 60 ? 4 : 7,
                       textAlign: 'center',
-                      padding: 5,
-                      width: 55,
-                      height: 55,
-                      borderRadius: 50,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      marginTop: statusText?.length >= 30 ? '25%' : '4%',
+                      paddingVertical: 10,
+                      paddingHorizontal: 7,
+                      color: '#ffffff',
                     }}
-                    numberOfLines={statusText?.length >= 30 ? 1 : null}>
+                    numberOfLines={statusText?.length >= 300 ? 9 : null}>
                     {statusText}
                   </Text>
                 </View>
