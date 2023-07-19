@@ -1,2 +1,2 @@
-// export const config = 'https://3236-223-123-5-0.ngrok-free.app';
+// export const config = 'https://2c4c-116-90-122-10.ngrok-free.app';
 export const config = 'http://192.168.1.215:5000';

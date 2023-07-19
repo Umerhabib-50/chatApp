@@ -101,16 +101,28 @@ export const StatusShow = ({navigation, route}) => {
       <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 1)'}}>
         <View
           style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 1)',
+            display: 'flex',
+            justifyContent: 'space-between',
           }}>
-          <Progress.Bar
-            progress={progress}
-            height={2}
-            width={width}
-            color={'#ffffff'}
-          />
+          {statuses?.map((item, ind) => {
+            return (
+              <View
+                key={ind}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(0, 0, 0, 1)',
+                }}>
+                <Progress.Bar
+                  progress={progress}
+                  height={2}
+                  width={width / statuses.length - 4}
+                  color={'#ffffff'}
+                />
+              </View>
+            );
+          })}
         </View>
 
         <View
