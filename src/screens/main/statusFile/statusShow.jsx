@@ -21,13 +21,7 @@ export const StatusShow = ({navigation, route}) => {
   useEffect(() => {
     const timer = setInterval(() => {
       if (!holdStatus) {
-        if (progresses[currentIndex] < 1) {
-          setProgresses(prevProgresses => {
-            const updatedProgresses = [...prevProgresses];
-            updatedProgresses[currentIndex] += 0.01;
-            return updatedProgresses;
-          });
-        } else {
+        if (progresses[currentIndex] >= 1) {
           if (currentIndex === statuses.length - 1) {
             navigation.navigate('Status');
             setCurrentIndex(0);
@@ -35,6 +29,12 @@ export const StatusShow = ({navigation, route}) => {
             setCurrentIndex(prevIndex => prevIndex + 1);
             flatListRef.current.scrollToIndex({index: currentIndex + 1});
           }
+        } else {
+          setProgresses(prevProgresses => {
+            const updatedProgresses = [...prevProgresses];
+            updatedProgresses[currentIndex] += 0.02;
+            return updatedProgresses;
+          });
         }
       }
     }, 10);
