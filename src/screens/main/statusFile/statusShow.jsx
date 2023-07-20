@@ -17,11 +17,18 @@ export const StatusShow = ({navigation, route}) => {
   const [progresses, setProgresses] = useState(statuses.map(() => 0));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [holdStatus, setHoldStatus] = useState(false);
+  const [timeIn, setTimeIn] = useState();
 
   useEffect(() => {
     const timer = setInterval(() => {
       if (!holdStatus) {
-        if (progresses[currentIndex] >= 1) {
+        if (progresses[currentIndex] < 1) {
+          setProgresses(prevProgresses => {
+            const updatedProgresses = [...prevProgresses];
+            updatedProgresses[currentIndex] += 0.01;
+            return updatedProgresses;
+          });
+        } else {
           if (currentIndex === statuses.length - 1) {
             navigation.navigate('Status');
             setCurrentIndex(0);
@@ -29,12 +36,6 @@ export const StatusShow = ({navigation, route}) => {
             setCurrentIndex(prevIndex => prevIndex + 1);
             flatListRef.current.scrollToIndex({index: currentIndex + 1});
           }
-        } else {
-          setProgresses(prevProgresses => {
-            const updatedProgresses = [...prevProgresses];
-            updatedProgresses[currentIndex] += 0.02;
-            return updatedProgresses;
-          });
         }
       }
     }, 10);
@@ -43,15 +44,56 @@ export const StatusShow = ({navigation, route}) => {
     };
   }, [holdStatus, progresses, currentIndex, navigation, statuses.length]);
 
-  useEffect(() => {
-    setProgresses(statuses.map((_, index) => (index < currentIndex ? 1 : 0)));
-  }, [currentIndex, statuses]);
+  // useEffect(() => {
+  //   setProgresses(statuses.map((_, index) => (index < currentIndex ? 1 : 0)));
+  // }, [currentIndex, statuses]);
 
-  const handlePressIn = () => {
+  const handlePressIn = event => {
     setHoldStatus(true);
+    const date = new Date();
+    const currentTime = date.getTime();
+    setTimeIn(currentTime);
   };
 
-  const handlePressOut = () => {
+  const handlePressOut = event => {
+    const {locationX} = event.nativeEvent;
+    const date = new Date();
+    const currentTime = date.getTime();
+
+    if (currentTime - timeIn < 100) {
+      if (locationX < width / 2 && currentIndex > 0) {
+        flatListRef.current.scrollToIndex({index: currentIndex - 1});
+
+        setProgresses(prevProgresses => {
+          const updatedProgresses = prevProgresses.map((progress, index) => {
+            if (index < currentIndex) {
+              return 1;
+            } else {
+              return 0;
+            }
+          });
+
+          return updatedProgresses;
+        });
+      }
+      if (locationX > width / 2 && currentIndex < statuses.length - 1) {
+        flatListRef.current.scrollToIndex({index: currentIndex + 1});
+        setProgresses(prevProgresses => {
+          const updatedProgresses = prevProgresses.map((progress, index) => {
+            if (index < currentIndex) {
+              return 1;
+            } else {
+              return 0;
+            }
+          });
+
+          return updatedProgresses;
+        });
+      }
+    } else {
+      setHoldStatus(false);
+    }
+
     setHoldStatus(false);
   };
 
@@ -115,7 +157,12 @@ export const StatusShow = ({navigation, route}) => {
               paddingHorizontal: 3,
             }}>
             {statuses.map((_, index) => {
-              const progress = index < currentIndex ? 1 : progresses[index];
+              const progress =
+                index < currentIndex
+                  ? 1
+                  : index > currentIndex
+                  ? 0
+                  : progresses[index];
               return (
                 <Progress.Bar
                   style={{borderColor: 'black', backgroundColor: 'gray'}}
@@ -164,10 +211,24 @@ export const StatusShow = ({navigation, route}) => {
             onScroll={event => {
               const contentOffsetX = event.nativeEvent.contentOffset.x;
               const newIndex = Math.round(contentOffsetX / width);
-              if (newIndex !== currentIndex) {
-                setCurrentIndex(newIndex);
-                // setProgresses(statuses.map(() => 0));
-              }
+
+              setProgresses(prevProgresses => {
+                const updatedProgresses = prevProgresses.map(
+                  (progress, index) => {
+                    if (index === currentIndex) {
+                      return contentOffsetX > newIndex * width ? 1 : 0;
+                    } else if (index < currentIndex) {
+                      return 1;
+                    } else {
+                      return 0;
+                    }
+                  },
+                );
+
+                return updatedProgresses;
+              });
+
+              setCurrentIndex(newIndex);
             }}
           />
         </View>
