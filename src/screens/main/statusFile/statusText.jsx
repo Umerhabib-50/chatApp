@@ -93,6 +93,7 @@ export const StatusText = ({navigation, route}) => {
           <View
             style={{
               flexDirection: 'row',
+              paddingHorizontal: 14,
             }}>
             <TextInput
               // ref={replyInputRef}
